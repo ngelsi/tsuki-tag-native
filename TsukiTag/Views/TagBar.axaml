@@ -9,7 +9,36 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              DataContext="{x:Static ts:ViewModelIoc.TagBarViewModel}"
              x:Class="TsukiTag.Views.TagBar">
+  <UserControl.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+    <Style Selector="TextBlock.primary">
+      <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>      
+    </Style>
+    <Style Selector="TextBlock.primary:pointerover">
+      <Setter Property="Foreground" Value="White"></Setter>
+      <Setter Property="Cursor" Value="Hand"></Setter>
+    </Style>
+    <Style Selector="AutoCompleteBox">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+  </UserControl.Styles>
   <DockPanel>
-    <TextBox DockPanel.Dock="Top" Text="{Binding FullTagString}" Watermark="Search tags..." Margin="5 0 10 0"></TextBox>    
+    <AutoCompleteBox Items="{Binding TagSuggestions}" KeyDown="TagBoxGotKeyDown" DockPanel.Dock="Top" Text="{Binding TagString}" Watermark="Search tags" Margin="5 0 10 0"></AutoCompleteBox>
+    <DockPanel DockPanel.Dock="Top" Height="30">
+      <ItemsRepeater Items="{Binding CurrentTags}">
+        <ItemsRepeater.Layout>
+          <StackLayout Orientation="Horizontal" Spacing="1"></StackLayout>
+        </ItemsRepeater.Layout>
+        <ItemsRepeater.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Margin="10 10 0 0">              
+              <TextBlock FontSize="16" Classes="primary" Text="{Binding}" PointerPressed="TagLabelGotPress"></TextBlock>
+            </StackPanel>
+          </DataTemplate>
+        </ItemsRepeater.ItemTemplate>
+      </ItemsRepeater>
+    </DockPanel>
   </DockPanel>
 </UserControl>

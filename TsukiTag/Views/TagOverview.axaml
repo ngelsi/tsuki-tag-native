@@ -11,12 +11,15 @@
              DataContext="{x:Static ts:ViewModelIoc.TagOverviewViewModel}"             
              x:Class="TsukiTag.Views.TagOverview">
   <UserControl.Styles>
-    <Style Selector="Label.primary">
+    <Style Selector="TextBlock.primary">
       <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
     </Style>
-    <Style Selector="Label.primary:pointerover">
+    <Style Selector="TextBlock.primary:pointerover">
       <Setter Property="Foreground" Value="White"></Setter>
       <Setter Property="Cursor" Value="Hand"></Setter>
+    </Style>
+    <Style Selector="TextBlock">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
     </Style>
     <Style Selector="Label,TextBox">
       <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
@@ -44,10 +47,10 @@
         <ItemsRepeater.ItemTemplate>
           <DataTemplate>
             <StackPanel Orientation="Horizontal">
-              <Label Content="+" Classes="primary" PointerPressed="TagPlusGotPress"></Label>
-              <Label Content="-" Classes="primary" PointerPressed="TagMinusGotPress"></Label>
-              <Label Content="{Binding Tag}" Classes="primary" Margin="3 0 0 0" PointerPressed="TagLabelGotPress"></Label>
-              <Label Content="{Binding Count}" Margin="0 0 0 0"></Label>
+              <TextBlock Margin="5 5 0 0" Text="+" Classes="primary" PointerPressed="TagPlusGotPress"></TextBlock>
+              <TextBlock Margin="5 5 0 0" Text="-" Classes="primary" PointerPressed="TagMinusGotPress"></TextBlock>
+              <TextBlock Margin="5 5 0 0" Text="{Binding Tag}" Classes="primary" PointerPressed="TagLabelGotPress"></TextBlock>
+              <TextBlock Margin="5 5 0 0" Text="{Binding Count}"></TextBlock>
             </StackPanel>
           </DataTemplate>
         </ItemsRepeater.ItemTemplate>

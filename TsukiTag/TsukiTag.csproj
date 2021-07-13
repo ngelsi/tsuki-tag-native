@@ -42,9 +42,6 @@
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsukiTag.Common\TsukiTag.Common.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="Views\OnlineNavigationBar.axaml.cs">
       <DependentUpon>OnlineNavigationBar.axaml</DependentUpon>
     </Compile>

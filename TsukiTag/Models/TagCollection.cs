@@ -30,16 +30,19 @@ namespace TsukiTag.Models
 
             foreach (var picture in pictures)
             {
-                var pictureTags = picture.TagList;
-                foreach (var pictureTag in pictureTags)
+                if(picture != null)
                 {
-                    if (dict.ContainsKey(pictureTag))
+                    var pictureTags = picture.TagList;
+                    foreach (var pictureTag in pictureTags)
                     {
-                        dict[pictureTag] += 1;
-                    }
-                    else
-                    {
-                        dict.Add(pictureTag, 1);
+                        if (dict.ContainsKey(pictureTag))
+                        {
+                            dict[pictureTag] += 1;
+                        }
+                        else
+                        {
+                            dict.Add(pictureTag, 1);
+                        }
                     }
                 }
             }

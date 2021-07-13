@@ -88,10 +88,13 @@ namespace TsukiTag.Dependencies
         {
             await Task.Run(() =>
             {
-                currentFilter.Page = 0;
-                currentFilter.Tags.Add(tag);
+                if(!currentFilter.Tags.Contains(tag))
+                {
+                    currentFilter.Page = 0;
+                    currentFilter.Tags.Add(tag);
 
-                FilterChanged?.Invoke(this, EventArgs.Empty);
+                    FilterChanged?.Invoke(this, EventArgs.Empty);
+                }
             });
         }
 

@@ -54,48 +54,51 @@ namespace TsukiTag.Dependencies.ProviderSpecific
             dynamic doc = DynamicXml.Parse(responseData);
             IList<dynamic> posts = doc.post;
 
-            for(var i = 0; i < posts.Count; i++)
+            if(posts != null && posts.Count > 0)
             {
-                var post = posts[i];
-
-                var picture = new SafebooruPicture();
-
-                picture.Id = post.id;
-                picture.ParentId = post.parent_id;
-                picture.Rating = post.rating;
-                picture.Tags = post.tags;
-                picture.Md5 = post.md5;
-                picture.Source = post.source;
-                picture.Status = post.status;
-                picture.Url = post.sample_url;
-                picture.PreviewUrl = post.preview_url;
-                picture.DownloadUrl = post.file_url;
-                picture.CreatedAt = post.created_at;
-                picture.CreatedBy = post.creator_id;
-
-                if (int.TryParse(post.height, out int h))
+                for (var i = 0; i < posts.Count; i++)
                 {
-                    picture.Height = h;
-                }
+                    var post = posts[i];
 
-                if (int.TryParse(post.width, out int w))
-                {
-                    picture.Width = w;
-                }
+                    var picture = new SafebooruPicture();
 
-                if (int.TryParse(post.preview_height, out int ph))
-                {
-                    picture.PreviewHeight = ph;
-                }
+                    picture.Id = post.id;
+                    picture.ParentId = post.parent_id;
+                    picture.Rating = post.rating;
+                    picture.Tags = post.tags;
+                    picture.Md5 = post.md5;
+                    picture.Source = post.source;
+                    picture.Status = post.status;
+                    picture.Url = post.sample_url;
+                    picture.PreviewUrl = post.preview_url;
+                    picture.DownloadUrl = post.file_url;
+                    picture.CreatedAt = post.created_at;
+                    picture.CreatedBy = post.creator_id;
 
-                if (int.TryParse(post.preview_width, out int pw))
-                {
-                    picture.PreviewWidth = pw;
-                }                
+                    if (int.TryParse(post.height, out int h))
+                    {
+                        picture.Height = h;
+                    }
 
-                if(!string.IsNullOrEmpty(picture.Md5))
-                {
-                    pictures.Add(picture);
+                    if (int.TryParse(post.width, out int w))
+                    {
+                        picture.Width = w;
+                    }
+
+                    if (int.TryParse(post.preview_height, out int ph))
+                    {
+                        picture.PreviewHeight = ph;
+                    }
+
+                    if (int.TryParse(post.preview_width, out int pw))
+                    {
+                        picture.PreviewWidth = pw;
+                    }
+
+                    if (!string.IsNullOrEmpty(picture.Md5))
+                    {
+                        pictures.Add(picture);
+                    }
                 }
             }
 

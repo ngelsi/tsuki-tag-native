@@ -38,7 +38,7 @@ namespace TsukiTag.Views
 
         private void TagLabelGotPress(object sender, PointerPressedEventArgs e)
         {
-            var tag = (sender as Label)?.Content?.ToString();
+            var tag = (sender as TextBlock)?.Text?.ToString();
             if(!string.IsNullOrEmpty(tag))
             {
                 (this.DataContext as TsukiTag.ViewModels.TagOverviewViewModel)?.OnTagClicked(tag);
@@ -47,7 +47,7 @@ namespace TsukiTag.Views
 
         private void TagPlusGotPress(object sender, PointerPressedEventArgs e)
         {
-            var tag = ((sender as Label)?.DataContext as TagCollectionElement)?.Tag;
+            var tag = ((sender as TextBlock)?.DataContext as TagCollectionElement)?.Tag;
             if (!string.IsNullOrEmpty(tag))
             {
                 (this.DataContext as TsukiTag.ViewModels.TagOverviewViewModel)?.OnTagAdded(tag);
@@ -56,7 +56,7 @@ namespace TsukiTag.Views
 
         private void TagMinusGotPress(object sender, PointerPressedEventArgs e)
         {
-            var tag = ((sender as Label)?.DataContext as TagCollectionElement)?.Tag;
+            var tag = ((sender as TextBlock)?.DataContext as TagCollectionElement)?.Tag;
             if (!string.IsNullOrEmpty(tag))
             {
                 (this.DataContext as TsukiTag.ViewModels.TagOverviewViewModel)?.OnTagRemoved(tag);
