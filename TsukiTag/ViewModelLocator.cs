@@ -24,5 +24,8 @@ namespace TsukiTag
 
         public static OnlineProviderViewModel OnlineProviderViewModel => ViewModelLocator.GetDataContext<OnlineProviderViewModel>();
 
+        public static OnlineBrowserViewModel OnlineBrowserViewModel => ViewModelLocator.GetDataContext<OnlineBrowserViewModel>();
+
+
     }
 }

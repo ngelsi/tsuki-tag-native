@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="using:TsukiTag.Views"
+             xmlns:converters="using:TsukiTag.Converters"
+             xmlns:ts="using:TsukiTag"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             DataContext="{x:Static ts:ViewModelIoc.OnlineBrowserViewModel}"             
+             x:Class="TsukiTag.Views.OnlineBrowser">
+  <UserControl.Styles>
+    <Style Selector="MenuItem">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+
+    <Style Selector="TextBlock">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+  </UserControl.Styles>
+  <DockPanel DockPanel.Dock="Top">
+    <DockPanel DockPanel.Dock="Top">
+      <local:OnlineNavigationBar></local:OnlineNavigationBar>
+      <local:TagBar></local:TagBar>
+    </DockPanel>
+    <local:PictureList Margin="0 10 0 0" DockPanel.Dock="Top"></local:PictureList>
+  </DockPanel>
+</UserControl>

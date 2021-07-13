@@ -36,6 +36,10 @@ namespace TsukiTag
                         TransparencyLevelHint = WindowTransparencyLevel.Blur;
                     }
                 });
+
+            #if DEBUG
+            this.AttachDevTools();
+            #endif
         }
 
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

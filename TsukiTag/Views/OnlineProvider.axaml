@@ -9,6 +9,40 @@
              DataContext="{x:Static ts:ViewModelIoc.OnlineProviderViewModel}"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TsukiTag.Views.OnlineProvider">
+  <UserControl.Styles>
+    <Style Selector="MenuItem">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+    
+    <Style Selector="TextBlock">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+
+    <Style Selector="TabItem">
+      <Setter Property="Margin" Value="0"></Setter>      
+      <Setter Property="Foreground" Value="White"></Setter>
+      <Setter Property="FontSize" Value="15"></Setter>
+      
+      <Setter Property="Margin" Value="5 0 0 0"/>
+      <Setter Property="Padding" Value="5 0 0 0"/>      
+    </Style>
+
+    <Style Selector="TabItem /template/ Border#PART_LayoutRoot">
+      <Setter Property="Height" Value="39"></Setter>
+    </Style>
+    
+    <Style Selector="TabItem:selected">
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="Background" Value="Black"></Setter>
+      <Setter Property="FontWeight" Value="Bold"></Setter>
+    </Style> 
+
+    <Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">      
+      <Setter Property="BorderThickness" Value="1"></Setter>
+      <Setter Property="BorderBrush" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>      
+    </Style>  
+    
+  </UserControl.Styles>
   <DockPanel DockPanel.Dock="Top">
     <DockPanel DockPanel.Dock="Top" Margin="0">
       <ExperimentalAcrylicBorder Width="300" DockPanel.Dock="Left">
@@ -17,16 +51,23 @@
         </ExperimentalAcrylicBorder.Material>
         <local:TagOverview></local:TagOverview>
       </ExperimentalAcrylicBorder>
-      <DockPanel DockPanel.Dock="Right">
-        <DockPanel DockPanel.Dock="Top">
-          <local:OnlineNavigationBar></local:OnlineNavigationBar>
-          <local:TagBar></local:TagBar>
-        </DockPanel>
-        <TabControl DockPanel.Dock="Top">
-        </TabControl>
-        <Panel DockPanel.Dock="Bottom" Margin="13 10 10 10">
-          <local:PictureList></local:PictureList>
-        </Panel>
+      <DockPanel DockPanel.Dock="Right">       
+        <TabControl DockPanel.Dock="Top" Items="{Binding Tabs}" TabStripPlacement="Top">
+          <TabControl.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Header}"></TextBlock>                
+              </StackPanel>
+            </DataTemplate>
+          </TabControl.ItemTemplate>
+          <TabControl.ContentTemplate>
+            <DataTemplate>
+              <DockPanel DockPanel.Dock="Top">
+                <ContentControl Content="{Binding Content}"></ContentControl>
+              </DockPanel>
+            </DataTemplate>
+          </TabControl.ContentTemplate>          
+        </TabControl>        
       </DockPanel>
     </DockPanel>
   </DockPanel>
