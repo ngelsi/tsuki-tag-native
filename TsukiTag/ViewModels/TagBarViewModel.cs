@@ -86,8 +86,8 @@ namespace TsukiTag.ViewModels
         public async void OnAutoCompleteInitiated(string filter)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
-            {
-                TagString = tagSuggestions.FirstOrDefault(t => t.IndexOf(filter, StringComparison.OrdinalIgnoreCase) > -1) ?? filter;
+            {               
+                TagString = tagSuggestions.Select(t => new { index = t.IndexOf(filter, StringComparison.OrdinalIgnoreCase), value = t }).Where(t => t.index > -1).OrderBy(t => t.index).FirstOrDefault()?.value ?? filter;
             });
         }
 
