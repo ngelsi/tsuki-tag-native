@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TsukiTag.ViewModels"
+             xmlns:local="using:TsukiTag.Views"
+             xmlns:ts="using:TsukiTag"
+             xmlns:ss="using:TsukiTag.Styles"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             DataContext="{x:Static ts:ViewModelIoc.TagOverviewViewModel}"             
+             x:Class="TsukiTag.Views.TagOverview">
+  <UserControl.Styles>
+    <Style Selector="Label.primary">
+      <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
+    </Style>
+    <Style Selector="Label.primary:pointerover">
+      <Setter Property="Foreground" Value="White"></Setter>
+      <Setter Property="Cursor" Value="Hand"></Setter>
+    </Style>
+    <Style Selector="Label,TextBox">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+    <Style Selector="Button">
+      <Setter Property="Cursor" Value="Hand"></Setter>
+      <Setter Property="Background" Value="Black"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+    </Style>
+    <Style Selector="Button:pointerover">
+      <Setter Property="Cursor" Value="Hand"></Setter>
+      <Setter Property="Background" Value="White"></Setter>
+    </Style>
+  </UserControl.Styles>
+  <DockPanel>
+    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10 5 5 5">
+      <Label Content="Tags"></Label>
+      <Label Margin="5 0 0 0" Content="{Binding FilteredTags.TagCount}"></Label>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10 5 5 5">
+      <TextBox Watermark="Filter" Width="280" Text="{Binding FilterString}" Name="FilterBox" PointerPressed="FilterBoxGotPress" GotFocus="FilterBoxGotFocus"></TextBox>      
+    </StackPanel>
+    <ScrollViewer DockPanel.Dock="Top">
+      <ItemsRepeater Items="{Binding FilteredTags.Tags}" Margin="10 5 5 5">
+        <ItemsRepeater.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Orientation="Horizontal">
+              <Label Content="+" Classes="primary" PointerPressed="TagPlusGotPress"></Label>
+              <Label Content="-" Classes="primary" PointerPressed="TagMinusGotPress"></Label>
+              <Label Content="{Binding Tag}" Classes="primary" Margin="3 0 0 0" PointerPressed="TagLabelGotPress"></Label>
+              <Label Content="{Binding Count}" Margin="0 0 0 0"></Label>
+            </StackPanel>
+          </DataTemplate>
+        </ItemsRepeater.ItemTemplate>
+      </ItemsRepeater>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

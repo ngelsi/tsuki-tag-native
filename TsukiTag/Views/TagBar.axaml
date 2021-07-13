@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TsukiTag.ViewModels"
+             xmlns:local="using:TsukiTag.Views"
+             xmlns:ts="using:TsukiTag"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"                          
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             DataContext="{x:Static ts:ViewModelIoc.TagBarViewModel}"
+             x:Class="TsukiTag.Views.TagBar">
+  <DockPanel>
+    <TextBox DockPanel.Dock="Top" Text="{Binding FullTagString}" Watermark="Search tags..." Margin="5 0 10 0"></TextBox>    
+  </DockPanel>
+</UserControl>

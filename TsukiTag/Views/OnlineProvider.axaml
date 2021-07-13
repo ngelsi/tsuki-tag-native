@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="using:TsukiTag.Views"
+             xmlns:converters="using:TsukiTag.Converters"
+             xmlns:ts="using:TsukiTag"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             DataContext="{x:Static ts:ViewModelIoc.OnlineProviderViewModel}"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="TsukiTag.Views.OnlineProvider">
+  <DockPanel DockPanel.Dock="Top">
+    <DockPanel DockPanel.Dock="Top" Margin="0">
+      <ExperimentalAcrylicBorder Width="300" DockPanel.Dock="Left">
+        <ExperimentalAcrylicBorder.Material>
+          <ExperimentalAcrylicMaterial TintColor="Black" MaterialOpacity="0.85" TintOpacity="1"></ExperimentalAcrylicMaterial>
+        </ExperimentalAcrylicBorder.Material>
+        <local:TagOverview></local:TagOverview>
+      </ExperimentalAcrylicBorder>
+      <DockPanel DockPanel.Dock="Right">
+        <DockPanel DockPanel.Dock="Top">
+          <local:OnlineNavigationBar></local:OnlineNavigationBar>
+          <local:TagBar></local:TagBar>
+        </DockPanel>
+        <TabControl DockPanel.Dock="Top">
+        </TabControl>
+        <Panel DockPanel.Dock="Bottom" Margin="13 10 10 10">
+          <local:PictureList></local:PictureList>
+        </Panel>
+      </DockPanel>
+    </DockPanel>
+  </DockPanel>
+</UserControl>

@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TsukiTag.ViewModels"
+             xmlns:local="using:TsukiTag.Views"
+             xmlns:converters="using:TsukiTag.Converters"
+             xmlns:ts="using:TsukiTag"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"                          
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             DataContext="{x:Static ts:ViewModelIoc.PictureListViewModel}"             
+             x:Class="TsukiTag.Views.PictureList">
+  <UserControl.Resources>
+    <converters:BitmapConverter x:Key="bitmapConverter"></converters:BitmapConverter>
+  </UserControl.Resources>
+  <UserControl.Styles>
+    <Style Selector="Image">
+      <Setter Property="ZIndex" Value="0"></Setter>
+    </Style>
+    <Style Selector="Image:pointerover">
+      <Setter Property="RenderTransform">
+        <Setter.Value>
+          <ScaleTransform ScaleX="1.5" ScaleY="1.5"></ScaleTransform>
+        </Setter.Value>
+      </Setter>
+      <Setter Property="Cursor" Value="Hand"></Setter>
+      <Setter Property="ZIndex" Value="10"></Setter>
+    </Style>
+  </UserControl.Styles>
+  <DockPanel>
+    <ScrollViewer DockPanel.Dock="Top">
+      <ItemsRepeater Items="{Binding Pictures}">
+        <ItemsRepeater.Layout>
+          <UniformGridLayout ItemsJustification="SpaceAround" MinItemWidth="200" MinItemHeight="200"></UniformGridLayout>
+        </ItemsRepeater.Layout>
+        <ItemsRepeater.ItemTemplate>
+          <DataTemplate>
+            <StackPanel>
+              <Image Margin="10" Source="{Binding, Converter={StaticResource bitmapConverter}}" Width="{Binding PreviewWidth}" Height="{Binding PreviewHeight}">                
+              </Image>
+            </StackPanel>
+          </DataTemplate>
+        </ItemsRepeater.ItemTemplate>
+      </ItemsRepeater>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

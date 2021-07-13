@@ -1,0 +1,44 @@
+<ts:FluentWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TsukiTag.ViewModels"
+        xmlns:ts="using:TsukiTag"
+        xmlns:local="using:TsukiTag.Views"                 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        WindowStartupLocation="CenterScreen"
+        x:Class="TsukiTag.Views.MainWindow"
+        Icon="/Assets/Icons/icon.ico"
+        Title="TsukiTag">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+  <ts:FluentWindow.Styles>
+    <Style Selector="MenuItem">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+  </ts:FluentWindow.Styles>
+
+  <DockPanel Margin="{Binding #MainWindow.OffScreenMargin}">
+    <DockPanel DockPanel.Dock="Top">
+      <Menu VerticalAlignment="Top" HorizontalAlignment="Left">
+        <MenuItem Header="TsukiTag">
+          <MenuItem Header="New" InputGesture="CTRL + N" />
+          <MenuItem Header="Open" />
+          <Separator />
+          <MenuItem Header="Exit" InputGesture="Alt + F4" />
+        </MenuItem>
+      </Menu>
+    </DockPanel>
+    <DockPanel Margin="0 5 0 0" DockPanel.Dock="Top">
+      <ContentControl Content="{Binding CurrentContent}">        
+      </ContentControl>
+     </DockPanel>
+  </DockPanel>
+
+
+
+</ts:FluentWindow>

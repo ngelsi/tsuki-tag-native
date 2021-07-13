@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TsukiTag.ViewModels"
+             xmlns:local="using:TsukiTag.Views"
+             xmlns:ts="using:TsukiTag"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"                          
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="TsukiTag.Views.OnlineNavigationBar"
+             DataContext="{x:Static ts:ViewModelIoc.OnlineNavigationBarViewModel}"
+             >
+  <UserControl.Styles>
+    <Style Selector="ToggleSwitch">
+      <Setter Property="OnContent" Value=""></Setter>
+      <Setter Property="OffContent" Value=""></Setter>
+    </Style>
+    <Style Selector="Label">
+      <Setter Property="Margin" Value="5 7 5 5"></Setter>
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+    <Style Selector="MenuItem">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+  </UserControl.Styles>
+  <Menu VerticalAlignment="Top" HorizontalAlignment="Left">
+    <MenuItem Header="Providers">
+      <MenuItem Header="Providers" IsEnabled="False"></MenuItem>
+      <Separator></Separator>
+      <MenuItem>
+        <MenuItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <ToggleSwitch></ToggleSwitch>
+            <Label Content="Safebooru"></Label>
+          </StackPanel>
+        </MenuItem.Header>
+      </MenuItem>
+      <MenuItem Header="" IsEnabled="False"></MenuItem>
+      <MenuItem Header="Ratings" IsEnabled="False"></MenuItem>
+      <Separator></Separator>
+      <MenuItem>
+        <MenuItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <ToggleSwitch></ToggleSwitch>
+            <Label Content="Safe"></Label>
+          </StackPanel>
+        </MenuItem.Header>
+      </MenuItem>
+      <MenuItem>
+        <MenuItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <ToggleSwitch></ToggleSwitch>
+            <Label Content="Questionable"></Label>
+          </StackPanel>
+        </MenuItem.Header>
+      </MenuItem>
+      <MenuItem>
+        <MenuItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <ToggleSwitch></ToggleSwitch>
+            <Label Content="Explicit"></Label>
+          </StackPanel>
+        </MenuItem.Header>
+      </MenuItem>
+    </MenuItem>
+    <MenuItem IsVisible="{Binding CanAdvanceToPreviousPage}" Command="{Binding PreviousPageCommand}">
+      <MenuItem.Header>
+        <i:Icon Value="fa-arrow-left"></i:Icon>
+      </MenuItem.Header>
+    </MenuItem>
+    <MenuItem IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
+      <MenuItem.Header>
+        <i:Icon Value="fa-arrow-right"></i:Icon>
+      </MenuItem.Header>
+    </MenuItem>
+  </Menu>
+</UserControl>
