@@ -18,6 +18,11 @@
       <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
     </Style>
 
+    <Style Selector="TabControl /template/ ItemsPresenter#PART_ItemsPresenter">
+      <Setter Property="Height" Value="30"></Setter>
+      <Setter Property="Margin" Value="0,0,0,10"></Setter>
+    </Style>
+
     <Style Selector="TabItem">
       <Setter Property="Margin" Value="0"></Setter>      
       <Setter Property="Foreground" Value="White"></Setter>
@@ -49,7 +54,10 @@
         <ExperimentalAcrylicBorder.Material>
           <ExperimentalAcrylicMaterial TintColor="Black" MaterialOpacity="0.85" TintOpacity="1"></ExperimentalAcrylicMaterial>
         </ExperimentalAcrylicBorder.Material>
-        <local:TagOverview></local:TagOverview>
+        <DockPanel>
+          <local:MetadataOverview DockPanel.Dock="Top"></local:MetadataOverview>
+          <local:TagOverview DockPanel.Dock="Bottom"></local:TagOverview>
+        </DockPanel>
       </ExperimentalAcrylicBorder>
       <DockPanel DockPanel.Dock="Right">       
         <TabControl DockPanel.Dock="Top" Items="{Binding Tabs}" TabStripPlacement="Top">
@@ -63,7 +71,7 @@
           <TabControl.ContentTemplate>
             <DataTemplate>
               <DockPanel DockPanel.Dock="Top">
-                <ContentControl Content="{Binding Content}"></ContentControl>
+                <ContentControl Margin="0,5,0,0" Content="{Binding Content}"></ContentControl>
               </DockPanel>
             </DataTemplate>
           </TabControl.ContentTemplate>          

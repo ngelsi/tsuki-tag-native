@@ -1,4 +1,5 @@
-﻿using DynamicData.Binding;
+﻿using DynamicData;
+using DynamicData.Binding;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,6 @@ namespace TsukiTag.ViewModels
 {
     public class PictureListViewModel : ViewModelBase
     {
-        private static readonly AsyncLock asyncLock = new AsyncLock();
-
         private readonly IPictureControl pictureControl;
 
         public ObservableCollection<Picture> Pictures { get; set; }
@@ -31,6 +30,60 @@ namespace TsukiTag.ViewModels
             this.pictureControl.PictureAdded += OnPictureAdded;
             this.pictureControl.PictureRemoved += OnPictureRemoved;
             this.pictureControl.PicturesReset += OnPicturesReset;
+            this.pictureControl.PictureSelected += OnImageControlPictureSelected;
+            this.pictureControl.PictureDeselected += OnImageControlPictureDeselected;
+        }
+
+        public async void OnPictureOpened(object? sender, Picture e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+
+            });
+        }
+
+
+        public async void OnPictureSelected(object? sender, Picture e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                var picture = Pictures.FirstOrDefault(p => p.Md5 == e.Md5);
+                if (picture != null)
+                {
+                    picture.Selected = !picture.Selected;
+
+                    if (picture.Selected)
+                    {
+                        this.pictureControl.SelectPicture(picture);
+                    }
+                    else
+                    {
+                        this.pictureControl.DeselectPicture(picture);
+                    }
+                }
+
+                this.RaisePropertyChanged(nameof(Pictures));
+                this.RaisePropertyChanged(nameof(Picture.Selected));
+            });
+        }
+
+        private void OnImageControlPictureDeselected(object? sender, Picture e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                var picture = Pictures.FirstOrDefault(p => p.Md5 == e.Md5);
+                if (picture != null)
+                {
+                    picture.Selected = false;
+                }
+
+                this.RaisePropertyChanged(nameof(Pictures));
+                this.RaisePropertyChanged(nameof(Picture.Selected));
+            });
+        }
+
+        private void OnImageControlPictureSelected(object? sender, Picture e)
+        {
         }
 
         private async void OnPicturesReset(object? sender, EventArgs e)
@@ -65,6 +118,8 @@ namespace TsukiTag.ViewModels
             this.pictureControl.PictureAdded -= OnPictureAdded;
             this.pictureControl.PictureRemoved -= OnPictureRemoved;
             this.pictureControl.PicturesReset -= OnPicturesReset;
+            this.pictureControl.PictureSelected -= OnImageControlPictureSelected;
+            this.pictureControl.PictureDeselected -= OnImageControlPictureDeselected;
         }
     }
 }

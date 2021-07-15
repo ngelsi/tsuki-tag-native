@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TsukiTag.ViewModels"
+             xmlns:local="using:TsukiTag.Views"
+             xmlns:converters="using:TsukiTag.Converters"
+             xmlns:ts="using:TsukiTag"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             DataContext="{x:Static ts:ViewModelIoc.MetadataOverviewViewModel}"
+             x:Class="TsukiTag.Views.MetadataOverview">
+  <UserControl.Resources>
+    <converters:BitmapConverter x:Key="bitmapConverter"></converters:BitmapConverter>
+  </UserControl.Resources>
+  <UserControl.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+    <Style Selector="TextBlock.primary">
+      <Setter Property="FontSize" Value="13"></Setter>
+      <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
+    </Style>
+    <Style Selector="TextBlock.primary:pointerover">      
+      <Setter Property="Foreground" Value="White"></Setter>
+      <Setter Property="Cursor" Value="Hand"></Setter>
+    </Style>
+    <Style Selector="TextBlock.metadatatitle,TextBlock.metadatavalue">
+      <Setter Property="FontSize" Value="12"></Setter>
+    </Style>
+    <Style Selector="TextBlock.metadatatitle">
+      <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
+    </Style>
+    <Style Selector="Label,TextBox">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+    </Style>
+    <Style Selector="TextBox.metadatavalue">
+      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+      <Setter Property="FontSize" Value="12"></Setter>
+      <Setter Property="BorderThickness" Value="0"></Setter>
+      <Setter Property="IsReadOnly" Value="True"></Setter>
+      <Setter Property="TextWrapping" Value="Wrap"></Setter>
+      <Setter Property="Background" Value="Transparent"></Setter>
+      <Setter Property="Foreground" Value="White"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+    </Style>
+  </UserControl.Styles>
+  <ScrollViewer IsVisible="{Binding HasSelectedPicture}">
+    <DockPanel >
+      <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
+        <Label DockPanel.Dock="Left" Content="Metadata"></Label>
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 2 5 0">
+          <i:Icon HorizontalAlignment="Right" PointerPressed="PicturePreviousGotPress" Cursor="Hand" FontSize="14" Value="fa-chevron-circle-left" Margin="0 0 5 0"></i:Icon>
+          <TextBlock HorizontalAlignment="Right" FontSize="15" Text="{Binding CurrentPictureIndexDisplay}"></TextBlock>
+          <TextBlock HorizontalAlignment="Right" FontSize="15" Text="/"></TextBlock>
+          <TextBlock HorizontalAlignment="Right" FontSize="15" Text="{Binding SelectedPictureCount}"></TextBlock>
+          <i:Icon HorizontalAlignment="Right" PointerPressed="PictureNextGotPress" Cursor="Hand" FontSize="14" Value="fa-chevron-circle-right" Margin="5 0 0 0"></i:Icon>
+          <i:Icon HorizontalAlignment="Right" Cursor="Hand" FontSize="14" Value="fa-clone" Margin="10 0 0 0"></i:Icon>
+          <i:Icon HorizontalAlignment="Right" PointerPressed="PictureDeselectGotPress" Cursor="Hand" FontSize="14" Value="fa-times" Margin="10 0 0 0"></i:Icon>
+        </StackPanel>
+      </DockPanel>
+      <Grid Margin="13 5 5 5" DockPanel.Dock="Top" ColumnDefinitions="0.3*,0.7*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="0" Text="Provider:"></TextBlock>
+        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="0" Text="{Binding CurrentPicture.Provider}"></TextBlock>
+
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="1" Text="Rating:"></TextBlock>
+        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="1" Text="{Binding CurrentPicture.RatingDisplay}"></TextBlock>
+
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="2" Text="Dimensions:"></TextBlock>
+        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="2" Text="{Binding CurrentPicture.Dimensions}"></TextBlock>
+
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="3" Text="Score:"></TextBlock>
+        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="3" Text="{Binding CurrentPicture.Score}"></TextBlock>
+
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="4" Text="Extension:"></TextBlock>
+        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="4" Text="{Binding CurrentPicture.Extension}"></TextBlock>
+
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="5" Text="ID:"></TextBlock>
+        <TextBox Classes="metadatavalue" Grid.Column="1" Grid.Row="5" Text="{Binding CurrentPicture.Id, Mode=OneWay}" Height="15"/>
+      </Grid>
+
+      <StackPanel Margin="13 0 5 5" DockPanel.Dock="Top" Orientation="Vertical">
+        <TextBlock Classes="metadatatitle" Text="URL"></TextBlock>
+        <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Url, Mode=OneWay}" Width="280"/>
+      </StackPanel>
+      <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
+        <TextBlock Classes="metadatatitle" Text="Source"></TextBlock>
+        <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Source, Mode=OneWay}" Width="280"/>
+      </StackPanel>
+      <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical" Width="280">
+        <ItemsControl Items="{Binding CurrentPicture.TagList}" Width="280">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <TextBlock PointerPressed="TagGotPress" Classes="primary" Text="{Binding}" Margin="0 0 8 0"></TextBlock>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel Orientation="Horizontal"></WrapPanel>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+      </StackPanel>
+      <StackPanel DockPanel.Dock="Top" Margin="0 10 0 0">
+        <Image Source="{Binding CurrentPicture, Converter={StaticResource bitmapConverter}}" Width="{Binding CurrentPicture.PreviewWidth}" Height="{Binding CurrentPicture.PreviewHeight}" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
+      </StackPanel>
+      <Border Margin="10 15 10 10" DockPanel.Dock="Bottom" BorderThickness="1" Opacity="0.8" BorderBrush="DarkGray"></Border>
+    </DockPanel>
+  </ScrollViewer>
+</UserControl>

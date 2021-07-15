@@ -36,7 +36,7 @@
   </UserControl.Styles>
   <DockPanel>
     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10 5 5 5">
-      <Label Content="Tags"></Label>
+      <Label Content="All tags"></Label>
       <Label Margin="5 0 0 0" Content="{Binding FilteredTags.TagCount}"></Label>
     </StackPanel>
     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10 5 5 5">

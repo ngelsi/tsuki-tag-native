@@ -21,7 +21,7 @@ namespace TsukiTag.Converters
                 return picture.PreviewImage as IBitmap;
             }
             
-            throw new NotSupportedException();
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

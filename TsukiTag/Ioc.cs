@@ -55,6 +55,7 @@ namespace TsukiTag
             container.Register<OnlineProviderViewModel>(Lifestyle.Transient);
             container.Register<TagOverviewViewModel>(Lifestyle.Transient);
             container.Register<OnlineBrowserViewModel>(Lifestyle.Transient);
+            container.Register<MetadataOverviewViewModel>(Lifestyle.Transient);
 
             container.Register<IOnlinePictureProvider, OnlinePictureProvider>(Lifestyle.Singleton);
             container.Register<ISafebooruPictureProvider, SafebooruPictureProvider>(Lifestyle.Singleton);

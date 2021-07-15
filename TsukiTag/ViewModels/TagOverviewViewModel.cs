@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
@@ -18,6 +19,8 @@ namespace TsukiTag.ViewModels
 
         private TagCollection tags;
         private string filterString;
+
+        
 
         public string FilterString
         {
@@ -50,6 +53,7 @@ namespace TsukiTag.ViewModels
             IProviderFilterControl providerFilterControl
         )
         {
+
             this.pictureControl = pictureControl;
             this.providerFilterControl = providerFilterControl;
 
@@ -57,6 +61,8 @@ namespace TsukiTag.ViewModels
             this.pictureControl.PictureRemoved += OnPictureRemoved;
             this.pictureControl.PicturesReset += OnPicturesReset;
         }
+
+
 
         ~TagOverviewViewModel()
         {

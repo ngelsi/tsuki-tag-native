@@ -16,6 +16,10 @@ namespace TsukiTag.Dependencies
 
         event EventHandler<Picture> PictureRemoved;
 
+        event EventHandler<Picture> PictureSelected;
+        
+        event EventHandler<Picture> PictureDeselected;
+
         event EventHandler PicturesReset;
 
         void AddPicture(Picture picture);
@@ -23,6 +27,10 @@ namespace TsukiTag.Dependencies
         void RemovePicture(Picture picture);
 
         void ResetPictures();
+
+        void SelectPicture(Picture picture);
+
+        void DeselectPicture(Picture picture);
 
         Task<TagCollection> GetTags();
     }
@@ -33,7 +41,13 @@ namespace TsukiTag.Dependencies
 
         private List<Picture> currentPictureSet;
 
+        private List<Picture> selectedPictures;
+
         private readonly IPictureDownloader pictureDownloadControl;
+
+        public event EventHandler<Picture> PictureSelected;
+
+        public event EventHandler<Picture> PictureDeselected;
 
         public event EventHandler<Picture> PictureAdded;
 
@@ -48,6 +62,39 @@ namespace TsukiTag.Dependencies
             this.pictureDownloadControl = pictureDownloadControl;
 
             currentPictureSet = new List<Picture>();
+            selectedPictures = new List<Picture>();
+        }
+
+        public async void SelectPicture(Picture picture)
+        {
+            asyncLock.Wait(async () =>
+            {
+                try
+                {
+                    await Task.Delay(50);
+
+                    picture.Selected = true;
+                    selectedPictures.Add(picture);                    
+
+                    PictureSelected?.Invoke(this, picture);
+                }
+                catch { }
+            });
+        }
+
+        public async void DeselectPicture(Picture picture)
+        {
+            asyncLock.Wait(async () =>
+            {
+                try
+                {                    
+                    picture.Selected = false;
+                    selectedPictures.Remove(picture);
+
+                    PictureDeselected?.Invoke(this, picture);
+                }
+                catch { }
+            });
         }
 
         public async void AddPicture(Picture picture)
@@ -62,6 +109,8 @@ namespace TsukiTag.Dependencies
                     {
                         picture.PreviewImage = await pictureDownloadControl.DownloadBitmap(picture.PreviewUrl);
                     }
+
+                    picture.Selected = selectedPictures.Contains(picture);
 
                     currentPictureSet.Add(picture);
                     PictureAdded?.Invoke(this, picture);

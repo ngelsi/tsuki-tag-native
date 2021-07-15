@@ -138,7 +138,7 @@ namespace TsukiTag.Models
 
         public string Tags
         {
-            get { return tags; }
+            get { return tags?.Trim(); }
             set { tags = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Tags))); }
         }
 
@@ -163,7 +163,7 @@ namespace TsukiTag.Models
         public bool Selected
         {
             get { return selected; }
-            set { selected = value; }
+            set { selected = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Selected))); }
         }
 
         public string Source
@@ -231,7 +231,7 @@ namespace TsukiTag.Models
                 if (string.IsNullOrEmpty(extension))
                 {
                     var index = this.downloadUrl.LastIndexOf('.');
-                    extension = this.downloadUrl.Substring(index + 1, this.downloadUrl.Length - index).ToLower();
+                    extension = this.downloadUrl.Substring(index + 1, this.downloadUrl.Length - index - 1).ToLower();
                 }
 
                 return extension;
@@ -248,6 +248,21 @@ namespace TsukiTag.Models
             get
             {
                 return this.extension == "jpg" || this.extension == "jpeg";
+            }
+        }
+
+        public string RatingDisplay
+        {
+            get
+            {
+                switch(Rating.ToLower())
+                {
+                    case "s": return "Safe";
+                    case "e": return "Explicit";
+                    case "q": return "Questionable";
+                }
+
+                return string.Empty;
             }
         }
 
@@ -305,6 +320,15 @@ namespace TsukiTag.Models
             {
                 Tags = string.Join(' ', TagList.Where(t => t != tag).Distinct());
             }
+        }
+
+        public Picture()
+        {
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return (obj as Picture)?.Md5 == Md5;
         }
     }
 
