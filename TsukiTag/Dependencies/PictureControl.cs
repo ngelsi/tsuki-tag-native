@@ -20,6 +20,12 @@ namespace TsukiTag.Dependencies
         
         event EventHandler<Picture> PictureDeselected;
 
+        event EventHandler<Picture> PictureOpened;
+
+        event EventHandler<Picture> PictureClosed;
+        
+        event EventHandler<Picture> PictureOpenedInBackground;
+
         event EventHandler PicturesReset;
 
         void AddPicture(Picture picture);
@@ -32,6 +38,12 @@ namespace TsukiTag.Dependencies
 
         void DeselectPicture(Picture picture);
 
+        void OpenPicture(Picture picture);
+
+        void OpenPictureInBackground(Picture picture);
+
+        void ClosePicture(Picture picture);
+
         Task<TagCollection> GetTags();
     }
 
@@ -43,6 +55,8 @@ namespace TsukiTag.Dependencies
 
         private List<Picture> selectedPictures;
 
+        private List<Picture> openedPictures;
+
         private readonly IPictureDownloader pictureDownloadControl;
 
         public event EventHandler<Picture> PictureSelected;
@@ -52,6 +66,12 @@ namespace TsukiTag.Dependencies
         public event EventHandler<Picture> PictureAdded;
 
         public event EventHandler<Picture> PictureRemoved;
+        
+        public event EventHandler<Picture> PictureOpened;
+
+        public event EventHandler<Picture> PictureOpenedInBackground;
+        
+        public event EventHandler<Picture> PictureClosed;
 
         public event EventHandler PicturesReset;
 
@@ -63,6 +83,7 @@ namespace TsukiTag.Dependencies
 
             currentPictureSet = new List<Picture>();
             selectedPictures = new List<Picture>();
+            openedPictures = new List<Picture>();
         }
 
         public async void SelectPicture(Picture picture)
@@ -97,6 +118,42 @@ namespace TsukiTag.Dependencies
             });
         }
 
+        public async void OpenPicture(Picture picture)
+        {
+            asyncLock.Wait(async () =>
+            {
+                try
+                {
+                    if (picture.SampleImage == null && !string.IsNullOrEmpty(picture.Url))
+                    {
+                        picture.SampleImage = await pictureDownloadControl.DownloadBitmap(picture.Url);
+                    }                    
+
+                    openedPictures.Add(picture);
+                    PictureOpened?.Invoke(this, picture);
+                }
+                catch { }
+            });
+        }
+
+        public async void OpenPictureInBackground(Picture picture)
+        {
+            asyncLock.Wait(async () =>
+            {
+                try
+                {
+                    if (picture.SampleImage == null && !string.IsNullOrEmpty(picture.Url))
+                    {
+                        picture.SampleImage = await pictureDownloadControl.DownloadBitmap(picture.Url);
+                    }
+
+                    openedPictures.Add(picture);
+                    PictureOpenedInBackground?.Invoke(this, picture);
+                }
+                catch { }
+            });
+        }
+
         public async void AddPicture(Picture picture)
         {
             asyncLock.Wait(async () =>
@@ -116,6 +173,15 @@ namespace TsukiTag.Dependencies
                     PictureAdded?.Invoke(this, picture);
                 }
                 catch { }
+            });
+        }
+
+        public async void ClosePicture(Picture picture)
+        {
+            await Task.Run(() =>
+            {
+                openedPictures.Remove(picture);
+                PictureClosed?.Invoke(this, picture);
             });
         }
 

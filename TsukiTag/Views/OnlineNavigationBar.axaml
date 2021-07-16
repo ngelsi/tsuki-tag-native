@@ -17,10 +17,6 @@
     </Style>
     <Style Selector="Label">
       <Setter Property="Margin" Value="5 7 5 5"></Setter>
-      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
-    </Style>
-    <Style Selector="MenuItem">
-      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
     </Style>
   </UserControl.Styles>
   <Menu VerticalAlignment="Top" HorizontalAlignment="Left">

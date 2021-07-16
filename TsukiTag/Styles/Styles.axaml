@@ -14,4 +14,28 @@
     <SolidColorBrush x:Key="TsukiTagPurpleBrush" Color="{StaticResource TsukiTagPurpleColor}"></SolidColorBrush>
   </Styles.Resources>
     <!-- Add Styles Here -->
+  <Style Selector="Button.actionbutton">
+    <Setter Property="Background" Value="Transparent"></Setter>
+    <Setter Property="Padding" Value="0"></Setter>
+    <Setter Property="Cursor" Value="Hand"></Setter>
+    <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+  </Style>
+  <Style Selector="TextBlock">
+    <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+  </Style>
+  <Style Selector="TextBox">
+    <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+  </Style>
+  <Style Selector="Label">
+    <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+  </Style>
+  <Style Selector="MenuItem">
+    <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+  </Style>
+  <Style Selector="AutoCompleteBox">
+    <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+  </Style>
+  <Style Selector="TabItem">
+    <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
+  </Style>
 </Styles>

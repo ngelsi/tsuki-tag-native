@@ -14,6 +14,10 @@ namespace TsukiTag.Models
 
         public string Header { get; set; }
 
+        public string Identifier { get; set; }
+
+        public object Context { get; set; }
+
         public ContentControl Content { get; set; }
 
         public ProviderTabModel()
@@ -27,11 +31,16 @@ namespace TsukiTag.Models
             {
                 if (pictureListTab == null)
                 {
-                    pictureListTab = new ProviderTabModel() { Header = "Browse", Content = new OnlineBrowser() };
+                    pictureListTab = new ProviderTabModel() { Header = "Browse", Content = new OnlineBrowser(), Identifier = "ONLINE" };
                 }
 
                 return pictureListTab;
             }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return (obj as ProviderTabModel)?.Identifier == Identifier;
         }
     }
 }

@@ -29,4 +29,22 @@ namespace TsukiTag.Converters
             throw new NotImplementedException();
         }
     }
+
+    public class SampleBitmapConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Picture picture)
+            {
+                return picture.SampleImage as IBitmap;
+            }
+
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

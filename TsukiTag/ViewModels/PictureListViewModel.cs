@@ -38,10 +38,23 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-
+                if (e != null)
+                {
+                    this.pictureControl.OpenPicture(e);
+                }
             });
         }
 
+        public async void OnPictureOpenedInBackground(object? sender, Picture e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                if (e != null)
+                {
+                    this.pictureControl.OpenPictureInBackground(e);
+                }
+            });
+        }
 
         public async void OnPictureSelected(object? sender, Picture e)
         {

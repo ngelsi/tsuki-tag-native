@@ -1,6 +1,10 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using ReactiveUI;
+using System.Reactive.Concurrency;
+using TsukiTag.Models;
 using TsukiTag.ViewModels;
 
 namespace TsukiTag.Views
@@ -18,13 +22,28 @@ namespace TsukiTag.Views
         {
             if(this.DataContext is OnlineProviderViewModel vm)
             {
-                vm.GetImages();
+                vm.Initialize();
             }
         }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+        }
+
+        private void TabGotPointerRelease(object sender, PointerReleasedEventArgs e)
+        {
+            if (e.InitialPressMouseButton == MouseButton.Middle)
+            {
+                var picture = (((sender as TextBlock)?.DataContext as ProviderTabModel)?.Context as Picture);
+                if(picture != null)
+                {
+                    RxApp.MainThreadScheduler.Schedule(async () =>
+                    {
+                        (DataContext as OnlineProviderViewModel)?.OnTabPictureClosed(picture);
+                    });
+                }
+            }
         }        
     }
 }

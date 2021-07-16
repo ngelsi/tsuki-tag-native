@@ -17,9 +17,6 @@
     </Design.DataContext>
 
   <ts:FluentWindow.Styles>
-    <Style Selector="MenuItem">
-      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
-    </Style>
   </ts:FluentWindow.Styles>
 
   <DockPanel Margin="{Binding #MainWindow.OffScreenMargin}">

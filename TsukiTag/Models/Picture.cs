@@ -37,6 +37,7 @@ namespace TsukiTag.Models
         private string extension;
         private string source;
         private Bitmap previewImage;
+        private Bitmap sampleImage;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -224,6 +225,12 @@ namespace TsukiTag.Models
             set { previewImage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PreviewImage))); }
         }
 
+        public Bitmap SampleImage
+        {
+            get { return sampleImage; }
+            set { sampleImage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SampleImage))); }
+        }
+
         public string Extension
         {
             get
@@ -255,7 +262,7 @@ namespace TsukiTag.Models
         {
             get
             {
-                switch(Rating.ToLower())
+                switch (Rating.ToLower())
                 {
                     case "s": return "Safe";
                     case "e": return "Explicit";

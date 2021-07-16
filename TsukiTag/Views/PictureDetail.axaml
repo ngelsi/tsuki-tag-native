@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="using:TsukiTag.Views"
+             xmlns:converters="using:TsukiTag.Converters"
+             xmlns:ts="using:TsukiTag"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="TsukiTag.Views.PictureDetail">
+  <UserControl.Resources>
+    <converters:SampleBitmapConverter x:Key="sampleConverter"></converters:SampleBitmapConverter>
+  </UserControl.Resources>
+  <DockPanel>
+    <ExperimentalAcrylicBorder DockPanel.Dock="Top" Margin="0 10 0 15">
+      <ExperimentalAcrylicBorder.Material>
+        <ExperimentalAcrylicMaterial TintColor="Black" MaterialOpacity="0.85" TintOpacity="1"></ExperimentalAcrylicMaterial>
+      </ExperimentalAcrylicBorder.Material>
+      <DockPanel Height="25">
+        <Button Margin="0 0 5 0" Command="{Binding ClosePictureCommand}" HorizontalAlignment="Right" Classes="actionbutton" DockPanel.Dock="Right">
+          <i:Icon FontSize="14" Value="fa-times"></i:Icon>
+        </Button>
+      </DockPanel>
+    </ExperimentalAcrylicBorder>
+    <Image DockPanel.Dock="Top" MaxWidth="{Binding Picture.Width}" MaxHeight="{Binding Picture.Height}" Source="{Binding Picture, Converter={StaticResource sampleConverter}}"></Image>
+  </DockPanel>
+</UserControl>

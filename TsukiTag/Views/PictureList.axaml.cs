@@ -44,6 +44,21 @@ namespace TsukiTag.Views
             AvaloniaXamlLoader.Load(this);
         }
 
+        private void ImagePressReleased(object sender, PointerReleasedEventArgs e)
+        {
+            if (e.InitialPressMouseButton == MouseButton.Middle)
+            {
+                var picture = ((sender as Image)?.DataContext as Picture);
+                if (picture != null)
+                {
+                    RxApp.MainThreadScheduler.Schedule(async () =>
+                    {
+                        (DataContext as PictureListViewModel)?.OnPictureOpenedInBackground(this, picture);
+                    });
+                }
+            }
+        }
+
         private void ImageGotTap(object sender, RoutedEventArgs e)
         {
             var picture = ((sender as Image)?.DataContext as Picture);

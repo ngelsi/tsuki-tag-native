@@ -18,12 +18,6 @@
       <Setter Property="Foreground" Value="White"></Setter>
       <Setter Property="Cursor" Value="Hand"></Setter>
     </Style>
-    <Style Selector="TextBlock">
-      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
-    </Style>
-    <Style Selector="Label,TextBox">
-      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
-    </Style>
     <Style Selector="Button">
       <Setter Property="Cursor" Value="Hand"></Setter>
       <Setter Property="Background" Value="Black"></Setter>

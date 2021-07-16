@@ -10,13 +10,6 @@
              DataContext="{x:Static ts:ViewModelIoc.OnlineBrowserViewModel}"             
              x:Class="TsukiTag.Views.OnlineBrowser">
   <UserControl.Styles>
-    <Style Selector="MenuItem">
-      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
-    </Style>
-
-    <Style Selector="TextBlock">
-      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
-    </Style>
   </UserControl.Styles>
   <DockPanel DockPanel.Dock="Top">
     <DockPanel DockPanel.Dock="Top">

@@ -10,18 +10,12 @@
              DataContext="{x:Static ts:ViewModelIoc.TagBarViewModel}"
              x:Class="TsukiTag.Views.TagBar">
   <UserControl.Styles>
-    <Style Selector="TextBlock">
-      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
-    </Style>
     <Style Selector="TextBlock.primary">
       <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>      
     </Style>
     <Style Selector="TextBlock.primary:pointerover">
       <Setter Property="Foreground" Value="White"></Setter>
       <Setter Property="Cursor" Value="Hand"></Setter>
-    </Style>
-    <Style Selector="AutoCompleteBox">
-      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
     </Style>
   </UserControl.Styles>
   <DockPanel>

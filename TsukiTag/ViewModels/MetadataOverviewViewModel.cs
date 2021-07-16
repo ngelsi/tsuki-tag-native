@@ -43,6 +43,11 @@ namespace TsukiTag.ViewModels
 
         public string CurrentPictureIndexDisplay => (currentPictureIndex + 1).ToString();
 
+        public ReactiveCommand<Unit, Unit> PreviousPictureCommand { get; set; }
+        public ReactiveCommand<Unit, Unit> NextPictureCommand { get; set; }
+        public ReactiveCommand<Unit, Unit> DeselectPictureCommand { get; set; }
+        public ReactiveCommand<Unit, Unit> OpenPictureCommand { get; set; }
+
         public MetadataOverviewViewModel(
             IPictureControl pictureControl,
             IProviderFilterControl providerFilterControl
@@ -56,6 +61,26 @@ namespace TsukiTag.ViewModels
             this.pictureControl.PictureSelected += OnPictureSelected;
             this.pictureControl.PictureDeselected += OnPictureDeselected;
             //this.pictureControl.PicturesReset += OnPicturesReset;
+
+            this.PreviousPictureCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                this.OnPreviousPicture();
+            });
+
+            this.NextPictureCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                this.OnNextPicture();
+            });
+
+            this.DeselectPictureCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                this.OnDeselectPicture();
+            });
+
+            this.OpenPictureCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                this.OnOpenPicture();
+            });
         }
 
         ~MetadataOverviewViewModel()
@@ -82,6 +107,30 @@ namespace TsukiTag.ViewModels
                 if ((CurrentPictureIndex + 1) < SelectedPictures.Count)
                 {
                     CurrentPictureIndex += 1;
+                }
+            });
+        }
+
+        public async void OnOpenPicture()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                var picture = SelectedPictures.ElementAt(CurrentPictureIndex);
+                if (picture != null)
+                {
+                    this.pictureControl.OpenPicture(picture);
+                }
+            });
+        }
+
+        public async void OnOpenPictureInBackground()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                var picture = SelectedPictures.ElementAt(CurrentPictureIndex);
+                if (picture != null)
+                {
+                    this.pictureControl.OpenPictureInBackground(picture);
                 }
             });
         }
@@ -149,8 +198,16 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                SelectedPictures.Add(e);
-                CurrentPictureIndex = SelectedPictures.Count - 1;
+                var picture = SelectedPictures.FirstOrDefault(p => p.Md5 == e.Md5);
+                if(picture != null)
+                {                    
+                    CurrentPictureIndex = SelectedPictures.IndexOf(picture);
+                }
+                else
+                {
+                    SelectedPictures.Add(e);
+                    CurrentPictureIndex = SelectedPictures.Count - 1;
+                }
 
                 this.RaisePropertyChanged(nameof(CurrentPicture));
                 this.RaisePropertyChanged(nameof(SelectedPictures));

@@ -9,14 +9,7 @@
              DataContext="{x:Static ts:ViewModelIoc.OnlineProviderViewModel}"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TsukiTag.Views.OnlineProvider">
-  <UserControl.Styles>
-    <Style Selector="MenuItem">
-      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
-    </Style>
-    
-    <Style Selector="TextBlock">
-      <Setter Property="FontFamily" Value="{DynamicResource CodeFontFamily}"></Setter>
-    </Style>
+  <UserControl.Styles>  
 
     <Style Selector="TabControl /template/ ItemsPresenter#PART_ItemsPresenter">
       <Setter Property="Height" Value="30"></Setter>
@@ -55,16 +48,25 @@
           <ExperimentalAcrylicMaterial TintColor="Black" MaterialOpacity="0.85" TintOpacity="1"></ExperimentalAcrylicMaterial>
         </ExperimentalAcrylicBorder.Material>
         <DockPanel>
-          <local:MetadataOverview DockPanel.Dock="Top"></local:MetadataOverview>
-          <local:TagOverview DockPanel.Dock="Bottom"></local:TagOverview>
+          <DockPanel IsVisible="{Binding IsBrowserContext}">
+            <Panel IsVisible="{Binding HasSelectedPictures}" DockPanel.Dock="Top">
+              <local:MetadataOverview  IsVisible="{Binding HasSelectedPictures}"></local:MetadataOverview>             
+            </Panel>
+            <Panel IsVisible="{Binding NoSelectedPictures}" DockPanel.Dock="Top">
+              <local:TagOverview IsVisible="{Binding NoSelectedPictures}"></local:TagOverview>
+            </Panel>
+          </DockPanel>          
+          <DockPanel IsVisible="{Binding IsPictureContext}">
+            <ContentControl Content="{Binding CurrentPictureContext}"></ContentControl>
+          </DockPanel>
         </DockPanel>
       </ExperimentalAcrylicBorder>
       <DockPanel DockPanel.Dock="Right">       
-        <TabControl DockPanel.Dock="Top" Items="{Binding Tabs}" TabStripPlacement="Top">
+        <TabControl DockPanel.Dock="Top" Items="{Binding Tabs}" SelectedIndex="{Binding SelectedTabIndex}" TabStripPlacement="Top">
           <TabControl.ItemTemplate>
             <DataTemplate>
               <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Header}"></TextBlock>                
+                <TextBlock PointerReleased="TabGotPointerRelease" Text="{Binding Header}"></TextBlock>                
               </StackPanel>
             </DataTemplate>
           </TabControl.ItemTemplate>
