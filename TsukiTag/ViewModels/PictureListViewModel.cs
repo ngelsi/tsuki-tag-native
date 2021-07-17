@@ -63,16 +63,22 @@ namespace TsukiTag.ViewModels
                 var picture = Pictures.FirstOrDefault(p => p.Md5 == e.Md5);
                 if (picture != null)
                 {
-                    picture.Selected = !picture.Selected;
+                    this.pictureControl.SelectPicture(picture);
+                }
 
-                    if (picture.Selected)
-                    {
-                        this.pictureControl.SelectPicture(picture);
-                    }
-                    else
-                    {
-                        this.pictureControl.DeselectPicture(picture);
-                    }
+                this.RaisePropertyChanged(nameof(Pictures));
+                this.RaisePropertyChanged(nameof(Picture.Selected));
+            });
+        }
+
+        public async void OnPictureDeselected(object? sender, Picture e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                var picture = Pictures.FirstOrDefault(p => p.Md5 == e.Md5);
+                if (picture != null)
+                {
+                    this.pictureControl.DeselectPicture(picture);
                 }
 
                 this.RaisePropertyChanged(nameof(Pictures));
@@ -97,6 +103,17 @@ namespace TsukiTag.ViewModels
 
         private void OnImageControlPictureSelected(object? sender, Picture e)
         {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                var picture = Pictures.FirstOrDefault(p => p.Md5 == e.Md5);
+                if (picture != null)
+                {
+                    picture.Selected = true;
+                }
+
+                this.RaisePropertyChanged(nameof(Pictures));
+                this.RaisePropertyChanged(nameof(Picture.Selected));
+            });
         }
 
         private async void OnPicturesReset(object? sender, EventArgs e)

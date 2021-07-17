@@ -13,36 +13,67 @@ namespace TsukiTag.Views
 {
     public partial class PictureList : UserControl
     {
-        private System.Timers.Timer clickTimer;
-        private Picture clickedPicture;
-        private bool waitingDoubleClick;
+        private bool doubleClickResult;
+        private bool clickResult;
+        private bool imageWasNotSelected;
 
         public PictureList()
         {
             InitializeComponent();
-
-            clickTimer = new System.Timers.Timer(200);
-            clickTimer.Elapsed += OnClickElapsed;
-        }
-
-        private void OnClickElapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            RxApp.MainThreadScheduler.Schedule(async () =>
-            {
-                if(clickedPicture != null)
-                {
-                    (DataContext as PictureListViewModel)?.OnPictureSelected(this, clickedPicture);
-                }                
-
-                waitingDoubleClick = false;
-                clickedPicture = null;
-            });
         }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
         }
+
+        private void ImageLostExamined(object sender, PointerEventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                var picture = ((sender as Image)?.DataContext as Picture);
+                if (picture != null)
+                {
+                    if (clickResult)
+                    {
+                        if (imageWasNotSelected)
+                        {
+                            (DataContext as PictureListViewModel)?.OnPictureSelected(this, picture);
+                        }
+                        else
+                        {
+                            (DataContext as PictureListViewModel)?.OnPictureDeselected(this, picture);
+                        }
+                    }
+                    else
+                    {
+                        if (imageWasNotSelected)
+                        {
+                            (DataContext as PictureListViewModel)?.OnPictureDeselected(this, picture);
+                        }
+                    }
+                }
+            });
+        }
+
+        private void ImageGotExamined(object sender, PointerEventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                clickResult = false;
+                doubleClickResult = false;
+                imageWasNotSelected = false;
+
+                var picture = ((sender as Image)?.DataContext as Picture);
+                if (picture != null)
+                {
+                    imageWasNotSelected = !picture.Selected;
+
+                    (DataContext as PictureListViewModel)?.OnPictureSelected(this, picture);
+                }
+            });
+        }
+
 
         private void ImagePressReleased(object sender, PointerReleasedEventArgs e)
         {
@@ -59,36 +90,30 @@ namespace TsukiTag.Views
             }
         }
 
-        private void ImageGotTap(object sender, RoutedEventArgs e)
+        private void ImageGotPress(object sender, PointerPressedEventArgs e)
         {
-            var picture = ((sender as Image)?.DataContext as Picture);
-            if (picture != null)
+            if (!e.GetCurrentPoint(this).Properties.IsMiddleButtonPressed)
             {
-                if (waitingDoubleClick)
+                var picture = ((sender as Image)?.DataContext as Picture);
+                if (picture != null)
                 {
-                    waitingDoubleClick = false;
-                    clickTimer.Stop();
-
-                    RxApp.MainThreadScheduler.Schedule(async () =>
+                    if (!clickResult)
                     {
-                        if (clickedPicture != null)
+                        clickResult = true;
+                    }
+                    else
+                    {
+                        clickResult = false;
+                        doubleClickResult = true;
+
+                        RxApp.MainThreadScheduler.Schedule(async () =>
                         {
-                            (DataContext as PictureListViewModel)?.OnPictureOpened(this, clickedPicture);
-                        }
+                            (DataContext as PictureListViewModel)?.OnPictureOpened(this, picture);
+                        });
+                    }
 
-                        clickedPicture = null;
-                    });
+                    e.Handled = true;
                 }
-                else
-                {
-                    waitingDoubleClick = true;
-                    clickedPicture = picture;
-
-                    clickTimer.Stop();
-                    clickTimer.Start();
-                }
-
-                e.Handled = true;
             }
         }
     }

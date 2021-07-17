@@ -45,6 +45,8 @@ namespace TsukiTag.Dependencies
         void ClosePicture(Picture picture);
 
         Task<TagCollection> GetTags();
+
+        Task<int> GetSelectedPictureCount();
     }
 
     public class PictureControl : IPictureControl
@@ -92,12 +94,17 @@ namespace TsukiTag.Dependencies
             {
                 try
                 {
-                    await Task.Delay(50);
+                    if(!selectedPictures.Any(p => p.Md5 == picture.Md5))
+                    {
+                        picture.Selected = true;
+                        selectedPictures.Add(picture);
 
-                    picture.Selected = true;
-                    selectedPictures.Add(picture);                    
-
-                    PictureSelected?.Invoke(this, picture);
+                        PictureSelected?.Invoke(this, picture);
+                    }                    
+                    else
+                    {
+                        PictureSelected?.Invoke(this, picture);
+                    }
                 }
                 catch { }
             });
@@ -207,6 +214,11 @@ namespace TsukiTag.Dependencies
         public async Task<TagCollection> GetTags()
         {
             return await Task.FromResult(TagCollection.GetTags(this.currentPictureSet.ToList()));
+        }
+
+        public async Task<int> GetSelectedPictureCount()
+        {
+            return await Task.FromResult(selectedPictures.Count);
         }
     }
 }

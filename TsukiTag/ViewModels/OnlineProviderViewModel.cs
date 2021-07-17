@@ -225,7 +225,7 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                SelectedPictureCount -= 1;
+                SelectedPictureCount = await this.pictureControl.GetSelectedPictureCount();
             });
         }
 
@@ -233,7 +233,7 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                SelectedPictureCount += 1;
+                SelectedPictureCount = await this.pictureControl.GetSelectedPictureCount();
             });
         }
 

@@ -41,7 +41,7 @@
         <ItemsRepeater.ItemTemplate>
           <DataTemplate>
             <StackPanel Orientation="Vertical">
-              <Image PointerReleased="ImagePressReleased" Tapped="ImageGotTap" Margin="10" Source="{Binding, Converter={StaticResource bitmapConverter}}" Width="{Binding PreviewWidth}" Height="{Binding PreviewHeight}">
+              <Image PointerEnter="ImageGotExamined" PointerLeave="ImageLostExamined" PointerPressed="ImageGotPress" PointerReleased="ImagePressReleased" Margin="10" Source="{Binding, Converter={StaticResource bitmapConverter}}" Width="{Binding PreviewWidth}" Height="{Binding PreviewHeight}">
               </Image>
               <Border IsVisible="{Binding Selected}" Classes="selected" Width="{Binding PreviewWidth}"></Border>
             </StackPanel>
