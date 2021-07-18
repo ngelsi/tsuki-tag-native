@@ -21,12 +21,46 @@ namespace TsukiTag.Views
             AvaloniaXamlLoader.Load(this);
         }
 
-        private void TagGotPress(object sender, PointerPressedEventArgs e)
+        private void FilterBoxGotFocus(object sender, GotFocusEventArgs e)
         {
-            var tag = (sender as TextBlock)?.Text?.ToString()?.Trim();
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                (sender as TextBox)?.SelectAll();
+            });
+        }
+
+        private void FilterBoxGotPress(object sender, PointerPressedEventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                (sender as TextBox)?.SelectAll();
+            });
+        }
+
+        private void TagLabelGotPress(object sender, PointerPressedEventArgs e)
+        {
+            var tag = (sender as TextBlock)?.Text?.ToString();
             if (!string.IsNullOrEmpty(tag))
             {
-                (this.DataContext as MetadataOverviewViewModel)?.OnTagClicked(tag);
+                (this.DataContext as TsukiTag.ViewModels.MetadataOverviewViewModel)?.OnTagClicked(tag);
+            }
+        }
+
+        private void TagPlusGotPress(object sender, PointerPressedEventArgs e)
+        {
+            var tag = ((sender as TextBlock)?.DataContext as string);
+            if (!string.IsNullOrEmpty(tag))
+            {
+                (this.DataContext as TsukiTag.ViewModels.MetadataOverviewViewModel)?.OnTagAdded(tag);
+            }
+        }
+
+        private void TagMinusGotPress(object sender, PointerPressedEventArgs e)
+        {
+            var tag = ((sender as TextBlock)?.DataContext as string);
+            if (!string.IsNullOrEmpty(tag))
+            {
+                (this.DataContext as TsukiTag.ViewModels.MetadataOverviewViewModel)?.OnTagRemoved(tag);
             }
         }
 

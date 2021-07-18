@@ -17,6 +17,7 @@ namespace TsukiTag.ViewModels
         private readonly IProviderFilterControl providerFilterControl;
         private readonly INavigationControl navigationControl;
 
+        private string filterString;
         private int currentPictureIndex;
 
         public ObservableCollection<Picture> SelectedPictures { get; set; }
@@ -39,6 +40,37 @@ namespace TsukiTag.ViewModels
                 this.RaisePropertyChanged(nameof(CurrentPictureIndex));
                 this.RaisePropertyChanged(nameof(CurrentPictureIndexDisplay));
                 this.RaisePropertyChanged(nameof(CurrentPicture));
+                this.RaisePropertyChanged(nameof(FilterString));
+                this.RaisePropertyChanged(nameof(FilteredTags));
+                this.RaisePropertyChanged(nameof(TagCount));
+            }
+        }
+
+        public string FilterString
+        {
+            get { return filterString; }
+            set
+            {
+                filterString = value;
+                this.RaisePropertyChanged(nameof(FilterString));
+                this.RaisePropertyChanged(nameof(FilteredTags));
+                this.RaisePropertyChanged(nameof(TagCount));
+            }
+        }
+
+        public int TagCount => FilteredTags.Count;
+
+        public List<string> FilteredTags
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(FilterString))
+                {
+                    var filterParts = FilterString.Split(' ').Where(s => !string.IsNullOrEmpty(s));
+                    return CurrentPicture?.TagList.Where(s => filterParts.Any(fs => s.IndexOf(fs) > -1)).ToList() ?? new List<string>();
+                }
+
+                return CurrentPicture?.TagList ?? new List<string>();
             }
         }
 
@@ -100,12 +132,25 @@ namespace TsukiTag.ViewModels
 
         public async void OnTagClicked(string tag)
         {
-            RxApp.MainThreadScheduler.Schedule(async () =>
+            await Task.Run(async () =>
             {
-                if (!string.IsNullOrEmpty(tag))
-                {
-                    this.providerFilterControl.SetTag(tag);
-                }
+                await this.providerFilterControl.SetTag(tag);
+            });
+        }
+
+        public async void OnTagAdded(string tag)
+        {
+            await Task.Run(async () =>
+            {
+                await this.providerFilterControl.AddTag(tag);
+            });
+        }
+
+        public async void OnTagRemoved(string tag)
+        {
+            await Task.Run(async () =>
+            {
+                await this.providerFilterControl.RemoveTag(tag);
             });
         }
 

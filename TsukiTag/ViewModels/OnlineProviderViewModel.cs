@@ -293,7 +293,16 @@ namespace TsukiTag.ViewModels
                 }
                 else
                 {
-                    OnSwitchedToMetadataOverview(this, e);
+                    var count = await this.pictureControl.GetSelectedPictureCount();
+                    if(count > 0)
+                    {
+                        OnSwitchedToMetadataOverview(this, e);
+                    }                    
+                    else
+                    {
+                        EnforceMetadataOverview = false;
+                        EnforceTagOverview = false;
+                    }
                 }
             });
         }

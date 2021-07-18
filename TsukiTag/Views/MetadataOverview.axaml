@@ -37,8 +37,12 @@
       <Setter Property="Foreground" Value="White"></Setter>
       <Setter Property="Padding" Value="0"></Setter>
     </Style>
-  </UserControl.Styles>  
-    <DockPanel IsVisible="{Binding HasSelectedPicture}">
+    <Style Selector="TextBox.filter">
+      <Setter Property="FontSize" Value="12"></Setter>
+      <Setter Property="Padding" Value="7"></Setter>
+    </Style>
+  </UserControl.Styles>
+  <DockPanel IsVisible="{Binding HasSelectedPicture}">
       <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
         <Button Command="{Binding SwitchToTabOverviewCommand}" DockPanel.Dock="Left" Classes="actionbutton" HorizontalAlignment="Left" Margin="0 0 5 0">
           <i:Icon FontSize="14" Value="fa-angle-double-left"></i:Icon>
@@ -62,8 +66,10 @@
           </Button>
         </StackPanel>
       </DockPanel>
-      <ScrollViewer DockPanel.Dock="Top">
-        <DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+          <StackPanel DockPanel.Dock="Top" Margin="0 10 0 10">
+            <Image Source="{Binding CurrentPicture, Converter={StaticResource bitmapConverter}}" Width="{Binding CurrentPicture.PreviewWidth}" Height="{Binding CurrentPicture.PreviewHeight}" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
+          </StackPanel>
           <Grid Margin="13 5 5 5" DockPanel.Dock="Top" ColumnDefinitions="0.3*,0.7*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
             <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="0" Text="Provider:"></TextBlock>
             <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="0" Text="{Binding CurrentPicture.Provider}"></TextBlock>
@@ -92,25 +98,29 @@
             <TextBlock Classes="metadatatitle" Text="Source"></TextBlock>
             <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Source, Mode=OneWay}" Width="280"/>
           </StackPanel>
-          <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical" Width="280">
-            <ItemsControl Items="{Binding CurrentPicture.TagList}" Width="280">
-              <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                  <TextBlock PointerPressed="TagGotPress" Classes="primary" Text="{Binding}" Margin="0 0 8 0"></TextBlock>
-                </DataTemplate>
-              </ItemsControl.ItemTemplate>
-              <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                  <WrapPanel Orientation="Horizontal"></WrapPanel>
-                </ItemsPanelTemplate>
-              </ItemsControl.ItemsPanel>
-            </ItemsControl>
-          </StackPanel>
-          <StackPanel DockPanel.Dock="Top" Margin="0 10 0 0">
-            <Image Source="{Binding CurrentPicture, Converter={StaticResource bitmapConverter}}" Width="{Binding CurrentPicture.PreviewWidth}" Height="{Binding CurrentPicture.PreviewHeight}" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
-          </StackPanel>
+          <DockPanel DockPanel.Dock="Top">
+            <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
+              <Label DockPanel.Dock="Left" Content="Tags"></Label>
+              <Label DockPanel.Dock="Left" Margin="5 0 0 0" Content="{Binding TagCount}"></Label>
+            </DockPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10 5 5 5">
+              <TextBox Classes="filter" Watermark="Filter" Width="280" Text="{Binding FilterString}" Name="FilterBox" PointerPressed="FilterBoxGotPress" GotFocus="FilterBoxGotFocus"></TextBox>
+            </StackPanel>
+            <ScrollViewer DockPanel.Dock="Top">
+              <ItemsRepeater Items="{Binding FilteredTags}" Margin="10 5 5 5">
+                <ItemsRepeater.ItemTemplate>
+                  <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Margin="5 5 0 0" Text="+" Classes="primary" PointerPressed="TagPlusGotPress"></TextBlock>
+                      <TextBlock Margin="5 5 0 0" Text="-" Classes="primary" PointerPressed="TagMinusGotPress"></TextBlock>
+                      <TextBlock Margin="5 5 0 0" Text="{Binding}" Classes="primary" PointerPressed="TagLabelGotPress"></TextBlock>                      
+                    </StackPanel>
+                  </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+              </ItemsRepeater>
+            </ScrollViewer>
+          </DockPanel>
         </DockPanel>
-      </ScrollViewer>
       <!--<Border Margin="10 15 10 10" DockPanel.Dock="Bottom" BorderThickness="1" Opacity="0.8" BorderBrush="DarkGray"></Border>-->
     </DockPanel>
 </UserControl>
