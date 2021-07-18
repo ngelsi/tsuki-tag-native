@@ -40,6 +40,9 @@
   </UserControl.Styles>  
     <DockPanel IsVisible="{Binding HasSelectedPicture}">
       <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
+        <Button Command="{Binding SwitchToTabOverviewCommand}" DockPanel.Dock="Left" Classes="actionbutton" HorizontalAlignment="Left" Margin="0 0 5 0">
+          <i:Icon FontSize="14" Value="fa-angle-double-left"></i:Icon>
+        </Button>
         <Label DockPanel.Dock="Left" Content="Metadata"></Label>
         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 2 5 0">
           <Button Command="{Binding PreviousPictureCommand}" Classes="actionbutton" Margin="0 0 5 0">

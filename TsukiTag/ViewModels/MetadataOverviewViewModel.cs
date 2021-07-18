@@ -15,6 +15,7 @@ namespace TsukiTag.ViewModels
     {
         private readonly IPictureControl pictureControl;
         private readonly IProviderFilterControl providerFilterControl;
+        private readonly INavigationControl navigationControl;
 
         private int currentPictureIndex;
 
@@ -47,16 +48,19 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Unit, Unit> NextPictureCommand { get; set; }
         public ReactiveCommand<Unit, Unit> DeselectPictureCommand { get; set; }
         public ReactiveCommand<Unit, Unit> OpenPictureCommand { get; set; }
+        public ReactiveCommand<Unit, Unit> SwitchToTabOverviewCommand { get; set; }
 
         public MetadataOverviewViewModel(
             IPictureControl pictureControl,
-            IProviderFilterControl providerFilterControl
+            IProviderFilterControl providerFilterControl,
+            INavigationControl navigationControl
         )
         {
             this.SelectedPictures = new ObservableCollection<Picture>();
 
             this.pictureControl = pictureControl;
             this.providerFilterControl = providerFilterControl;
+            this.navigationControl = navigationControl;
 
             this.pictureControl.PictureSelected += OnPictureSelected;
             this.pictureControl.PictureDeselected += OnPictureDeselected;
@@ -80,6 +84,11 @@ namespace TsukiTag.ViewModels
             this.OpenPictureCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 this.OnOpenPicture();
+            });
+
+            this.SwitchToTabOverviewCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                this.OnSwitchToTagOverview();
             });
         }
 
@@ -120,6 +129,14 @@ namespace TsukiTag.ViewModels
                 {
                     this.pictureControl.OpenPicture(picture);
                 }
+            });
+        }
+
+        private async void OnSwitchToTagOverview()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                this.navigationControl.SwitchToTagOverview();
             });
         }
 
@@ -199,8 +216,8 @@ namespace TsukiTag.ViewModels
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
                 var picture = SelectedPictures.FirstOrDefault(p => p.Md5 == e.Md5);
-                if(picture != null)
-                {                    
+                if (picture != null)
+                {
                     CurrentPictureIndex = SelectedPictures.IndexOf(picture);
                 }
                 else

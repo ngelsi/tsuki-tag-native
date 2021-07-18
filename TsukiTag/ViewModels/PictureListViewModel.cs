@@ -17,15 +17,18 @@ namespace TsukiTag.ViewModels
     public class PictureListViewModel : ViewModelBase
     {
         private readonly IPictureControl pictureControl;
+        private readonly INavigationControl navigationControl;
 
         public ObservableCollection<Picture> Pictures { get; set; }
 
         public PictureListViewModel(
-            IPictureControl pictureControl
+            IPictureControl pictureControl,
+            INavigationControl navigationControl
         )
         {
             this.Pictures = new ObservableCollection<Picture>();
             this.pictureControl = pictureControl;
+            this.navigationControl = navigationControl;
 
             this.pictureControl.PictureAdded += OnPictureAdded;
             this.pictureControl.PictureRemoved += OnPictureRemoved;
@@ -52,6 +55,28 @@ namespace TsukiTag.ViewModels
                 if (e != null)
                 {
                     this.pictureControl.OpenPictureInBackground(e);
+                }
+            });
+        }
+
+        public async void OnPictureGotExamined(object? sender, Picture e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                if (e != null)
+                {
+                    this.navigationControl.EnforceMetadataOverview();
+                }
+            });
+        }
+
+        public async void OnPictureLostExamined(object? sender, Picture e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                if (e != null)
+                {
+                    this.navigationControl.StopEnforceMetadataOverview();
                 }
             });
         }

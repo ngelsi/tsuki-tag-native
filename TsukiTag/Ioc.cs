@@ -43,6 +43,7 @@ namespace TsukiTag
         public IProviderFilterControl ProviderFilterControl => container.GetInstance<IProviderFilterControl>();
         public IOnlinePictureProvider OnlinePictureProvider => container.GetInstance<IOnlinePictureProvider>();
         public IProviderFilterControl OnlineProviderFilterControl => container.GetInstance<IProviderFilterControl>();
+        public INavigationControl NavigationControl => container.GetInstance<INavigationControl>();
 
 
         private Container CreateContainer()
@@ -62,6 +63,7 @@ namespace TsukiTag
             container.Register<IPictureDownloader, PictureDownloader>(Lifestyle.Singleton);
             container.Register<IPictureControl, PictureControl>(Lifestyle.Singleton);
             container.Register<IProviderFilterControl, ProviderFilterControl>(Lifestyle.Singleton);
+            container.Register<INavigationControl, NavigationControl>(Lifestyle.Singleton);
 
             container.Verify();
 

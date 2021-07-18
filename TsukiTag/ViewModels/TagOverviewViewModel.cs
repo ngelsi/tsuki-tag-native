@@ -16,11 +16,23 @@ namespace TsukiTag.ViewModels
     {
         private readonly IPictureControl pictureControl;
         private readonly IProviderFilterControl providerFilterControl;
+        private readonly INavigationControl navigationControl;
 
         private TagCollection tags;
         private string filterString;
+        private bool hasSelectedPictures;
 
-        
+        public ReactiveCommand<Unit, Unit> SwitchToMetadataOverviewCommand { get; set; }
+
+        public bool HasSelectedPictures
+        {
+            get { return hasSelectedPictures; }
+            set
+            {
+                hasSelectedPictures = value;
+                this.RaisePropertyChanged(nameof(HasSelectedPictures));
+            }
+        }
 
         public string FilterString
         {
@@ -50,25 +62,33 @@ namespace TsukiTag.ViewModels
 
         public TagOverviewViewModel(
             IPictureControl pictureControl,
-            IProviderFilterControl providerFilterControl
+            IProviderFilterControl providerFilterControl,
+            INavigationControl navigationControl
         )
         {
-
+            this.navigationControl = navigationControl;
             this.pictureControl = pictureControl;
             this.providerFilterControl = providerFilterControl;
 
             this.pictureControl.PictureAdded += OnPictureAdded;
             this.pictureControl.PictureRemoved += OnPictureRemoved;
             this.pictureControl.PicturesReset += OnPicturesReset;
+            this.pictureControl.PictureSelected += OnPictureSelected;
+            this.pictureControl.PictureDeselected += OnPictureDeselected;
+
+            this.SwitchToMetadataOverviewCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                this.OnSwitchToMetadataOverview();
+            });
         }
-
-
 
         ~TagOverviewViewModel()
         {
             this.pictureControl.PictureAdded -= OnPictureAdded;
             this.pictureControl.PictureRemoved -= OnPictureRemoved;
             this.pictureControl.PicturesReset -= OnPicturesReset;
+            this.pictureControl.PictureSelected -= OnPictureSelected;
+            this.pictureControl.PictureDeselected -= OnPictureDeselected;
         }
 
         public async void OnTagClicked(string tag)
@@ -95,6 +115,14 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        private async void OnSwitchToMetadataOverview()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                this.navigationControl.SwitchToMetadataOverview();
+            });
+        }
+
         private async void OnPicturesReset(object? sender, EventArgs e)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
@@ -117,6 +145,17 @@ namespace TsukiTag.ViewModels
             {
                 Tags = await pictureControl.GetTags();
             });
+        }
+
+
+        private async void OnPictureDeselected(object? sender, Picture e)
+        {
+            this.HasSelectedPictures = await this.pictureControl.GetSelectedPictureCount() > 0;
+        }
+
+        private async void OnPictureSelected(object? sender, Picture e)
+        {
+            this.HasSelectedPictures = await this.pictureControl.GetSelectedPictureCount() > 0;
         }
     }
 }

@@ -17,10 +17,15 @@ namespace TsukiTag.ViewModels
     {
         private readonly IOnlinePictureProvider onlinePictureProvider;
         private readonly IPictureControl pictureControl;
+        private readonly INavigationControl navigationControl;
+
         private ObservableCollection<ProviderTabModel> tabs;
         private int selectedTabIndex;
         private ContentControl pictureContextContent;
         private int selectedPictureCount;
+        private bool enforceTagOverview;
+        private bool enforceMetadataOverview;
+        private bool tagOverviewWasEnforced;
 
         public ObservableCollection<ProviderTabModel> Tabs
         {
@@ -99,7 +104,12 @@ namespace TsukiTag.ViewModels
         {
             get
             {
-                return selectedPictureCount > 0;
+                if (EnforceTagOverview)
+                {
+                    return false;
+                }
+
+                return EnforceMetadataOverview || selectedPictureCount > 0;
             }
         }
 
@@ -107,15 +117,50 @@ namespace TsukiTag.ViewModels
         {
             get
             {
-                return selectedPictureCount == 0;
+                if (EnforceMetadataOverview)
+                {
+                    return false;
+                }
+
+                return EnforceTagOverview || selectedPictureCount == 0;
+            }
+        }
+
+        public bool EnforceTagOverview
+        {
+            get { return enforceTagOverview; }
+            set
+            {
+                enforceTagOverview = value;
+
+                this.RaisePropertyChanged(nameof(EnforceTagOverview));
+                this.RaisePropertyChanged(nameof(EnforceMetadataOverview));
+                this.RaisePropertyChanged(nameof(NoSelectedPictures));
+                this.RaisePropertyChanged(nameof(HasSelectedPictures));
+            }
+        }
+
+        public bool EnforceMetadataOverview
+        {
+            get { return enforceMetadataOverview; }
+            set
+            {
+                enforceMetadataOverview = value;
+
+                this.RaisePropertyChanged(nameof(EnforceTagOverview));
+                this.RaisePropertyChanged(nameof(EnforceMetadataOverview));
+                this.RaisePropertyChanged(nameof(NoSelectedPictures));
+                this.RaisePropertyChanged(nameof(HasSelectedPictures));
             }
         }
 
         public OnlineProviderViewModel(
             IOnlinePictureProvider onlinePictureProvider,
-            IPictureControl pictureControl
+            IPictureControl pictureControl,
+            INavigationControl navigationControl
         )
         {
+            this.navigationControl = navigationControl;
             this.onlinePictureProvider = onlinePictureProvider;
             this.pictureControl = pictureControl;
         }
@@ -127,6 +172,10 @@ namespace TsukiTag.ViewModels
             this.pictureControl.PictureOpenedInBackground -= OnPictureOpenedInBackground;
             this.pictureControl.PictureSelected -= OnPictureSelected;
             this.pictureControl.PictureDeselected -= OnPictureDeselected;
+            this.navigationControl.SwitchedToMetadataOverview -= OnSwitchedToMetadataOverview;
+            this.navigationControl.SwitchedToTagOverview -= OnSwitchedToTagOverview;
+            this.navigationControl.TemporaryMetadataOverviewEnd -= OnTemporaryMetadataOverviewEnd;
+            this.navigationControl.TemporaryMetadataOverviewStart -= OnTemporaryMetadataOverviewStart;
         }
 
         public async void OnTabPictureClosed(Picture picture)
@@ -214,6 +263,10 @@ namespace TsukiTag.ViewModels
             this.pictureControl.PictureSelected += OnPictureSelected;
             this.pictureControl.PictureDeselected += OnPictureDeselected;
             this.pictureControl.PictureOpenedInBackground += OnPictureOpenedInBackground;
+            this.navigationControl.SwitchedToMetadataOverview += OnSwitchedToMetadataOverview;
+            this.navigationControl.SwitchedToTagOverview += OnSwitchedToTagOverview;
+            this.navigationControl.TemporaryMetadataOverviewEnd += OnTemporaryMetadataOverviewEnd;
+            this.navigationControl.TemporaryMetadataOverviewStart += OnTemporaryMetadataOverviewStart;
 
             await Task.Run(async () =>
             {
@@ -221,11 +274,59 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        private void OnTemporaryMetadataOverviewStart(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                this.tagOverviewWasEnforced = EnforceTagOverview;
+                OnSwitchedToMetadataOverview(this, e);
+            });
+        }
+
+        private void OnTemporaryMetadataOverviewEnd(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                if (this.tagOverviewWasEnforced)
+                {
+                    OnSwitchedToTagOverview(this, e);
+                }
+                else
+                {
+                    OnSwitchedToMetadataOverview(this, e);
+                }
+            });
+        }
+
+        private void OnSwitchedToTagOverview(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                EnforceMetadataOverview = false;
+                EnforceTagOverview = true;
+            });
+        }
+
+        private void OnSwitchedToMetadataOverview(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                EnforceTagOverview = false;
+                EnforceMetadataOverview = true;
+            });
+        }
+
         private void OnPictureDeselected(object? sender, Picture e)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                SelectedPictureCount = await this.pictureControl.GetSelectedPictureCount();
+                var count = await this.pictureControl.GetSelectedPictureCount();
+                SelectedPictureCount = count;
+
+                if (count == 0)
+                {
+                    this.OnSwitchedToTagOverview(this, EventArgs.Empty);
+                }
             });
         }
 

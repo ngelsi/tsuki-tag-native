@@ -52,6 +52,8 @@ namespace TsukiTag.Views
                             (DataContext as PictureListViewModel)?.OnPictureDeselected(this, picture);
                         }
                     }
+
+                    (DataContext as PictureListViewModel)?.OnPictureLostExamined(this, picture);
                 }
             });
         }
@@ -69,6 +71,7 @@ namespace TsukiTag.Views
                 {
                     imageWasNotSelected = !picture.Selected;
 
+                    (DataContext as PictureListViewModel)?.OnPictureGotExamined(this, picture);
                     (DataContext as PictureListViewModel)?.OnPictureSelected(this, picture);
                 }
             });
