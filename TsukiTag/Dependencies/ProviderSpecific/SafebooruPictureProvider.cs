@@ -48,13 +48,26 @@ namespace TsukiTag.Dependencies.ProviderSpecific
         }
 
         public override Task<List<Picture>> TransformRawData(ProviderFilterElement filter, string responseData)
-        {            
+        {
             var pictures = new List<Picture>();
 
             dynamic doc = DynamicXml.Parse(responseData);
-            IList<dynamic> posts = doc.post;
+            IList<dynamic> posts = new List<dynamic>();
 
-            if(posts != null && posts.Count > 0)
+            try
+            {
+                posts = doc.post;
+            }
+            catch
+            {
+                dynamic post = doc.post;
+                if (post != null)
+                {
+                    posts.Add(post);
+                }
+            }
+
+            if (posts != null && posts.Count > 0)
             {
                 for (var i = 0; i < posts.Count; i++)
                 {
