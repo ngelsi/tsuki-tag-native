@@ -20,8 +20,14 @@
         <Button Margin="0 0 5 0" Command="{Binding ClosePictureCommand}" HorizontalAlignment="Right" Classes="actionbutton" DockPanel.Dock="Right">
           <i:Icon FontSize="14" Value="fa-times"></i:Icon>
         </Button>
+        <Button Margin="0 0 5 0" Command="{Binding SwitchDisplayModeCommand}" HorizontalAlignment="Right" Classes="actionbutton" DockPanel.Dock="Right">
+          <i:Icon FontSize="14" Value="fa-window-maximize"></i:Icon>
+        </Button>
       </DockPanel>
     </ExperimentalAcrylicBorder>
-    <Image DockPanel.Dock="Top" MaxWidth="{Binding Picture.Width}" MaxHeight="{Binding Picture.Height}" Source="{Binding Picture, Converter={StaticResource sampleConverter}}"></Image>
+    <Image DockPanel.Dock="Top" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding FillView}" MaxWidth="{Binding Picture.Width}" MaxHeight="{Binding Picture.Height}" Source="{Binding Picture, Converter={StaticResource sampleConverter}}"></Image>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" DockPanel.Dock="Top" IsVisible="{Binding MaximizedView}">
+      <Image Stretch="None" StretchDirection="Both" DockPanel.Dock="Top" MaxWidth="{Binding Picture.Width}" MaxHeight="{Binding Picture.Height}" Source="{Binding Picture, Converter={StaticResource sampleConverter}}"></Image>
+    </ScrollViewer>
   </DockPanel>
 </UserControl>
