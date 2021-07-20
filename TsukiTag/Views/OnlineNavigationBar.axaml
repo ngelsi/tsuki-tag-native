@@ -42,7 +42,7 @@
       <MenuItem Command="{Binding SwitchProviderCommand}" CommandParameter="Danbooru">
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal">
-            <ToggleSwitch IsChecked="{Binding KonachanEnabled}" Command="{Binding SwitchProviderCommand}" CommandParameter="Danbooru"></ToggleSwitch>
+            <ToggleSwitch IsChecked="{Binding DanbooruEnabled}" Command="{Binding SwitchProviderCommand}" CommandParameter="Danbooru"></ToggleSwitch>
             <Label Content="Danbooru"></Label>
           </StackPanel>
         </MenuItem.Header>

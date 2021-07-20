@@ -67,6 +67,7 @@ namespace TsukiTag
             container.Register<IPictureControl, PictureControl>(Lifestyle.Singleton);
             container.Register<IProviderFilterControl, ProviderFilterControl>(Lifestyle.Singleton);
             container.Register<INavigationControl, NavigationControl>(Lifestyle.Singleton);
+            container.Register<IDbRepository, DbRepository>(Lifestyle.Singleton);
 
             container.Verify();
 

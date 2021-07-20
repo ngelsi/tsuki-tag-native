@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TsukiTag.Dependencies.ProviderSpecific;
 using TsukiTag.Models;
 using TsukiTag.Models.ProviderSpecific;
+using TsukiTag.Models.Repository;
 
 namespace TsukiTag.Dependencies
 {
@@ -46,21 +47,20 @@ namespace TsukiTag.Dependencies
     {
         private ProviderFilter currentFilter;
 
+        private readonly IDbRepository dbRepository;
+
         public ProviderFilter CurrentFilter { get => currentFilter; }
 
         public event EventHandler<int> PageChanged;
 
         public event EventHandler FilterChanged;
 
-        public ProviderFilterControl()
+        public ProviderFilterControl(
+            IDbRepository dbRepository
+        )
         {
-            currentFilter = new ProviderFilter();
-            currentFilter.Providers.Add(Provider.Safebooru.Name);
-            currentFilter.Providers.Add(Provider.Gelbooru.Name);
-            currentFilter.Providers.Add(Provider.Konachan.Name);
-            currentFilter.Providers.Add(Provider.Danbooru.Name);
-
-            currentFilter.Ratings.Add(Rating.Safe.Name);            
+            this.dbRepository = dbRepository;
+            this.InitializeFilter();
         }
 
         public bool CanAdvanceNextPage()
@@ -141,10 +141,10 @@ namespace TsukiTag.Dependencies
         {
             await Task.Run(() =>
             {
-                if (!string.IsNullOrEmpty(rating) &&!currentFilter.Ratings.Contains(rating))
+                if (!string.IsNullOrEmpty(rating) && !currentFilter.Ratings.Contains(rating))
                 {
                     currentFilter.Ratings.Add(rating);
-                    FilterChanged?.Invoke(this, EventArgs.Empty);
+                    ApplyBroadcastProviderChanges();
                 }
             });
         }
@@ -156,7 +156,7 @@ namespace TsukiTag.Dependencies
                 if (!string.IsNullOrEmpty(rating) && currentFilter.Ratings.Contains(rating))
                 {
                     currentFilter.Ratings.Remove(rating);
-                    FilterChanged?.Invoke(this, EventArgs.Empty);
+                    ApplyBroadcastProviderChanges();
                 }
             });
         }
@@ -168,7 +168,7 @@ namespace TsukiTag.Dependencies
                 if (!string.IsNullOrEmpty(provider) && !currentFilter.Providers.Contains(provider))
                 {
                     currentFilter.Providers.Add(provider);
-                    FilterChanged?.Invoke(this, EventArgs.Empty);
+                    ApplyBroadcastProviderChanges();
                 }
             });
         }
@@ -180,7 +180,7 @@ namespace TsukiTag.Dependencies
                 if (!string.IsNullOrEmpty(provider) && currentFilter.Providers.Contains(provider))
                 {
                     currentFilter.Providers.Remove(provider);
-                    FilterChanged?.Invoke(this, EventArgs.Empty);
+                    ApplyBroadcastProviderChanges();                    
                 }
             });
         }
@@ -188,6 +188,52 @@ namespace TsukiTag.Dependencies
         public async Task<ProviderFilter> GetCurrentFilter()
         {
             return await Task.FromResult(CurrentFilter);
+        }
+
+        private async void ApplyBroadcastProviderChanges()
+        {
+            await Task.Run(() =>
+            {
+                var session = dbRepository.ProviderSession.Get(ProviderSession.OnlineProviderSession);
+                if(session != null)
+                {
+                    session.Providers = currentFilter.Providers.ToArray();
+                    session.Ratings = currentFilter.Ratings.ToArray();                    
+
+                    dbRepository.ProviderSession.AddOrUpdate(session);
+                }
+
+                FilterChanged?.Invoke(this, EventArgs.Empty);
+            });
+        }
+
+        private void InitializeFilter()
+        {
+            var session = dbRepository.ProviderSession.Get(ProviderSession.OnlineProviderSession);
+            if (session == null)
+            {
+                session = new ProviderSession();
+
+                currentFilter = new ProviderFilter();
+                currentFilter.Providers.Add(Provider.Safebooru.Name);
+                currentFilter.Providers.Add(Provider.Gelbooru.Name);
+                currentFilter.Providers.Add(Provider.Konachan.Name);
+                currentFilter.Providers.Add(Provider.Danbooru.Name);
+
+                currentFilter.Ratings.Add(Rating.Safe.Name);
+
+                session.Ratings = currentFilter.Ratings.ToArray();
+                session.Providers = currentFilter.Providers.ToArray();
+                session.Context = ProviderSession.OnlineProviderSession;
+
+                dbRepository.ProviderSession.AddOrUpdate(session);
+            }
+            else
+            {
+                currentFilter = new ProviderFilter();
+                currentFilter.Providers.AddRange(session.Providers);
+                currentFilter.Ratings.AddRange(session.Ratings);
+            }
         }
     }
 }
