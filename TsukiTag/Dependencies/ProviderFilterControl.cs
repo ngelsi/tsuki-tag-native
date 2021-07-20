@@ -57,6 +57,7 @@ namespace TsukiTag.Dependencies
             currentFilter = new ProviderFilter();
             currentFilter.Providers.Add(Provider.Safebooru.Name);
             currentFilter.Providers.Add(Provider.Gelbooru.Name);
+            currentFilter.Providers.Add(Provider.Konachan.Name);
 
             currentFilter.Ratings.Add(Rating.Safe.Name);            
         }

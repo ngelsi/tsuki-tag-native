@@ -61,6 +61,7 @@ namespace TsukiTag
             container.Register<IOnlinePictureProvider, OnlinePictureProvider>(Lifestyle.Singleton);
             container.Register<ISafebooruPictureProvider, SafebooruPictureProvider>(Lifestyle.Singleton);
             container.Register<IGelbooruPictureProvider, GelbooruPictureProvider>(Lifestyle.Singleton);
+            container.Register<IKonachanPictureProvider, KonachanPictureProvider>(Lifestyle.Singleton);
             container.Register<IPictureDownloader, PictureDownloader>(Lifestyle.Singleton);
             container.Register<IPictureControl, PictureControl>(Lifestyle.Singleton);
             container.Register<IProviderFilterControl, ProviderFilterControl>(Lifestyle.Singleton);

@@ -22,6 +22,7 @@ namespace TsukiTag.ViewModels
         private bool explicitRatingEnabled;
         private bool safebooruEnabled;
         private bool gelbooruEnabled;
+        private bool konachanEnabled;
 
         public ReactiveCommand<Unit, Unit> NextPageCommand { get; }
         public ReactiveCommand<Unit, Unit> PreviousPageCommand { get; }
@@ -46,6 +47,16 @@ namespace TsukiTag.ViewModels
             {
                 gelbooruEnabled = value;
                 this.RaisePropertyChanged(nameof(GelbooruEnabled));
+            }
+        }
+
+        public bool KonachanEnabled
+        {
+            get { return konachanEnabled; }
+            set
+            {
+                konachanEnabled = value;
+                this.RaisePropertyChanged(nameof(KonachanEnabled));
             }
         }
 
@@ -177,6 +188,7 @@ namespace TsukiTag.ViewModels
 
                 SafebooruEnabled = currentFilter.Providers.Contains(Provider.Safebooru.Name);
                 GelbooruEnabled = currentFilter.Providers.Contains(Provider.Gelbooru.Name);
+                KonachanEnabled = currentFilter.Providers.Contains(Provider.Konachan.Name);
             });
         }
 

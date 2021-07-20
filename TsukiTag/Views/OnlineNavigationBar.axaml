@@ -39,6 +39,14 @@
           </StackPanel>
         </MenuItem.Header>
       </MenuItem>
+      <MenuItem Command="{Binding SwitchProviderCommand}" CommandParameter="Konachan">
+        <MenuItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <ToggleSwitch IsChecked="{Binding KonachanEnabled}" Command="{Binding SwitchProviderCommand}" CommandParameter="Konachan"></ToggleSwitch>
+            <Label Content="Konachan"></Label>
+          </StackPanel>
+        </MenuItem.Header>
+      </MenuItem>
       <MenuItem Header="" IsEnabled="False"></MenuItem>
       <MenuItem Header="Ratings" IsEnabled="False"></MenuItem>
       <Separator></Separator>
