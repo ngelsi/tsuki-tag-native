@@ -31,6 +31,14 @@
           </StackPanel>
         </MenuItem.Header>
       </MenuItem>
+      <MenuItem Command="{Binding SwitchProviderCommand}" CommandParameter="Gelbooru">
+        <MenuItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <ToggleSwitch IsChecked="{Binding GelbooruEnabled}" Command="{Binding SwitchProviderCommand}" CommandParameter="Gelbooru"></ToggleSwitch>
+            <Label Content="Gelbooru"></Label>
+          </StackPanel>
+        </MenuItem.Header>
+      </MenuItem>
       <MenuItem Header="" IsEnabled="False"></MenuItem>
       <MenuItem Header="Ratings" IsEnabled="False"></MenuItem>
       <Separator></Separator>

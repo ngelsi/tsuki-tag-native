@@ -56,8 +56,9 @@ namespace TsukiTag.Dependencies
         {
             currentFilter = new ProviderFilter();
             currentFilter.Providers.Add(Provider.Safebooru.Name);
+            currentFilter.Providers.Add(Provider.Gelbooru.Name);
 
-            currentFilter.Ratings.Add(Rating.Safe.Name);
+            currentFilter.Ratings.Add(Rating.Safe.Name);            
         }
 
         public bool CanAdvanceNextPage()

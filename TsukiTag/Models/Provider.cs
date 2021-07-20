@@ -9,6 +9,7 @@ namespace TsukiTag.Models
     public class Provider
     {
         public static Provider Safebooru = new Provider() { Name = "Safebooru" };
+        public static Provider Gelbooru = new Provider() { Name = "Gelbooru" };
 
         public string Name { get; set; }
     }
