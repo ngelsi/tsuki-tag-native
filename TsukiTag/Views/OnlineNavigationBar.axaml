@@ -23,10 +23,10 @@
     <MenuItem Header="Providers" Padding="0 5 5 5">
       <MenuItem Header="Providers" IsEnabled="False"></MenuItem>
       <Separator></Separator>
-      <MenuItem>
+      <MenuItem Command="{Binding SwitchProviderCommand}" CommandParameter="Safebooru">
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal">
-            <ToggleSwitch></ToggleSwitch>
+            <ToggleSwitch IsChecked="{Binding SafebooruEnabled}" Command="{Binding SwitchProviderCommand}" CommandParameter="Safebooru"></ToggleSwitch>
             <Label Content="Safebooru"></Label>
           </StackPanel>
         </MenuItem.Header>
@@ -34,26 +34,26 @@
       <MenuItem Header="" IsEnabled="False"></MenuItem>
       <MenuItem Header="Ratings" IsEnabled="False"></MenuItem>
       <Separator></Separator>
-      <MenuItem>
+      <MenuItem Command="{Binding SwitchRatingCommand}" CommandParameter="s">
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal">
-            <ToggleSwitch></ToggleSwitch>
+            <ToggleSwitch IsChecked="{Binding SafeRatingEnabled}" Command="{Binding SwitchRatingCommand}" CommandParameter="s"></ToggleSwitch>
             <Label Content="Safe"></Label>
           </StackPanel>
         </MenuItem.Header>
       </MenuItem>
-      <MenuItem>
+      <MenuItem Command="{Binding SwitchRatingCommand}" CommandParameter="q">
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal">
-            <ToggleSwitch></ToggleSwitch>
+            <ToggleSwitch IsChecked="{Binding QuestionableRatingEnabled}" Command="{Binding SwitchRatingCommand}" CommandParameter="q"></ToggleSwitch>
             <Label Content="Questionable"></Label>
           </StackPanel>
         </MenuItem.Header>
       </MenuItem>
-      <MenuItem>
+      <MenuItem Command="{Binding SwitchRatingCommand}" CommandParameter="e">
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal">
-            <ToggleSwitch></ToggleSwitch>
+            <ToggleSwitch IsChecked="{Binding ExplicitRatingEnabled}" Command="{Binding SwitchRatingCommand}" CommandParameter="e"></ToggleSwitch>
             <Label Content="Explicit"></Label>
           </StackPanel>
         </MenuItem.Header>

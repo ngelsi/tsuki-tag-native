@@ -264,9 +264,9 @@ namespace TsukiTag.Models
             {
                 switch (Rating.ToLower())
                 {
-                    case "s": return "Safe";
-                    case "e": return "Explicit";
-                    case "q": return "Questionable";
+                    case "s": return Models.Rating.Safe.Name;
+                    case "e": return Models.Rating.Explicit.Name;
+                    case "q": return Models.Rating.Questionable.Name;
                 }
 
                 return string.Empty;

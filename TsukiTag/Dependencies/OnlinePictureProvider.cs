@@ -16,31 +16,33 @@ namespace TsukiTag.Dependencies
     public class OnlinePictureProvider : IOnlinePictureProvider
     {
         private readonly ISafebooruPictureProvider safebooruPictureProvider;
-        private readonly IProviderFilterControl onlineProviderFilterControl;
+        private readonly IProviderFilterControl providerFilterControl;
 
         private readonly IPictureControl pictureControl;
 
         public OnlinePictureProvider(
             ISafebooruPictureProvider safebooruPictureProvider,
 
-            IProviderFilterControl onlineProviderFilterControl,
+            IProviderFilterControl providerFilterControl,
             IPictureControl pictureControl
         )
         {
             this.safebooruPictureProvider = safebooruPictureProvider;
 
-            this.onlineProviderFilterControl = onlineProviderFilterControl;
+            this.providerFilterControl = providerFilterControl;
             this.pictureControl = pictureControl;
 
-            this.onlineProviderFilterControl.PageChanged += OnPageChanged;
-            this.onlineProviderFilterControl.FilterChanged += OnFilterChanged;
+            this.providerFilterControl.PageChanged += OnPageChanged;
+            this.providerFilterControl.FilterChanged += OnFilterChanged;
         }
 
         ~OnlinePictureProvider()
         {
-            this.onlineProviderFilterControl.PageChanged -= OnPageChanged;
-            this.onlineProviderFilterControl.FilterChanged -= OnFilterChanged;
+            this.providerFilterControl.PageChanged -= OnPageChanged;
+            this.providerFilterControl.FilterChanged -= OnFilterChanged;
         }
+
+        private List<IOnlinePictureProviderElement> allProviders => new List<IOnlinePictureProviderElement>() { safebooruPictureProvider  };
 
         private async void OnFilterChanged(object? sender, EventArgs e)
         {
@@ -57,16 +59,32 @@ namespace TsukiTag.Dependencies
             {
                 this.pictureControl.ResetPictures();
                 await this.GetPictures();
-            });            
+            });
         }
 
         public async Task GetPictures()
         {
-            var result = await safebooruPictureProvider.GetPictures(this.onlineProviderFilterControl.CurrentFilter.FilterElement);
-            foreach (var picture in result.Pictures)
+            var filter = await this.providerFilterControl.GetCurrentFilter();
+
+            Parallel.ForEach(allProviders, async (provider) =>
             {
-                pictureControl.AddPicture(picture);
-            }
+                if(filter.Providers.Contains(provider.Provider))
+                {
+                    var result = await provider.GetPictures(filter.FilterElement);
+                    foreach (var picture in result.Pictures)
+                    {
+                        if(picture != null)
+                        {
+                            if(!filter.Ratings.Contains(picture.Rating))
+                            {
+                                continue;
+                            }
+
+                            pictureControl.AddPicture(picture);
+                        }
+                    }
+                }
+            });
         }
     }
 }

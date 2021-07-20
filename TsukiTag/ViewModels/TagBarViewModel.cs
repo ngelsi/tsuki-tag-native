@@ -111,7 +111,8 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                CurrentTags = new ObservableCollection<string>(this.providerFilterControl.CurrentFilter.Tags);
+                var filter = await this.providerFilterControl.GetCurrentFilter();
+                CurrentTags = new ObservableCollection<string>(filter.Tags);
             });
         }
     }
