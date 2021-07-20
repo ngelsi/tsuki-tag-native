@@ -11,15 +11,16 @@ using TsukiTag.Models.ProviderSpecific;
 
 namespace TsukiTag.Dependencies.ProviderSpecific
 {
-    public interface IKonachanPictureProvider : IOnlinePictureProviderElement
+    public interface IDanbooruPictureProvider : IOnlinePictureProviderElement
     {
 
     }
-    public class KonachanPictureProvider : OnlinePictureProviderElement, IKonachanPictureProvider
-    {
-        private const string BaseUrl = "https://konachan.com/post.json";
 
-        public override string Provider => Models.Provider.Konachan.Name;
+    public class DanbooruPictureProvider : OnlinePictureProviderElement, IDanbooruPictureProvider
+    {
+        private const string BaseUrl = "https://danbooru.donmai.us/posts.json";
+
+        public override string Provider => Models.Provider.Danbooru.Name;
 
         public override bool IsXml => false;
 
@@ -32,7 +33,7 @@ namespace TsukiTag.Dependencies.ProviderSpecific
             if (filter.Tags != null && filter.Tags.Count > 0)
             {
                 url += $"&tags={HttpUtility.UrlEncode(filter.TagString)}";
-            }            
+            }
 
             if (filter.Limit > 0)
             {
@@ -50,42 +51,39 @@ namespace TsukiTag.Dependencies.ProviderSpecific
             {
                 var pictureObjects = JsonConvert.DeserializeObject<List<JObject>>(responseData);
 
-                foreach(var pobj in pictureObjects)
+                foreach (var pobj in pictureObjects)
                 {
-                    var picture = new KonachanPicture();
+                    var picture = new DanbooruPicture();
 
                     picture.Id = pobj.GetValue("id")?.ToString();
                     picture.ParentId = pobj.GetValue("parent_id")?.ToString();
-                    picture.Rating =pobj.GetValue("rating")?.ToString();
-                    picture.Tags = pobj.GetValue("tags")?.ToString();
+                    picture.Rating = pobj.GetValue("rating")?.ToString();
+                    picture.Tags = pobj.GetValue("tag_string")?.ToString();
                     picture.Md5 = pobj.GetValue("md5")?.ToString();
                     picture.Source = pobj.GetValue("source")?.ToString();
                     picture.Status = pobj.GetValue("status")?.ToString();
-                    picture.Url = pobj.GetValue("sample_url")?.ToString();
-                    picture.PreviewUrl = pobj.GetValue("preview_url")?.ToString();
+                    picture.Url = pobj.GetValue("large_file_url")?.ToString();
+                    picture.PreviewUrl = pobj.GetValue("preview_file_url")?.ToString();
                     picture.DownloadUrl = pobj.GetValue("file_url")?.ToString();
                     picture.CreatedAt = pobj.GetValue("created_at")?.ToString();
-                    picture.CreatedBy = pobj.GetValue("creator_id")?.ToString();
+                    picture.CreatedBy = pobj.GetValue("uploader_id")?.ToString();
 
-                    if (int.TryParse(pobj.GetValue("height")?.ToString(), out int h))
+                    if (int.TryParse(pobj.GetValue("image_height")?.ToString(), out int h))
                     {
                         picture.Height = h;
                     }
 
-                    if (int.TryParse(pobj.GetValue("width")?.ToString(), out int w))
+                    if (int.TryParse(pobj.GetValue("image_width")?.ToString(), out int w))
                     {
                         picture.Width = w;
                     }
 
-                    if (int.TryParse(pobj.GetValue("preview_height")?.ToString(), out int ph))
-                    {
-                        picture.PreviewHeight = ph;
-                    }
+                    var heightRatio = 150.0 / picture.Height;
+                    var widthRatio = 150.0 / picture.Width;
+                    var lowerRatio = heightRatio < widthRatio ? heightRatio : widthRatio;
 
-                    if (int.TryParse(pobj.GetValue("preview_width")?.ToString(), out int pw))
-                    {
-                        picture.PreviewWidth = pw;
-                    }
+                    picture.PreviewHeight = (int) (picture.Height * lowerRatio);
+                    picture.PreviewWidth = (int) (picture.Width * lowerRatio);
 
                     if (!string.IsNullOrEmpty(picture.Md5))
                     {
@@ -94,7 +92,7 @@ namespace TsukiTag.Dependencies.ProviderSpecific
                 }
             }
             catch
-            {  }
+            { }
 
             return Task.FromResult(pictures);
         }

@@ -19,6 +19,7 @@ namespace TsukiTag.Dependencies
         private readonly IProviderFilterControl providerFilterControl;
         private readonly IGelbooruPictureProvider gelbooruPictureProvider;
         private readonly IKonachanPictureProvider konachanPictureProvider;
+        private readonly IDanbooruPictureProvider danbooruPictureProvider;
 
         private readonly IPictureControl pictureControl;
 
@@ -26,6 +27,7 @@ namespace TsukiTag.Dependencies
             ISafebooruPictureProvider safebooruPictureProvider,
             IGelbooruPictureProvider gelbooruPictureProvider,
             IKonachanPictureProvider konachanPictureProvider,
+            IDanbooruPictureProvider danbooruPictureProvider,
 
             IProviderFilterControl providerFilterControl,
             IPictureControl pictureControl
@@ -34,6 +36,7 @@ namespace TsukiTag.Dependencies
             this.safebooruPictureProvider = safebooruPictureProvider;
             this.gelbooruPictureProvider = gelbooruPictureProvider;
             this.konachanPictureProvider = konachanPictureProvider;
+            this.danbooruPictureProvider = danbooruPictureProvider;
 
             this.providerFilterControl = providerFilterControl;
             this.pictureControl = pictureControl;
@@ -48,7 +51,7 @@ namespace TsukiTag.Dependencies
             this.providerFilterControl.FilterChanged -= OnFilterChanged;
         }
 
-        private List<IOnlinePictureProviderElement> allProviders => new List<IOnlinePictureProviderElement>() { safebooruPictureProvider, gelbooruPictureProvider, konachanPictureProvider };
+        private List<IOnlinePictureProviderElement> allProviders => new List<IOnlinePictureProviderElement>() { safebooruPictureProvider, gelbooruPictureProvider, konachanPictureProvider, danbooruPictureProvider };
 
         private async void OnFilterChanged(object? sender, EventArgs e)
         {

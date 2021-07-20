@@ -11,6 +11,7 @@ namespace TsukiTag.Models
         public static Provider Safebooru = new Provider() { Name = "Safebooru" };
         public static Provider Gelbooru = new Provider() { Name = "Gelbooru" };
         public static Provider Konachan = new Provider() { Name = "Konachan" };
+        public static Provider Danbooru = new Provider() { Name = "Danbooru" };
 
         public string Name { get; set; }
     }
