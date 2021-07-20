@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TsukiTag.Extensions;
 using TsukiTag.Models;
 
 namespace TsukiTag.Dependencies
@@ -45,7 +46,7 @@ namespace TsukiTag.Dependencies
 
                     result.Succeeded = true;
                     result.ProviderEnd = pictures.Count == 0;
-                    result.Pictures = pictures.Distinct(new PictureComparer()).ToList();
+                    result.Pictures = pictures.DistinctBy(p => p.Id).DistinctBy(p => p.Md5)?.ToList();
                 }
             }
             catch (Exception ex)
