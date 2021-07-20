@@ -44,9 +44,14 @@ namespace TsukiTag.Dependencies
                 {
                     var pictures = await TransformRawData(filter, response.Content);
 
-                    result.Succeeded = true;
-                    result.ProviderEnd = pictures.Count == 0;
+                    result.Succeeded = true;                    
                     result.Pictures = pictures.DistinctBy(p => p.Id).DistinctBy(p => p.Md5)?.ToList();
+                    result.ProviderEnd = result.Pictures.Count == 0;
+                }
+                else
+                {
+                    result.Succeeded = false;                    
+                    result.ProviderEnd = true;
                 }
             }
             catch (Exception ex)
