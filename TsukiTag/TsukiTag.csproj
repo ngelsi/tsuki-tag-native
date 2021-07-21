@@ -23,6 +23,7 @@
     <None Remove="Assets\Fonts\SourceCodePro-Regular.ttf" />
     <None Remove="Assets\Fonts\SourceCodePro-SemiBold.ttf" />
     <None Remove="Assets\Fonts\SourceCodePro-SemiBoldItalic.ttf" />
+    <None Remove="Assets\Languages\en.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.3" />

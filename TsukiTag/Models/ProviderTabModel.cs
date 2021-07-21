@@ -31,7 +31,7 @@ namespace TsukiTag.Models
             {
                 if (pictureListTab == null)
                 {
-                    pictureListTab = new ProviderTabModel() { Header = "Browse", Content = new OnlineBrowser(), Identifier = "ONLINE" };
+                    pictureListTab = new ProviderTabModel() { Header = Ioc.SimpleIoc.Localizer.Get("Browse"), Content = new OnlineBrowser(), Identifier = "ONLINE" };
                 }
 
                 return pictureListTab;

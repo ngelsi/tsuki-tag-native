@@ -1,0 +1,26 @@
+﻿{
+  "Providers": "Providers",
+  "AllTags": "All tags",
+  "Metadata":  "Metadata",
+
+  "Safe": "Safe",
+  "Questionable": "Questionable",
+  "Explicit": "Explicit",
+
+  "NextPage": "Next page",
+  "PreviousPage": "Previous page",
+
+  "Browse": "Browse",
+
+  "PreviousPicture": "Previous selected picture",
+  "NextPicture": "Next selected picture",
+  "OpenPicture": "Open picture in new tab",
+  "DeselectPicture": "De-select picture",
+  "SwitchToTag": "Switch to tag view",
+  "SwitchToMetadata": "Switch to metadata view",
+  "OriginalView": "Switch fit/original view",
+  "ClosePicture": "Close picture",
+  "AddThisTagSearch": "Add this tag to search",
+  "RemoveThisTagSearch": "Remove this tag from search",
+  "SetThisTagSearch":  "Set this tag as search"
+}

@@ -20,8 +20,8 @@
     </Style>
   </UserControl.Styles>
   <Menu VerticalAlignment="Top" HorizontalAlignment="Left">
-    <MenuItem Header="Providers" Padding="0 5 5 5">
-      <MenuItem Header="Providers" IsEnabled="False"></MenuItem>
+    <MenuItem Header="{Binding Language.Providers}" Padding="0 5 5 5">
+      <MenuItem Header="{Binding Language.Providers}" IsEnabled="False"></MenuItem>
       <Separator></Separator>
       <MenuItem Command="{Binding SwitchProviderCommand}" CommandParameter="Safebooru">
         <MenuItem.Header>
@@ -62,7 +62,7 @@
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal">
             <ToggleSwitch IsChecked="{Binding SafeRatingEnabled}" Command="{Binding SwitchRatingCommand}" CommandParameter="s"></ToggleSwitch>
-            <Label Content="Safe"></Label>
+            <Label Content="{Binding Language.Safe}"></Label>
           </StackPanel>
         </MenuItem.Header>
       </MenuItem>
@@ -70,7 +70,7 @@
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal">
             <ToggleSwitch IsChecked="{Binding QuestionableRatingEnabled}" Command="{Binding SwitchRatingCommand}" CommandParameter="q"></ToggleSwitch>
-            <Label Content="Questionable"></Label>
+            <Label Content="{Binding Language.Questionable}"></Label>
           </StackPanel>
         </MenuItem.Header>
       </MenuItem>
@@ -78,17 +78,17 @@
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal">
             <ToggleSwitch IsChecked="{Binding ExplicitRatingEnabled}" Command="{Binding SwitchRatingCommand}" CommandParameter="e"></ToggleSwitch>
-            <Label Content="Explicit"></Label>
+            <Label Content="{Binding Language.Explicit}"></Label>
           </StackPanel>
         </MenuItem.Header>
       </MenuItem>
     </MenuItem>
-    <MenuItem IsVisible="{Binding CanAdvanceToPreviousPage}" Command="{Binding PreviousPageCommand}">
+    <MenuItem ToolTip.Tip="{Binding Language.PreviousPage}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToPreviousPage}" Command="{Binding PreviousPageCommand}">
       <MenuItem.Header>
         <i:Icon Value="fa-arrow-left"></i:Icon>
       </MenuItem.Header>
     </MenuItem>
-    <MenuItem IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
+    <MenuItem ToolTip.Tip="{Binding Language.NextPage}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
       <MenuItem.Header>
         <i:Icon Value="fa-arrow-right"></i:Icon>
       </MenuItem.Header>

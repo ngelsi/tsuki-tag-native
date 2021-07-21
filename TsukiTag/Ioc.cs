@@ -44,7 +44,7 @@ namespace TsukiTag
         public IOnlinePictureProvider OnlinePictureProvider => container.GetInstance<IOnlinePictureProvider>();
         public IProviderFilterControl OnlineProviderFilterControl => container.GetInstance<IProviderFilterControl>();
         public INavigationControl NavigationControl => container.GetInstance<INavigationControl>();
-
+        public ILocalizer Localizer => container.GetInstance<ILocalizer>();
 
         private Container CreateContainer()
         {
@@ -68,6 +68,7 @@ namespace TsukiTag
             container.Register<IProviderFilterControl, ProviderFilterControl>(Lifestyle.Singleton);
             container.Register<INavigationControl, NavigationControl>(Lifestyle.Singleton);
             container.Register<IDbRepository, DbRepository>(Lifestyle.Singleton);
+            container.Register<ILocalizer, Localizer>(Lifestyle.Singleton);
 
             container.Verify();
 
