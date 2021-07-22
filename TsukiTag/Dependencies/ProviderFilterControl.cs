@@ -219,6 +219,7 @@ namespace TsukiTag.Dependencies
                 currentFilter.Providers.Add(Provider.Gelbooru.Name);
                 currentFilter.Providers.Add(Provider.Konachan.Name);
                 currentFilter.Providers.Add(Provider.Danbooru.Name);
+                currentFilter.Providers.Add(Provider.Yandere.Name);
 
                 currentFilter.Ratings.Add(Rating.Safe.Name);
 

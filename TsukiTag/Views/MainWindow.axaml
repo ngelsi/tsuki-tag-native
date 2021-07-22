@@ -24,10 +24,9 @@
       <local:NotificationBar DockPanel.Dock="Right"></local:NotificationBar>
       <Menu DockPanel.Dock="Left" VerticalAlignment="Top" HorizontalAlignment="Left">
         <MenuItem Header="TsukiTag">
-          <MenuItem Header="New" InputGesture="CTRL + N" />
-          <MenuItem Header="Open" />
+          <MenuItem Header="{Binding Language.NavigationOnline}" Command="{Binding SwitchToOnlineBrowsingCommand}" />
           <Separator />
-          <MenuItem Header="Exit" InputGesture="Alt + F4" />
+          <MenuItem Header="{Binding Language.NavigationSettings}" Command="{Binding SwitchToSettingsCommand}" />          
         </MenuItem>
       </Menu>
     </DockPanel>

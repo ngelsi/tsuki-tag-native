@@ -55,6 +55,14 @@
           </StackPanel>
         </MenuItem.Header>
       </MenuItem>
+      <MenuItem Command="{Binding SwitchProviderCommand}" CommandParameter="Yande.re">
+        <MenuItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <ToggleSwitch IsChecked="{Binding YandereEnabled}" Command="{Binding SwitchProviderCommand}" CommandParameter="Yande.re"></ToggleSwitch>
+            <Label Content="Yande.re"></Label>
+          </StackPanel>
+        </MenuItem.Header>
+      </MenuItem>
       <MenuItem Header="" IsEnabled="False"></MenuItem>
       <MenuItem Header="Ratings" IsEnabled="False"></MenuItem>
       <Separator></Separator>

@@ -29,5 +29,7 @@ namespace TsukiTag
         public static MetadataOverviewViewModel MetadataOverviewViewModel => ViewModelLocator.GetDataContext<MetadataOverviewViewModel>();
         
         public static NotificationBarViewModel NotificationBarViewModel => ViewModelLocator.GetDataContext<NotificationBarViewModel>();
+        
+        public static SettingsViewModel SettingsViewModel => ViewModelLocator.GetDataContext<SettingsViewModel>();
     }
 }

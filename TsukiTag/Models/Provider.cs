@@ -12,6 +12,7 @@ namespace TsukiTag.Models
         public static Provider Gelbooru = new Provider() { Name = "Gelbooru" };
         public static Provider Konachan = new Provider() { Name = "Konachan" };
         public static Provider Danbooru = new Provider() { Name = "Danbooru" };
+        public static Provider Yandere = new Provider() { Name = "Yande.re" };
 
         public string Name { get; set; }
     }

@@ -24,6 +24,7 @@ namespace TsukiTag.ViewModels
         private bool gelbooruEnabled;
         private bool konachanEnabled;
         private bool danbooruEnabled;
+        private bool yandereEnabled;
 
         public ReactiveCommand<Unit, Unit> NextPageCommand { get; }
         public ReactiveCommand<Unit, Unit> PreviousPageCommand { get; }
@@ -68,6 +69,16 @@ namespace TsukiTag.ViewModels
             {
                 danbooruEnabled = value;
                 this.RaisePropertyChanged(nameof(DanbooruEnabled));
+            }
+        }
+
+        public bool YandereEnabled
+        {
+            get { return yandereEnabled; }
+            set
+            {
+                yandereEnabled = value;
+                this.RaisePropertyChanged(nameof(YandereEnabled));
             }
         }
 
@@ -201,6 +212,7 @@ namespace TsukiTag.ViewModels
                 GelbooruEnabled = currentFilter.Providers.Contains(Provider.Gelbooru.Name);
                 KonachanEnabled = currentFilter.Providers.Contains(Provider.Konachan.Name);
                 DanbooruEnabled = currentFilter.Providers.Contains(Provider.Danbooru.Name);
+                YandereEnabled = currentFilter.Providers.Contains(Provider.Yandere.Name);
             });
         }
 

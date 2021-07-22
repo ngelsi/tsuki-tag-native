@@ -44,12 +44,15 @@ namespace TsukiTag.Models
         public string Providers => Localizer.Get(nameof(Providers));
         public string AllTags => Localizer.Get(nameof(AllTags));
         public string Metadata => Localizer.Get(nameof(Metadata));
+
         public string Safe => Localizer.Get(nameof(Safe));
         public string Questionable => Localizer.Get(nameof(Questionable));
         public string Explicit => Localizer.Get(nameof(Explicit));
+
         public string NextPage => Localizer.Get(nameof(NextPage));
         public string PreviousPage => Localizer.Get(nameof(PreviousPage));
         public string Browse => Localizer.Get(nameof(Browse));
+
         public string PreviousPicture => Localizer.Get(nameof(PreviousPicture));
         public string NextPicture => Localizer.Get(nameof(NextPicture));
         public string OpenPicture => Localizer.Get(nameof(OpenPicture));
@@ -61,8 +64,12 @@ namespace TsukiTag.Models
         public string AddThisTagSearch => Localizer.Get(nameof(AddThisTagSearch));
         public string RemoveThisTagSearch => Localizer.Get(nameof(RemoveThisTagSearch));
         public string SetThisTagSearch => Localizer.Get(nameof(SetThisTagSearch));
+
         public string ToastProviderEnd => Localizer.Get(nameof(ToastProviderEnd));
         public string ToastProviderError => Localizer.Get(nameof(ToastProviderError));
         public string ToastProviderTagLimit2 => Localizer.Get(nameof(ToastProviderTagLimit2));        
+
+        public string NavigationOnline => Localizer.Get(nameof(NavigationOnline));        
+        public string NavigationSettings => Localizer.Get(nameof(NavigationSettings));
     }
 }

@@ -28,7 +28,7 @@ namespace TsukiTag.Models
             Ratings = new List<string>();
             Tags = new List<string>();
 
-            Limit = 30;
+            Limit = 25;
         }
     }
 

@@ -20,6 +20,7 @@ namespace TsukiTag.Dependencies
         private readonly IGelbooruPictureProvider gelbooruPictureProvider;
         private readonly IKonachanPictureProvider konachanPictureProvider;
         private readonly IDanbooruPictureProvider danbooruPictureProvider;
+        private readonly IYanderePictureProvider yanderePictureProvider;
 
         private readonly IPictureControl pictureControl;
         private readonly IProviderFilterControl providerFilterControl;
@@ -33,6 +34,7 @@ namespace TsukiTag.Dependencies
             IGelbooruPictureProvider gelbooruPictureProvider,
             IKonachanPictureProvider konachanPictureProvider,
             IDanbooruPictureProvider danbooruPictureProvider,
+            IYanderePictureProvider yanderePictureProvider,
 
             IProviderFilterControl providerFilterControl,
             IPictureControl pictureControl,
@@ -44,6 +46,7 @@ namespace TsukiTag.Dependencies
             this.gelbooruPictureProvider = gelbooruPictureProvider;
             this.konachanPictureProvider = konachanPictureProvider;
             this.danbooruPictureProvider = danbooruPictureProvider;
+            this.yanderePictureProvider = yanderePictureProvider;
 
             this.providerFilterControl = providerFilterControl;
             this.notificationControl = notificationControl;
@@ -63,7 +66,7 @@ namespace TsukiTag.Dependencies
         }
 
         private List<IOnlinePictureProviderElement> allProviders => new List<IOnlinePictureProviderElement>()
-            { safebooruPictureProvider, gelbooruPictureProvider, konachanPictureProvider, danbooruPictureProvider }
+            { safebooruPictureProvider, gelbooruPictureProvider, konachanPictureProvider, danbooruPictureProvider, yanderePictureProvider }
             .Where(p => !finishedProviders.Contains(p.Provider))
             .ToList();
 
@@ -132,7 +135,6 @@ namespace TsukiTag.Dependencies
                             }
                         }
                     }
-
                 }
             });
         }

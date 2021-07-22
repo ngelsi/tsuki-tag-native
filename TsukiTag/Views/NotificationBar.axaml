@@ -27,7 +27,7 @@
       <Setter Property="TextWrapping" Value="Wrap"></Setter>
     </Style>
   </UserControl.Styles>
-  <Border ToolTip.ShowDelay="300" ToolTip.Placement="Left" ToolTip.VerticalOffset="50" ToolTip.HorizontalOffset="-20" ToolTip.IsOpen="{Binding IsTooltipOpen}" DockPanel.Dock="Right">
+  <Border ToolTip.ShowDelay="300" ToolTip.Placement="Left" ToolTip.VerticalOffset="80" ToolTip.HorizontalOffset="-20" ToolTip.IsOpen="{Binding IsTooltipOpen}" DockPanel.Dock="Right">
     <ToolTip.Tip>
       <StackPanel Orientation="Vertical">
         <ItemsControl Items="{Binding Messages}">

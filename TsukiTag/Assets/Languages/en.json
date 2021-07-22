@@ -26,5 +26,8 @@
 
   "ToastProviderEnd": "No more results from provider {0}.",
   "ToastProviderError": "Something went wrong while getting pictures from {0}.",
-  "ToastProviderTagLimit2": "{0} only supports up to 2 tags per search."
+  "ToastProviderTagLimit2": "{0} only supports up to 2 tags per search.",
+
+  "NavigationOnline": "Browse online",
+  "NavigationSettings":  "Settings"
 }

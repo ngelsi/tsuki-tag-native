@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Avalonia;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,10 @@ namespace TsukiTag.Dependencies
 
         event EventHandler TemporaryMetadataOverviewEnd;
 
+        event EventHandler SwitchedToSettings;
+
+        event EventHandler SwitchedToOnlineBrowsing;
+
         Task SwitchToTagOverview();
 
         Task SwitchToMetadataOverview();
@@ -23,6 +28,10 @@ namespace TsukiTag.Dependencies
         Task EnforceMetadataOverview();
 
         Task StopEnforceMetadataOverview();
+
+        Task SwitchToSettings();
+
+        Task SwitchToOnlineBrowsing();
     }
 
     public class NavigationControl : INavigationControl
@@ -31,6 +40,8 @@ namespace TsukiTag.Dependencies
         public event EventHandler SwitchedToMetadataOverview;
         public event EventHandler TemporaryMetadataOverviewStart;
         public event EventHandler TemporaryMetadataOverviewEnd;
+        public event EventHandler SwitchedToSettings;
+        public event EventHandler SwitchedToOnlineBrowsing;
 
         public NavigationControl()
         {
@@ -66,6 +77,22 @@ namespace TsukiTag.Dependencies
             await Task.Run(() =>
             {
                 TemporaryMetadataOverviewEnd?.Invoke(this, EventArgs.Empty);
+            });
+        }
+
+        public async Task SwitchToSettings()
+        {
+            await Task.Run(() =>
+            {
+                SwitchedToSettings?.Invoke(this, EventArgs.Empty);
+            });
+        }
+
+        public async Task SwitchToOnlineBrowsing()
+        {
+            await Task.Run(() =>
+            {
+                SwitchedToOnlineBrowsing?.Invoke(this, EventArgs.Empty);
             });
         }
     }
