@@ -27,5 +27,7 @@ namespace TsukiTag
         public static OnlineBrowserViewModel OnlineBrowserViewModel => ViewModelLocator.GetDataContext<OnlineBrowserViewModel>();
 
         public static MetadataOverviewViewModel MetadataOverviewViewModel => ViewModelLocator.GetDataContext<MetadataOverviewViewModel>();
+        
+        public static NotificationBarViewModel NotificationBarViewModel => ViewModelLocator.GetDataContext<NotificationBarViewModel>();
     }
 }

@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="TsukiTag.Views.NotificationBar"
+              xmlns:local="using:TsukiTag.Views"
+             xmlns:converters="using:TsukiTag.Converters"
+             xmlns:ts="using:TsukiTag"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             DataContext="{x:Static ts:ViewModelIoc.NotificationBarViewModel}"
+             >
+  <UserControl.Styles>
+    <Style Selector="DockPanel">
+      <Setter Property="Background" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
+    </Style>
+    <Style Selector="ToolTip">
+      <Setter Property="Background" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
+    </Style>
+    <Style Selector="TextBlock">
+      <Setter Property="Foreground" Value="White"></Setter>      
+    </Style>
+    <Style Selector="TextBlock.main">
+      <Setter Property="Padding" Value="10"></Setter>
+      <Setter Property="Margin" Value="10 0 10 0"></Setter>
+      <Setter Property="Width" Value="250"></Setter>
+      <Setter Property="TextWrapping" Value="Wrap"></Setter>
+    </Style>
+  </UserControl.Styles>
+  <Border ToolTip.ShowDelay="300" ToolTip.Placement="Left" ToolTip.VerticalOffset="50" ToolTip.HorizontalOffset="-20" ToolTip.IsOpen="{Binding IsTooltipOpen}" DockPanel.Dock="Right">
+    <ToolTip.Tip>
+      <StackPanel Orientation="Vertical">
+        <ItemsControl Items="{Binding Messages}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Classes="main" Text="{Binding Text}"></TextBlock>
+                <Button Command="{Binding $parent[ItemsControl].DataContext.CloseToastMessageCommand}" CommandParameter="{Binding Id}" IsVisible="{Binding IsCloseable}" Margin="0 0 10 0" Classes="actionbutton">
+                  <i:Icon FontSize="12" Value="fa-times"></i:Icon>
+                </Button>
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </ToolTip.Tip>
+    <TextBlock></TextBlock>
+  </Border>
+</UserControl>

@@ -22,5 +22,9 @@
   "ClosePicture": "Close picture",
   "AddThisTagSearch": "Add this tag to search",
   "RemoveThisTagSearch": "Remove this tag from search",
-  "SetThisTagSearch":  "Set this tag as search"
+  "SetThisTagSearch": "Set this tag as search",
+
+  "ToastProviderEnd": "No more results from provider {0}.",
+  "ToastProviderError": "Something went wrong while getting pictures from {0}.",
+  "ToastProviderTagLimit2": "{0} only supports up to 2 tags per search."
 }

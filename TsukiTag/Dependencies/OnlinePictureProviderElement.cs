@@ -44,23 +44,30 @@ namespace TsukiTag.Dependencies
                 {
                     var pictures = await TransformRawData(filter, response.Content);
 
-                    result.Succeeded = true;                    
+                    result.Succeeded = true;
                     result.Pictures = pictures.DistinctBy(p => p.Id).DistinctBy(p => p.Md5)?.ToList();
                     result.ProviderEnd = result.Pictures.Count == 0;
                 }
                 else
                 {
-                    result.Succeeded = false;                    
+                    result.Succeeded = false;
                     result.ProviderEnd = true;
+
+                    OnNonOkResultReceived(response, filter, result);
                 }
             }
             catch (Exception ex)
             {
                 result.Succeeded = false;
-                result.ErrorCode = "search.httperror";
+                result.ErrorCode = "ToastProviderError";
             }
 
             return result;
+        }
+
+        protected virtual void OnNonOkResultReceived(IRestResponse response, ProviderFilterElement filter, ProviderResult result)
+        {
+
         }
     }
 }

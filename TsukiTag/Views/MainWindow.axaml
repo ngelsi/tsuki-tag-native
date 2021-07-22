@@ -21,7 +21,8 @@
 
   <DockPanel Margin="{Binding #MainWindow.OffScreenMargin}">
     <DockPanel DockPanel.Dock="Top">
-      <Menu VerticalAlignment="Top" HorizontalAlignment="Left">
+      <local:NotificationBar DockPanel.Dock="Right"></local:NotificationBar>
+      <Menu DockPanel.Dock="Left" VerticalAlignment="Top" HorizontalAlignment="Left">
         <MenuItem Header="TsukiTag">
           <MenuItem Header="New" InputGesture="CTRL + N" />
           <MenuItem Header="Open" />

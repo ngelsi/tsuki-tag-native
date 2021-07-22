@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,8 +83,8 @@ namespace TsukiTag.Dependencies.ProviderSpecific
                     var widthRatio = 150.0 / picture.Width;
                     var lowerRatio = heightRatio < widthRatio ? heightRatio : widthRatio;
 
-                    picture.PreviewHeight = (int) (picture.Height * lowerRatio);
-                    picture.PreviewWidth = (int) (picture.Width * lowerRatio);
+                    picture.PreviewHeight = (int)(picture.Height * lowerRatio);
+                    picture.PreviewWidth = (int)(picture.Width * lowerRatio);
 
                     if (!string.IsNullOrEmpty(picture.Md5))
                     {
@@ -95,6 +96,14 @@ namespace TsukiTag.Dependencies.ProviderSpecific
             { }
 
             return Task.FromResult(pictures);
+        }
+
+        protected override void OnNonOkResultReceived(IRestResponse response, ProviderFilterElement filter, ProviderResult result)
+        {
+            if (filter.Tags.Count > 2)
+            {
+                result.ErrorCode = "ToastProviderTagLimit2";
+            }
         }
     }
 }

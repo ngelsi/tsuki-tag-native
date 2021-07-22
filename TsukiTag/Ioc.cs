@@ -45,6 +45,7 @@ namespace TsukiTag
         public IProviderFilterControl OnlineProviderFilterControl => container.GetInstance<IProviderFilterControl>();
         public INavigationControl NavigationControl => container.GetInstance<INavigationControl>();
         public ILocalizer Localizer => container.GetInstance<ILocalizer>();
+        public INotificationControl NotificationControl => container.GetInstance<INotificationControl>();
 
         private Container CreateContainer()
         {
@@ -57,6 +58,7 @@ namespace TsukiTag
             container.Register<TagOverviewViewModel>(Lifestyle.Transient);
             container.Register<OnlineBrowserViewModel>(Lifestyle.Transient);
             container.Register<MetadataOverviewViewModel>(Lifestyle.Transient);
+            container.Register<NotificationBarViewModel>(Lifestyle.Transient);
 
             container.Register<IOnlinePictureProvider, OnlinePictureProvider>(Lifestyle.Singleton);
             container.Register<ISafebooruPictureProvider, SafebooruPictureProvider>(Lifestyle.Singleton);
@@ -69,6 +71,7 @@ namespace TsukiTag
             container.Register<INavigationControl, NavigationControl>(Lifestyle.Singleton);
             container.Register<IDbRepository, DbRepository>(Lifestyle.Singleton);
             container.Register<ILocalizer, Localizer>(Lifestyle.Singleton);
+            container.Register<INotificationControl, NotificationControl>(Lifestyle.Singleton);
 
             container.Verify();
 

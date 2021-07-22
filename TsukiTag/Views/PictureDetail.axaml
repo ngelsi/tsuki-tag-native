@@ -17,10 +17,10 @@
         <ExperimentalAcrylicMaterial TintColor="Black" MaterialOpacity="0.85" TintOpacity="1"></ExperimentalAcrylicMaterial>
       </ExperimentalAcrylicBorder.Material>
       <DockPanel Height="25">
-        <Button ToolTip.Tip="{Binding Language.ClosePicture}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Margin="0 0 5 0" Command="{Binding ClosePictureCommand}" HorizontalAlignment="Right" Classes="actionbutton" DockPanel.Dock="Right">
+        <Button ToolTip.Tip="{Binding Language.ClosePicture}" ToolTip.ShowDelay="0" ToolTip.Placement="Left" Margin="0 0 5 0" Command="{Binding ClosePictureCommand}" HorizontalAlignment="Right" Classes="actionbutton" DockPanel.Dock="Right">
           <i:Icon FontSize="14" Value="fa-times"></i:Icon>
         </Button>
-        <Button ToolTip.Tip="{Binding Language.OriginalView}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Margin="0 0 5 0" Command="{Binding SwitchDisplayModeCommand}" HorizontalAlignment="Right" Classes="actionbutton" DockPanel.Dock="Right">
+        <Button ToolTip.Tip="{Binding Language.OriginalView}" ToolTip.ShowDelay="0" ToolTip.Placement="Left" Margin="0 0 5 0" Command="{Binding SwitchDisplayModeCommand}" HorizontalAlignment="Right" Classes="actionbutton" DockPanel.Dock="Right">
           <i:Icon FontSize="14" Value="fa-window-maximize"></i:Icon>
         </Button>
       </DockPanel>

@@ -9,6 +9,7 @@ namespace TsukiTag.Models
 {
     public class Language
     {
+        private static Language instance;
         private ILocalizer localizer;
 
         public ILocalizer Localizer
@@ -21,6 +22,19 @@ namespace TsukiTag.Models
                 }
 
                 return localizer;
+            }
+        }
+
+        public static Language Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Language();
+                }
+
+                return instance;
             }
         }
 
@@ -47,5 +61,8 @@ namespace TsukiTag.Models
         public string AddThisTagSearch => Localizer.Get(nameof(AddThisTagSearch));
         public string RemoveThisTagSearch => Localizer.Get(nameof(RemoveThisTagSearch));
         public string SetThisTagSearch => Localizer.Get(nameof(SetThisTagSearch));
+        public string ToastProviderEnd => Localizer.Get(nameof(ToastProviderEnd));
+        public string ToastProviderError => Localizer.Get(nameof(ToastProviderError));
+        public string ToastProviderTagLimit2 => Localizer.Get(nameof(ToastProviderTagLimit2));        
     }
 }

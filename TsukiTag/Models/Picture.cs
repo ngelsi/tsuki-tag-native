@@ -247,14 +247,14 @@ namespace TsukiTag.Models
 
         public bool IsMedia
         {
-            get { return this.extension == "mp4" || this.extension == "webm" || this.extension == "gif" || this.extension == "mov"; }
+            get { return Extension == "mp4" || Extension == "webm" || Extension == "mov"; }
         }
 
         public bool IsJpg
         {
             get
             {
-                return this.extension == "jpg" || this.extension == "jpeg";
+                return Extension == "jpg" || Extension == "jpeg";
             }
         }
 

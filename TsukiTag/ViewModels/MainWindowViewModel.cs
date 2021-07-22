@@ -22,8 +22,8 @@ namespace TsukiTag.ViewModels
 
         public MainWindowViewModel(
         )
-        {                        
-            CurrentContent = new OnlineProvider();            
-        }        
+        {
+            CurrentContent = new OnlineProvider();
+        }
     }
 }

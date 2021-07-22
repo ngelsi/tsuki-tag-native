@@ -17,12 +17,15 @@ namespace TsukiTag.Dependencies
     public class OnlinePictureProvider : IOnlinePictureProvider
     {
         private readonly ISafebooruPictureProvider safebooruPictureProvider;
-        private readonly IProviderFilterControl providerFilterControl;
         private readonly IGelbooruPictureProvider gelbooruPictureProvider;
         private readonly IKonachanPictureProvider konachanPictureProvider;
         private readonly IDanbooruPictureProvider danbooruPictureProvider;
 
         private readonly IPictureControl pictureControl;
+        private readonly IProviderFilterControl providerFilterControl;
+        private readonly INotificationControl notificationControl;
+        private readonly ILocalizer localizer;
+
         private List<string> finishedProviders;
 
         public OnlinePictureProvider(
@@ -32,7 +35,9 @@ namespace TsukiTag.Dependencies
             IDanbooruPictureProvider danbooruPictureProvider,
 
             IProviderFilterControl providerFilterControl,
-            IPictureControl pictureControl
+            IPictureControl pictureControl,
+            INotificationControl notificationControl,
+            ILocalizer localizer
         )
         {
             this.safebooruPictureProvider = safebooruPictureProvider;
@@ -41,7 +46,9 @@ namespace TsukiTag.Dependencies
             this.danbooruPictureProvider = danbooruPictureProvider;
 
             this.providerFilterControl = providerFilterControl;
+            this.notificationControl = notificationControl;
             this.pictureControl = pictureControl;
+            this.localizer = localizer;
 
             this.providerFilterControl.PageChanged += OnPageChanged;
             this.providerFilterControl.FilterChanged += OnFilterChanged;
@@ -91,9 +98,19 @@ namespace TsukiTag.Dependencies
                 {
                     var result = await provider.GetPictures(filter.FilterElement);
 
-                    if (result.ProviderEnd)
+                    if (result.Pictures.Count == 0 && !string.IsNullOrEmpty(result.ErrorCode))
+                    {
+                        if (result.ProviderEnd)
+                        {
+                            finishedProviders.Add(provider.Provider);
+                        }
+                        
+                        notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(localizer.Get(result.ErrorCode), provider.Provider)));
+                    }
+                    else if (result.ProviderEnd)
                     {
                         finishedProviders.Add(provider.Provider);
+                        notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.Instance.ToastProviderEnd, provider.Provider)));
                     }
                     else
                     {
@@ -102,6 +119,11 @@ namespace TsukiTag.Dependencies
                             if (picture != null)
                             {
                                 if (!filter.Ratings.Contains(picture.Rating))
+                                {
+                                    continue;
+                                }
+
+                                if(picture.IsMedia)
                                 {
                                     continue;
                                 }
