@@ -127,7 +127,11 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                Tags = await pictureControl.GetTags();
+                try
+                {
+                    Tags = await pictureControl.GetTags();
+                }
+                catch { }
             });
         }
 
@@ -135,7 +139,11 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                Tags = await pictureControl.GetTags();
+                try
+                {
+                    Tags = await pictureControl.GetTags();
+                }
+                catch { }
             });
         }
 
@@ -143,7 +151,11 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                Tags = await pictureControl.GetTags();
+                try
+                {
+                    Tags = await pictureControl.GetTags();
+                }
+                catch { }
             });
         }
 

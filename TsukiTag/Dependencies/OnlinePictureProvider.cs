@@ -113,7 +113,7 @@ namespace TsukiTag.Dependencies
                     else if (result.ProviderEnd)
                     {
                         finishedProviders.Add(provider.Provider);
-                        notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.Instance.ToastProviderEnd, provider.Provider)));
+                        notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastProviderEnd, provider.Provider)));
                     }
                     else
                     {

@@ -1,7 +1,8 @@
 ﻿{
   "Providers": "Providers",
   "AllTags": "All tags",
-  "Metadata":  "Metadata",
+  "Metadata": "Metadata",
+  "Name": "Name",
 
   "Safe": "Safe",
   "Questionable": "Questionable",
@@ -11,6 +12,30 @@
   "PreviousPage": "Previous page",
 
   "Browse": "Browse",
+
+  "OnlineLists": "Online lists",
+  "OnlineListsDescription": "Online lists are a collection of images under a common name. The preview thumbnails and the metadata of the images will be saved, but the sample and original images will always be downloaded from the original provider. It is a good way of maintaining a collection of images without downloading them.\r\n\r\nKeep in mind that if the original provider decides to remove the image, then TsukiTag will not be able to re-download it from the provider. You can always take a look at the saved metadata to locate the original source though (if it was available).",
+  "ListIsDefault": "Default list",
+  "ListRemove": "Remove list",
+  "ListAdd": "Add list",
+  "ListFavorite": "Favorites",
+  "ListTagsToAdd": "Tag to add",
+  "ListTagsToAddDescription": "These tags will be added to the image metadata when you add it to this online list. Templating is supported for these tags.",
+  "ListTagsToRemove": "Tag to remove",
+  "ListTagsToRemoveDescription": "These tags will be removed from the image metadata when you add it to this online list. Templating is supported for these tags.",
+  "ListOptionalConditionTag": "Optional condition tag",
+  "ListOptionalConditionTagDescription": "When using the 'all eligible online lists' feature, if the image contains ANY of the optional condition tags listed below, the image will be added to this collection. If an online list does not have any optional condition tags, no image will be added to this online list with this feature.",
+  "ListMandatoryConditionTag": "Mandatory condition tag",
+  "ListMandatoryConditionTagDescription": "When using the 'all eligible online lists' feature, if the image contains ALL of the mandatory condition tags listed below, the image will be added to this collection.",
+  "List": "List",
+  "ListTagsNew": "Add new tag",
+  "ListTagsRemove": "Remove tag",
+  "TemplateDescription": "Template variables available (surround with #, e.g. #rating#):\r\n\r\n",
+  "SettingsCancel": "Cancel",
+  "SettingsSave": "Save",
+  "SettingsListNoName": "Please specify a name for all online lists before saving.",
+  "SettingsSaved": "Settings successfully saved.",
+  "SettingsSaveError":  "Something went wrong while saving your settings.",
 
   "PreviousPicture": "Previous selected picture",
   "NextPicture": "Next selected picture",
@@ -29,5 +54,5 @@
   "ToastProviderTagLimit2": "{0} only supports up to 2 tags per search.",
 
   "NavigationOnline": "Browse online",
-  "NavigationSettings":  "Settings"
+  "NavigationSettings": "Settings"
 }

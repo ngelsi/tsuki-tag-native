@@ -1,6 +1,9 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using ReactiveUI;
+using System;
+using System.Reactive;
 using TsukiTag.ViewModels;
 using TsukiTag.Views;
 
@@ -25,6 +28,7 @@ namespace TsukiTag
                 };
             }
 
+            RxApp.DefaultExceptionHandler = Observer.Create<Exception>(Console.WriteLine);
             base.OnFrameworkInitializationCompleted();
         }
     }

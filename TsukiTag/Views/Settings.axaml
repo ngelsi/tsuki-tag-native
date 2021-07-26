@@ -5,12 +5,207 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TsukiTag.Views.Settings"
              xmlns:local="using:TsukiTag.Views"
+             xmlns:model="using:TsukiTag.Models"
              xmlns:converters="using:TsukiTag.Converters"
              xmlns:ts="using:TsukiTag"
              xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              DataContext="{x:Static ts:ViewModelIoc.SettingsViewModel}"
              >
+  <UserControl.Styles>
+    <Style Selector="ToggleSwitch">
+      <Setter Property="OnContent" Value=""></Setter>
+      <Setter Property="OffContent" Value=""></Setter>
+    </Style>
+    <Style Selector="Label">
+      <Setter Property="Margin" Value="5 3 5 5"></Setter>
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="Padding" Value="5"></Setter>
+    </Style>
+    <Style Selector="TextBlock.primary">
+      <Setter Property="FontSize" Value="13"></Setter>
+      <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
+    </Style>
+    <Style Selector="TextBlock.primary:pointerover">
+      <Setter Property="Foreground" Value="White"></Setter>
+      <Setter Property="Cursor" Value="Hand"></Setter>
+    </Style>
+  </UserControl.Styles>
   <DockPanel>
-    <Label>ASDBASD</Label>
+    <StackPanel Margin="5" DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+      <Button Classes="form" Command="{Binding SettingsCancelledCommand}">
+        <StackPanel Orientation="Horizontal">
+          <i:Icon FontSize="14" Value="fa-times"></i:Icon>
+          <TextBlock FontSize="15" Margin="5 0 0 0" Text="{Binding Language.SettingsCancel}"></TextBlock>
+        </StackPanel>
+      </Button>
+      <Button Classes="formprimary" Command="{Binding SettingsSavedCommand}">
+        <StackPanel Orientation="Horizontal">
+          <i:Icon FontSize="14" Value="fa-check"></i:Icon>
+          <TextBlock FontSize="15" Margin="5 0 0 0" Text="{Binding Language.SettingsSave}"></TextBlock>
+        </StackPanel>
+      </Button>
+    </StackPanel>
+    <TabControl DockPanel.Dock="Top">
+      <TabItem>
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding Language.OnlineLists}"></TextBlock>
+            <Button ToolTip.Tip="{Binding Language.OnlineListsDescription}" ToolTip.ShowDelay="0" ToolTip.Placement="Bottom" Classes="actionbutton">
+              <i:Icon Margin="5 0 0 0" FontSize="14" Value="fa-question-circle"></i:Icon>
+            </Button>
+          </StackPanel>          
+        </TabItem.Header>
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top" Margin="0 5 0 5">
+            <Button Command="{Binding AddNewListCommand}" Classes="actionbutton" HorizontalAlignment="Left">
+              <StackPanel Orientation="Horizontal">
+                <i:Icon FontSize="14" Value="fa-plus"></i:Icon>
+                <TextBlock FontSize="15" Margin="5 0 0 0" Text="{Binding Language.ListAdd}"></TextBlock>
+              </StackPanel>
+            </Button>
+          </StackPanel>
+          <ScrollViewer DockPanel.Dock="Top" Margin="0 20 0 0">
+
+            <ItemsControl Items="{Binding OnlineLists}" DockPanel.Dock="Top">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel Orientation="Horizontal"></WrapPanel>
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border BorderBrush="DarkGray" BorderThickness="1" Padding="15 20 15 20" Margin="0 0 20 20">
+                    <Grid DockPanel.Dock="Top">
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                      </Grid.RowDefinitions>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="350"></ColumnDefinition>
+                        <ColumnDefinition Width="350"></ColumnDefinition>
+                      </Grid.ColumnDefinitions>
+
+                      <StackPanel Grid.Row="0" Grid.ColumnSpan="2" DockPanel.Dock="Top" Orientation="Horizontal">
+                        <TextBox Width="350" Text="{Binding Name}" Watermark="{x:Static model:Language.Name}"></TextBox>
+                        <ToggleSwitch IsChecked="{Binding IsDefault}" Command="{Binding $parent[ItemsControl].DataContext.SetToDefaultCommand}" CommandParameter="{Binding Id}" Margin="15 0 0 0"></ToggleSwitch>
+                        <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.ListIsDefault}"></TextBlock>
+                        <Button Command="{Binding $parent[ItemsControl].DataContext.RemoveListCommand}" CommandParameter="{Binding Id}" Margin="15 -2 0 0" ToolTip.Tip="{x:Static model:Language.ListRemove}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton" IsVisible="{Binding IsRemovable}">
+                          <i:Icon FontSize="15" Value="fa-trash"></i:Icon>
+                        </Button>
+                      </StackPanel>
+
+                      <DockPanel Grid.Row="1" Grid.Column="0" Margin="0 20 0 0">
+                        <DockPanel DockPanel.Dock="Top">
+                          <TextBox KeyDown="OnCurrentTagToAddKeyDown" Width="200" DockPanel.Dock="Left" HorizontalAlignment="Left" Text="{Binding CurrentTagToAdd}" Watermark="{x:Static model:Language.ListTagsToAdd}"></TextBox>
+                          <Button Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.ListTagsToAddDescription}" ToolTip.ShowDelay="0" ToolTip.Placement="Bottom" Classes="actionbutton">
+                            <i:Icon FontSize="14" Value="fa-question-circle"></i:Icon>
+                          </Button>
+                          <Button Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.PictureTemplateHelp}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                            <i:Icon FontSize="14" Value="fa-code"></i:Icon>
+                          </Button>
+                          <Button Command="{Binding $parent[ItemsControl].DataContext.AddTagsToAddCommand}" CommandParameter="{Binding Id}"  Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.ListTagsNew}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                            <i:Icon FontSize="14" Value="fa-plus"></i:Icon>
+                          </Button>
+                        </DockPanel>
+                        <ItemsControl Items="{Binding TagsToAdd}">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                              <StackPanel Orientation="Horizontal" Margin="0 15 0 0">
+                                <TextBlock Classes="primary" Text="{Binding}"></TextBlock>
+                                <Button Margin="5 0 0 0" HorizontalAlignment="Right" ToolTip.Tip="{x:Static model:Language.ListTagsRemove}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                                  <i:Icon PointerPressed="OnRemoveTagstoAddPressed" FontSize="12" Value="fa-trash"></i:Icon>
+                                </Button>
+                              </StackPanel>
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                      </DockPanel>
+
+                      <DockPanel Grid.Row="1" Grid.Column="1" Margin="0 20 0 0">
+                        <DockPanel DockPanel.Dock="Top">
+                          <TextBox KeyDown="OnCurrentTagToRemoveKeyDown" Width="200" DockPanel.Dock="Left" HorizontalAlignment="Left" Text="{Binding CurrentTagToRemove}" Watermark="{x:Static model:Language.ListTagsToRemove}"></TextBox>
+                          <Button Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.ListTagsToRemoveDescription}" ToolTip.ShowDelay="0" ToolTip.Placement="Bottom" Classes="actionbutton">
+                            <i:Icon FontSize="14" Value="fa-question-circle"></i:Icon>
+                          </Button>
+                          <Button Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.PictureTemplateHelp}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                            <i:Icon FontSize="14" Value="fa-code"></i:Icon>
+                          </Button>
+                          <Button Command="{Binding $parent[ItemsControl].DataContext.AddTagsToRemoveCommand}" CommandParameter="{Binding Id}" Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.ListTagsNew}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                            <i:Icon FontSize="14" Value="fa-plus"></i:Icon>
+                          </Button>
+                        </DockPanel>
+                        <ItemsControl Items="{Binding TagsToRemove}">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                              <StackPanel Orientation="Horizontal" Margin="0 15 0 0">
+                                <TextBlock Classes="primary" Text="{Binding}"></TextBlock>
+                                <Button Margin="5 0 0 0" HorizontalAlignment="Right" ToolTip.Tip="{x:Static model:Language.ListTagsRemove}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                                  <i:Icon PointerPressed="OnRemoveTagstoRemovePressed" FontSize="12" Value="fa-trash"></i:Icon>
+                                </Button>
+                              </StackPanel>
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                      </DockPanel>
+
+                      <DockPanel Grid.Row="2" Grid.Column="0" Margin="0 20 0 0">
+                        <DockPanel DockPanel.Dock="Top">
+                          <TextBox KeyDown="OnOptionalConditionTagKeyDown" Width="230" DockPanel.Dock="Left" HorizontalAlignment="Left" Text="{Binding CurrentOptionalConditionTag}" Watermark="{x:Static model:Language.ListOptionalConditionTag}"></TextBox>
+                          <Button Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.ListOptionalConditionTagDescription}" ToolTip.ShowDelay="0" ToolTip.Placement="Bottom" Classes="actionbutton">
+                            <i:Icon FontSize="14" Value="fa-question-circle"></i:Icon>
+                          </Button>
+                          <Button Command="{Binding $parent[ItemsControl].DataContext.AddOptionalConditionTagCommand}" CommandParameter="{Binding Id}"  Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.ListTagsNew}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                            <i:Icon FontSize="14" Value="fa-plus"></i:Icon>
+                          </Button>
+                        </DockPanel>
+                        <ItemsControl Items="{Binding OptionalConditionTags}">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                              <StackPanel Orientation="Horizontal" Margin="0 15 0 0">
+                                <TextBlock Classes="primary" Text="{Binding}"></TextBlock>
+                                <Button Margin="5 0 0 0" HorizontalAlignment="Right" ToolTip.Tip="{x:Static model:Language.ListTagsRemove}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                                  <i:Icon PointerPressed="OnRemoveOptionalConditionTagPressed" FontSize="12" Value="fa-trash"></i:Icon>
+                                </Button>
+                              </StackPanel>
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                      </DockPanel>
+
+                      <DockPanel Grid.Row="2" Grid.Column="1" Margin="0 20 0 0">
+                        <DockPanel DockPanel.Dock="Top">
+                          <TextBox KeyDown="OnMandatoryConditionTagKeyDown" Width="230" DockPanel.Dock="Left" HorizontalAlignment="Left" Text="{Binding CurrentMandatoryConditionTag}" Watermark="{x:Static model:Language.ListMandatoryConditionTag}"></TextBox>
+                          <Button Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.ListMandatoryConditionTagDescription}" ToolTip.ShowDelay="0" ToolTip.Placement="Bottom" Classes="actionbutton">
+                            <i:Icon FontSize="14" Value="fa-question-circle"></i:Icon>
+                          </Button>
+                          <Button Command="{Binding $parent[ItemsControl].DataContext.AddMandatoryConditionTagCommand}" CommandParameter="{Binding Id}"  Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.ListTagsNew}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                            <i:Icon FontSize="14" Value="fa-plus"></i:Icon>
+                          </Button>
+                        </DockPanel>
+                        <ItemsControl Items="{Binding MandatoryConditionTags}">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                              <StackPanel Orientation="Horizontal" Margin="0 15 0 0">
+                                <TextBlock Classes="primary" Text="{Binding}"></TextBlock>
+                                <Button Margin="5 0 0 0" HorizontalAlignment="Right" ToolTip.Tip="{x:Static model:Language.ListTagsRemove}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                                  <i:Icon PointerPressed="OnRemoveMandatoryConditionTagPressed" FontSize="12" Value="fa-trash"></i:Icon>
+                                </Button>
+                              </StackPanel>
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                      </DockPanel>
+
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </DockPanel>        
+      </TabItem>
+    </TabControl>
   </DockPanel>
 </UserControl>

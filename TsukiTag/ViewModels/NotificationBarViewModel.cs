@@ -80,7 +80,11 @@ namespace TsukiTag.ViewModels
             {
                 this.timeoutTimer.Stop();
 
-                Messages.Add(e);
+                if(!messages.Any(m => m.Id == e.Id))
+                {
+                    Messages.Add(e);
+                }
+
                 IsTooltipOpen = true;
 
                 this.timeoutTimer.Start();

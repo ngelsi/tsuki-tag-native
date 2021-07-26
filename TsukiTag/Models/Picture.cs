@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media.Imaging;
+using LiteDB;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -219,12 +220,14 @@ namespace TsukiTag.Models
             }
         }
 
+        [BsonIgnore]
         public Bitmap PreviewImage
         {
             get { return previewImage; }
             set { previewImage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PreviewImage))); }
         }
 
+        [BsonIgnore]
         public Bitmap SampleImage
         {
             get { return sampleImage; }
@@ -336,19 +339,6 @@ namespace TsukiTag.Models
         public override bool Equals(object? obj)
         {
             return (obj as Picture)?.Md5 == Md5;
-        }
-    }
-
-    public class PictureComparer : IEqualityComparer<Picture>
-    {
-        public bool Equals(Picture? x, Picture? y)
-        {
-            return x?.Md5 == y?.Md5;
-        }
-
-        public int GetHashCode([DisallowNull] Picture obj)
-        {
-            return obj.GetHashCode();
         }
     }
 }

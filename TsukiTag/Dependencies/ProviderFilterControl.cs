@@ -180,7 +180,7 @@ namespace TsukiTag.Dependencies
                 if (!string.IsNullOrEmpty(provider) && currentFilter.Providers.Contains(provider))
                 {
                     currentFilter.Providers.Remove(provider);
-                    ApplyBroadcastProviderChanges();                    
+                    ApplyBroadcastProviderChanges();
                 }
             });
         }
@@ -195,10 +195,10 @@ namespace TsukiTag.Dependencies
             await Task.Run(() =>
             {
                 var session = dbRepository.ProviderSession.Get(ProviderSession.OnlineProviderSession);
-                if(session != null)
+                if (session != null)
                 {
                     session.Providers = currentFilter.Providers.ToArray();
-                    session.Ratings = currentFilter.Ratings.ToArray();                    
+                    session.Ratings = currentFilter.Ratings.ToArray();
 
                     dbRepository.ProviderSession.AddOrUpdate(session);
                 }
@@ -210,31 +210,9 @@ namespace TsukiTag.Dependencies
         private void InitializeFilter()
         {
             var session = dbRepository.ProviderSession.Get(ProviderSession.OnlineProviderSession);
-            if (session == null)
-            {
-                session = new ProviderSession();
-
-                currentFilter = new ProviderFilter();
-                currentFilter.Providers.Add(Provider.Safebooru.Name);
-                currentFilter.Providers.Add(Provider.Gelbooru.Name);
-                currentFilter.Providers.Add(Provider.Konachan.Name);
-                currentFilter.Providers.Add(Provider.Danbooru.Name);
-                currentFilter.Providers.Add(Provider.Yandere.Name);
-
-                currentFilter.Ratings.Add(Rating.Safe.Name);
-
-                session.Ratings = currentFilter.Ratings.ToArray();
-                session.Providers = currentFilter.Providers.ToArray();
-                session.Context = ProviderSession.OnlineProviderSession;
-
-                dbRepository.ProviderSession.AddOrUpdate(session);
-            }
-            else
-            {
-                currentFilter = new ProviderFilter();
-                currentFilter.Providers.AddRange(session.Providers);
-                currentFilter.Ratings.AddRange(session.Ratings);
-            }
+            currentFilter = new ProviderFilter();
+            currentFilter.Providers.AddRange(session.Providers);
+            currentFilter.Ratings.AddRange(session.Ratings);
         }
     }
 }

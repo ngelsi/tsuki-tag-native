@@ -11,33 +11,7 @@
              x:Class="TsukiTag.Views.OnlineProvider">
   <UserControl.Styles>  
 
-    <Style Selector="TabControl /template/ ItemsPresenter#PART_ItemsPresenter">
-      <Setter Property="Margin" Value="0,0,0,10"></Setter>
-    </Style>
 
-    <Style Selector="TabItem">
-      <Setter Property="Margin" Value="0"></Setter>      
-      <Setter Property="Foreground" Value="White"></Setter>
-      <Setter Property="FontSize" Value="15"></Setter>
-      
-      <Setter Property="Margin" Value="5 0 0 0"/>
-      <Setter Property="Padding" Value="5 0 0 0"/>      
-    </Style>
-
-    <Style Selector="TabItem /template/ Border#PART_LayoutRoot">
-      <Setter Property="Height" Value="39"></Setter>
-    </Style>
-    
-    <Style Selector="TabItem:selected">
-      <Setter Property="Foreground" Value="White"/>
-      <Setter Property="Background" Value="Black"></Setter>
-      <Setter Property="FontWeight" Value="Bold"></Setter>
-    </Style> 
-
-    <Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">      
-      <Setter Property="BorderThickness" Value="1"></Setter>
-      <Setter Property="BorderBrush" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>      
-    </Style>  
     
   </UserControl.Styles>
   <DockPanel DockPanel.Dock="Top">
