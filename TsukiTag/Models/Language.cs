@@ -32,6 +32,7 @@ namespace TsukiTag.Models
         public static string AllTags => Localizer.Get(nameof(AllTags));
         public static string Metadata => Localizer.Get(nameof(Metadata));
         public static string Name => Localizer.Get(nameof(Name));
+        public static string All => Localizer.Get(nameof(All));
 
         public static string Safe => Localizer.Get(nameof(Safe));
         public static string Questionable => Localizer.Get(nameof(Questionable));
@@ -43,6 +44,7 @@ namespace TsukiTag.Models
         public static string Browse => Localizer.Get(nameof(Browse));
 
         public static string OnlineLists => Localizer.Get(nameof(OnlineLists));
+        public static string OnlineList => Localizer.Get(nameof(OnlineList));
         public static string OnlineListsDescription => Localizer.Get(nameof(OnlineListsDescription));
         public static string ListIsDefault => Localizer.Get(nameof(ListIsDefault));
         public static string ListRemove => Localizer.Get(nameof(ListRemove));
@@ -66,6 +68,19 @@ namespace TsukiTag.Models
         public static string SettingsListNoName => Localizer.Get(nameof(SettingsListNoName));
         public static string SettingsSaved => Localizer.Get(nameof(SettingsSaved));
         public static string SettingsSaveError => Localizer.Get(nameof(SettingsSaveError));
+
+        public static string ActionOnlineLists => Localizer.Get(nameof(ActionOnlineLists));
+        public static string ActionAddToDefault => Localizer.Get(nameof(ActionAddToDefault));
+        public static string ActionAddToEligible => Localizer.Get(nameof(ActionAddToEligible));
+        public static string ActionAddTo => Localizer.Get(nameof(ActionAddTo));
+        public static string ActionRemoveFromAll => Localizer.Get(nameof(ActionRemoveFromAll));
+        public static string ActionRemoveFrom => Localizer.Get(nameof(ActionRemoveFrom));
+        public static string ActionGenericError => Localizer.Get(nameof(ActionGenericError));
+        public static string ActionRemoveFromAllSuccess => Localizer.Get(nameof(ActionRemoveFromAllSuccess));
+        public static string ActionRemoveFromSuccess => Localizer.Get(nameof(ActionRemoveFromSuccess));
+        public static string ActionAddToAllSuccess => Localizer.Get(nameof(ActionAddToAllSuccess));
+        public static string ActionAddToSuccess => Localizer.Get(nameof(ActionAddToSuccess));
+        public static string ActionAddToEligibleSuccess => Localizer.Get(nameof(ActionAddToEligibleSuccess));
 
 
         public static string PreviousPicture => Localizer.Get(nameof(PreviousPicture));

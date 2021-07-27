@@ -46,6 +46,7 @@ namespace TsukiTag
         public INavigationControl NavigationControl => container.GetInstance<INavigationControl>();
         public ILocalizer Localizer => container.GetInstance<ILocalizer>();
         public INotificationControl NotificationControl => container.GetInstance<INotificationControl>();
+        public IDbRepository DbRepository => container.GetInstance<IDbRepository>();
 
         private Container CreateContainer()
         {

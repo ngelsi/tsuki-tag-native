@@ -18,10 +18,21 @@ namespace TsukiTag.Dependencies
         Task<Stream> DownloadImageStream(string url);
 
         Task<Bitmap> DownloadBitmap(string url);
+
+        Task<Bitmap> DownloadBitmap(string url, string md5);
     }
 
     public class PictureDownloader : IPictureDownloader
     {
+        private readonly IDbRepository dbRepository;
+
+        public PictureDownloader(
+            IDbRepository dbRepository
+        )
+        {
+            this.dbRepository = dbRepository;
+        }
+
         public async Task<byte[]> DownloadImageBytes(string url)
         {
             using (var client = new WebClient())
@@ -54,7 +65,7 @@ namespace TsukiTag.Dependencies
             {
                 using (var stream = await client.OpenReadTaskAsync(new Uri(url)))
                 {
-                    using(var ms = new MemoryStream())
+                    using (var ms = new MemoryStream())
                     {
                         stream.CopyTo(ms);
                         ms.Position = 0;
@@ -63,6 +74,18 @@ namespace TsukiTag.Dependencies
                     }
                 }
             }
+        }
+
+        public async Task<Bitmap> DownloadBitmap(string url, string md5)
+        {
+            var bitmap = this.dbRepository.ThumbnailStorage.FindThumbnail(md5);
+            if (bitmap != null)
+            {
+                return bitmap;
+            }
+
+            bitmap = await DownloadBitmap(url);
+            return bitmap;
         }
     }
 }

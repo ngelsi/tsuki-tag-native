@@ -14,6 +14,10 @@ namespace TsukiTag.Dependencies
     {
         List<OnlineList> GetAll();
 
+        OnlineList Get(Guid id);
+
+        OnlineList GetDefault();
+
         void AddOrUpdate(List<OnlineList> lists);
     }
 
@@ -23,17 +27,33 @@ namespace TsukiTag.Dependencies
 
         private class OnlineListDb : IOnlineListDb
         {
+            public OnlineList Get(Guid id)
+            {
+                using (var db = new LiteDatabase(MetadataRepositoryPath))
+                {
+                    return db.GetCollection<OnlineList>().FindOne(l => l.Id == id);
+                }
+            }
+
+            public OnlineList GetDefault()
+            {
+                using (var db = new LiteDatabase(MetadataRepositoryPath))
+                {
+                    return db.GetCollection<OnlineList>().FindOne(l => l.IsDefault);
+                }
+            }
+
             public void AddOrUpdate(List<OnlineList> lists)
             {
-                using(var db = new LiteDatabase(MetadataRepositoryPath))
+                using (var db = new LiteDatabase(MetadataRepositoryPath))
                 {
                     var coll = db.GetCollection<OnlineList>();
-                    var allPreviousLists = coll.Query().ToList();                    
+                    var allPreviousLists = coll.Query().ToList();
 
-                    foreach(var list in lists)
+                    foreach (var list in lists)
                     {
                         var dbList = coll.FindOne(l => l.Id == list.Id);
-                        if(dbList == null)
+                        if (dbList == null)
                         {
                             coll.Insert(list);
                         }

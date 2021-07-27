@@ -3,6 +3,7 @@
   "AllTags": "All tags",
   "Metadata": "Metadata",
   "Name": "Name",
+  "All": "All",
 
   "Safe": "Safe",
   "Questionable": "Questionable",
@@ -14,6 +15,7 @@
   "Browse": "Browse",
 
   "OnlineLists": "Online lists",
+  "OnlineList": "Online list",
   "OnlineListsDescription": "Online lists are a collection of images under a common name. The preview thumbnails and the metadata of the images will be saved, but the sample and original images will always be downloaded from the original provider. It is a good way of maintaining a collection of images without downloading them.\r\n\r\nKeep in mind that if the original provider decides to remove the image, then TsukiTag will not be able to re-download it from the provider. You can always take a look at the saved metadata to locate the original source though (if it was available).",
   "ListIsDefault": "Default list",
   "ListRemove": "Remove list",
@@ -35,7 +37,20 @@
   "SettingsSave": "Save",
   "SettingsListNoName": "Please specify a name for all online lists before saving.",
   "SettingsSaved": "Settings successfully saved.",
-  "SettingsSaveError":  "Something went wrong while saving your settings.",
+  "SettingsSaveError": "Something went wrong while saving your settings.",
+
+  "ActionOnlineLists": "Online lists",
+  "ActionAddToDefault": "Add to default",
+  "ActionAddToEligible": "Add to eligible",
+  "ActionAddTo": "Add to ...",
+  "ActionRemoveFromAll": "Remove from all",
+  "ActionRemoveFrom": "Remove from ...",
+  "ActionGenericError": "Something went wrong processing the operation.",
+  "ActionRemoveFromAllSuccess": "Image removed from all {0}.",
+  "ActionRemoveFromSuccess": "Image removed from {0} '{1}'",
+  "ActionAddToAllSuccess": "Image added to all {0}.",
+  "ActionAddToSuccess": "Image added to {0} '{1}'",
+  "ActionAddToEligibleSuccess": "Image added to all eligible {0}",
 
   "PreviousPicture": "Previous selected picture",
   "NextPicture": "Next selected picture",

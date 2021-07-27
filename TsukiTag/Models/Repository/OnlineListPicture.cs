@@ -8,10 +8,12 @@ namespace TsukiTag.Models.Repository
 {
     public class OnlineListPicture
     {
-        public string ListId { get; set; }
+        public Guid Id { get; set; }
+
+        public Guid ListId { get; set; }
 
         public string Md5 { get; set; }
 
-        public Picture Picture { get; set; }        
+        public Picture Picture { get; set; }
     }
 }

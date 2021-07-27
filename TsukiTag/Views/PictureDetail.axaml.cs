@@ -19,7 +19,9 @@ namespace TsukiTag.Views
 
             DataContext = new PictureDetailViewModel(
                 picture,
-                Ioc.SimpleIoc.PictureControl
+                Ioc.SimpleIoc.PictureControl,
+                Ioc.SimpleIoc.DbRepository,
+                Ioc.SimpleIoc.NotificationControl
             );
         }
 

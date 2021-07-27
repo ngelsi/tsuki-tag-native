@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="using:TsukiTag.Views"
+             xmlns:model="using:TsukiTag.Models"
              xmlns:converters="using:TsukiTag.Converters"
              xmlns:ts="using:TsukiTag"
              xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
@@ -17,6 +18,17 @@
         <ExperimentalAcrylicMaterial TintColor="Black" MaterialOpacity="0.85" TintOpacity="1"></ExperimentalAcrylicMaterial>
       </ExperimentalAcrylicBorder.Material>
       <DockPanel Height="25">
+        <Menu Items="{Binding OnlineListMenus}">
+          <Menu.Styles>
+            <Style Selector="MenuItem">
+              <Setter Property="Header" Value="{Binding Header}"/>
+              <Setter Property="Items" Value="{Binding Items}"/>
+              <Setter Property="IsEnabled" Value="{Binding IsEnabled}"></Setter>
+              <Setter Property="Command" Value="{Binding Command}"/>
+              <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+            </Style>
+          </Menu.Styles>
+        </Menu>
         <Button ToolTip.Tip="{Binding Language.ClosePicture}" ToolTip.ShowDelay="0" ToolTip.Placement="Left" Margin="0 0 5 0" Command="{Binding ClosePictureCommand}" HorizontalAlignment="Right" Classes="actionbutton" DockPanel.Dock="Right">
           <i:Icon FontSize="14" Value="fa-times"></i:Icon>
         </Button>

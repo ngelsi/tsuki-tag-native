@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using LiteDB;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -221,6 +222,7 @@ namespace TsukiTag.Models
         }
 
         [BsonIgnore]
+        [JsonIgnore]
         public Bitmap PreviewImage
         {
             get { return previewImage; }
@@ -228,6 +230,7 @@ namespace TsukiTag.Models
         }
 
         [BsonIgnore]
+        [JsonIgnore]
         public Bitmap SampleImage
         {
             get { return sampleImage; }
@@ -330,6 +333,11 @@ namespace TsukiTag.Models
             {
                 Tags = string.Join(' ', TagList.Where(t => t != tag).Distinct());
             }
+        }
+
+        public Picture MetadatawiseClone()
+        {
+            return JsonConvert.DeserializeObject<Picture>(JsonConvert.SerializeObject(this));
         }
 
         public Picture()

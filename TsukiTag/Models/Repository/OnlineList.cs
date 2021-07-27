@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TsukiTag.Extensions;
 
 namespace TsukiTag.Models.Repository
 {
@@ -138,6 +139,43 @@ namespace TsukiTag.Models.Repository
             {
                 return Id != DefaultFavoriteList && !IsDefault;
             }
+        }
+
+        public bool IsEligible(Picture picture)
+        {
+            return optionalConditionTags?.Any(t => picture.TagList.Contains(t)) == true ||
+                   mandatoryConditionTags?.All(t => picture.TagList.Contains(t)) == true;
+        }
+
+        public Picture ProcessPicture(Picture picture)
+        {
+            if (TagsToAdd != null && TagsToAdd?.Any() == true)
+            {
+                foreach (var tag in TagsToAdd)
+                {
+                    var check = tag.ReplaceProperties(picture);
+
+                    if (!picture.TagList.Contains(check))
+                    {
+                        picture.AddTag(check);
+                    }
+                }
+            }
+
+            if (TagsToRemove != null && TagsToRemove?.Any() == true)
+            {
+                foreach (var tag in TagsToRemove)
+                {
+                    var check = tag.ReplaceProperties(picture);
+
+                    if (picture.TagList.Contains(check))
+                    {
+                        picture.RemoveTag(check);
+                    }
+                }
+            }
+
+            return picture;
         }
     }
 }

@@ -95,7 +95,8 @@ namespace TsukiTag.Views
 
         private void ImageGotPress(object sender, PointerPressedEventArgs e)
         {
-            if (!e.GetCurrentPoint(this).Properties.IsMiddleButtonPressed)
+            if (!e.GetCurrentPoint(this).Properties.IsMiddleButtonPressed &&
+                !e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
             {
                 var picture = ((sender as Image)?.DataContext as Picture);
                 if (picture != null)
