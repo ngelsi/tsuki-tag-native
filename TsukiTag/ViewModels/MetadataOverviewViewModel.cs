@@ -11,14 +11,17 @@ using TsukiTag.Dependencies;
 using TsukiTag.Models;
 namespace TsukiTag.ViewModels
 {
-    public class MetadataOverviewViewModel : ViewModelBase
+    public class MetadataOverviewViewModel : ViewModelCollectionHandlerBase
     {
         private readonly IPictureControl pictureControl;
         private readonly IProviderFilterControl providerFilterControl;
         private readonly INavigationControl navigationControl;
+        private readonly IDbRepository dbRepository;
 
         private string filterString;
         private int currentPictureIndex;
+        private ObservableCollection<MenuItemViewModel> thisImageMenus;
+        private ObservableCollection<MenuItemViewModel> selectionMenus;
 
         public ObservableCollection<Picture> SelectedPictures { get; set; }
 
@@ -76,23 +79,54 @@ namespace TsukiTag.ViewModels
 
         public string CurrentPictureIndexDisplay => (currentPictureIndex + 1).ToString();
 
+        public ObservableCollection<MenuItemViewModel> ThisImageMenus
+        {
+            get { return thisImageMenus; }
+            set
+            {
+                thisImageMenus = value;
+                this.RaisePropertyChanged(nameof(ThisImageMenus));
+            }
+        }
+
+        public ObservableCollection<MenuItemViewModel> SelectionMenus
+        {
+            get { return selectionMenus; }
+            set
+            {
+                selectionMenus = value;
+                this.RaisePropertyChanged(nameof(SelectionMenus));
+            }
+        }
+
         public ReactiveCommand<Unit, Unit> PreviousPictureCommand { get; set; }
         public ReactiveCommand<Unit, Unit> NextPictureCommand { get; set; }
         public ReactiveCommand<Unit, Unit> DeselectPictureCommand { get; set; }
         public ReactiveCommand<Unit, Unit> OpenPictureCommand { get; set; }
         public ReactiveCommand<Unit, Unit> SwitchToTabOverviewCommand { get; set; }
 
+        public ReactiveCommand<Unit, Unit> SelectionAddToDefaultListCommand { get; protected set; }
+        public ReactiveCommand<Guid, Unit> SelectionAddToSpecificListCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SelectionAddToEligibleListsCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SelectionAddToAllListsCommand { get; protected set; }
+        public ReactiveCommand<Guid, Unit> SelectionRemoveFromSpecificListCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SelectionRemoveFromAllListCommand { get; protected set; }
+
+
         public MetadataOverviewViewModel(
             IPictureControl pictureControl,
             IProviderFilterControl providerFilterControl,
-            INavigationControl navigationControl
-        )
+            INavigationControl navigationControl,
+            INotificationControl notificationControl,
+            IDbRepository dbRepository
+        ) : base(dbRepository, notificationControl)
         {
             this.SelectedPictures = new ObservableCollection<Picture>();
 
             this.pictureControl = pictureControl;
             this.providerFilterControl = providerFilterControl;
             this.navigationControl = navigationControl;
+            this.dbRepository = dbRepository;
 
             this.pictureControl.PictureSelected += OnPictureSelected;
             this.pictureControl.PictureDeselected += OnPictureDeselected;
@@ -121,6 +155,96 @@ namespace TsukiTag.ViewModels
             this.SwitchToTabOverviewCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 this.OnSwitchToTagOverview();
+            });
+
+            this.AddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnAddToDefaulList(CurrentPicture);
+            });
+
+            this.AddToSpecificListCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                OnAddToSpecificList(id, CurrentPicture);
+            });
+
+            this.AddToEligibleListsCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnAddToEligibleLists(CurrentPicture);
+            });
+
+            this.AddToAllListsCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnAddToAllLists(CurrentPicture);
+            });
+
+            this.RemoveFromSpecificListCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                OnRemoveFromSpecificList(id, CurrentPicture);
+            });
+
+            this.RemoveFromAllListCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnRemoveFromAllLists(CurrentPicture);
+            });
+
+            this.SelectionAddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                foreach(var picture in SelectedPictures.ToList())
+                {
+                    await OnAddToDefaulList(picture, false);
+                }                
+
+                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionSelectionActionSuccess));
+            });
+
+            this.SelectionAddToSpecificListCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                foreach (var picture in SelectedPictures.ToList())
+                {
+                    await OnAddToSpecificList(id, picture, false);
+                }
+
+                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionSelectionActionSuccess));
+            });
+
+            this.SelectionAddToEligibleListsCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                foreach (var picture in SelectedPictures.ToList())
+                {
+                    await OnAddToEligibleLists(picture, false);
+                }
+
+                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionSelectionActionSuccess));
+            });
+
+            this.SelectionAddToAllListsCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                foreach (var picture in SelectedPictures.ToList())
+                {
+                    await OnAddToAllLists(picture, false);
+                }
+
+                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionSelectionActionSuccess));
+            });
+
+            this.SelectionRemoveFromSpecificListCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                foreach (var picture in SelectedPictures.ToList())
+                {
+                    await OnRemoveFromSpecificList(id, picture, false);
+                }
+
+                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionSelectionActionSuccess));
+            });
+
+            this.SelectionRemoveFromAllListCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                foreach (var picture in SelectedPictures.ToList())
+                {
+                    await OnRemoveFromAllLists(picture, false);
+                }
+
+                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionSelectionActionSuccess));
             });
         }
 
@@ -271,6 +395,11 @@ namespace TsukiTag.ViewModels
                     CurrentPictureIndex = SelectedPictures.Count - 1;
                 }
 
+                if(thisImageMenus == null || selectionMenus == null)
+                {
+                    Reinitialize();
+                }
+
                 this.RaisePropertyChanged(nameof(CurrentPicture));
                 this.RaisePropertyChanged(nameof(SelectedPictures));
                 this.RaisePropertyChanged(nameof(SelectedPictureCount));
@@ -279,6 +408,146 @@ namespace TsukiTag.ViewModels
                 this.RaisePropertyChanged(nameof(HasMultipleSelectedPicture));
                 this.RaisePropertyChanged(nameof(CurrentPictureIndexDisplay));
             });
+        }
+
+        private ObservableCollection<MenuItemViewModel> GetThisImageMenus()
+        {
+            var menus = new MenuItemViewModel();
+            var allLists = this.dbRepository.OnlineList.GetAll();
+
+            menus.Header = Language.ActionThisImage;
+
+            var onlineListMenus = new MenuItemViewModel();
+            onlineListMenus.Header = Language.ActionOnlineLists;
+            onlineListMenus.Items = new List<MenuItemViewModel>() {
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = $"{Language.ActionAddToDefault} ({allLists.FirstOrDefault(s => s.IsDefault)?.Name})",
+                        Command = AddToDefaultListCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionAddToEligible,
+                        Command = AddToEligibleListsCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionAddTo,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = AddToAllListsCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allLists.Select(l => new MenuItemViewModel() { Header = l.Name, Command = AddToSpecificListCommand, CommandParameter = l.Id })))
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = "-"
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRemoveFromAll,
+                        Command = RemoveFromAllListCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRemoveFrom,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = RemoveFromAllListCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allLists.Select(l => new MenuItemViewModel() { Header = l.Name, Command = RemoveFromSpecificListCommand,  CommandParameter = l.Id }))),
+                    }
+                }
+            };
+
+            menus.Items = new List<MenuItemViewModel>()
+            {
+                {
+                    onlineListMenus
+                }
+            };
+
+            return new ObservableCollection<MenuItemViewModel>() { menus };
+        }
+
+        private ObservableCollection<MenuItemViewModel> GetSelectionMenus()
+        {
+            var menus = new MenuItemViewModel();
+            var allLists = this.dbRepository.OnlineList.GetAll();
+
+            menus.Header = Language.ActionSelection;
+
+            var onlineListMenus = new MenuItemViewModel();
+            onlineListMenus.Header = Language.ActionOnlineLists;
+            onlineListMenus.Items = new List<MenuItemViewModel>() {
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = $"{Language.ActionAddToDefault} ({allLists.FirstOrDefault(s => s.IsDefault)?.Name})",
+                        Command = SelectionAddToDefaultListCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionAddToEligible,
+                        Command = SelectionAddToEligibleListsCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionAddTo,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = SelectionAddToAllListsCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allLists.Select(l => new MenuItemViewModel() { Header = l.Name, Command = SelectionAddToSpecificListCommand, CommandParameter = l.Id })))
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = "-"
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRemoveFromAll,
+                        Command = SelectionRemoveFromAllListCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRemoveFrom,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = SelectionRemoveFromAllListCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allLists.Select(l => new MenuItemViewModel() { Header = l.Name, Command = SelectionRemoveFromSpecificListCommand,  CommandParameter = l.Id }))),
+                    }
+                }
+            };
+
+            menus.Items = new List<MenuItemViewModel>()
+            {
+                {
+                    onlineListMenus
+                }
+            };
+
+            return new ObservableCollection<MenuItemViewModel>() { menus };
+        }
+
+        public override void Reinitialize()
+        {
+            this.ThisImageMenus = GetThisImageMenus();
+            this.SelectionMenus = GetSelectionMenus();
         }
     }
 }

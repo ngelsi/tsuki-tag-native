@@ -50,7 +50,10 @@
   "ActionRemoveFromSuccess": "Image removed from {0} '{1}'",
   "ActionAddToAllSuccess": "Image added to all {0}.",
   "ActionAddToSuccess": "Image added to {0} '{1}'",
-  "ActionAddToEligibleSuccess": "Image added to all eligible {0}",
+  "ActionAddToEligibleSuccess": "Image added to all eligible {0}.",
+  "ActionThisImage": "This image",
+  "ActionSelection": "Selection",
+  "ActionSelectionActionSuccess": "Processing completed. Check history for more information.",
 
   "PreviousPicture": "Previous selected picture",
   "NextPicture": "Next selected picture",

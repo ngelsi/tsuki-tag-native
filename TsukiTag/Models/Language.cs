@@ -81,6 +81,9 @@ namespace TsukiTag.Models
         public static string ActionAddToAllSuccess => Localizer.Get(nameof(ActionAddToAllSuccess));
         public static string ActionAddToSuccess => Localizer.Get(nameof(ActionAddToSuccess));
         public static string ActionAddToEligibleSuccess => Localizer.Get(nameof(ActionAddToEligibleSuccess));
+        public static string ActionThisImage => Localizer.Get(nameof(ActionThisImage));
+        public static string ActionSelection => Localizer.Get(nameof(ActionSelection));
+        public static string ActionSelectionActionSuccess => Localizer.Get(nameof(ActionSelectionActionSuccess));
 
 
         public static string PreviousPicture => Localizer.Get(nameof(PreviousPicture));

@@ -28,7 +28,7 @@
     </Style>
     <Style Selector="Border.selected">
       <Setter Property="Height" Value="5"></Setter>
-      <Setter Property="BorderThickness" Value="5"></Setter>
+      <Setter Property="BorderThickness" Value="4"></Setter>
       <Setter Property="BorderBrush" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
     </Style>
   </UserControl.Styles>

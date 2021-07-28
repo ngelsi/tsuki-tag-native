@@ -12,24 +12,14 @@ using System.Collections.ObjectModel;
 
 namespace TsukiTag.ViewModels
 {
-    public class PictureDetailViewModel : ViewModelBase
+    public class PictureDetailViewModel : ViewModelCollectionHandlerBase
     {
         private Picture picture;
         private readonly IPictureControl pictureControl;
-        private readonly IDbRepository dbRepository;
-        private readonly INotificationControl notificationControl;
 
         private ObservableCollection<MenuItemViewModel> onlineListMenus;
         private bool maximizedView;
         private bool fillView;
-
-        public ReactiveCommand<Unit, Unit> AddToDefaultListCommand { get; }
-        public ReactiveCommand<Guid, Unit> AddToSpecificListCommand { get; }
-        public ReactiveCommand<Unit, Unit> AddToEligibleListsCommand { get; }
-        public ReactiveCommand<Unit, Unit> AddToAllListsCommand { get; }
-
-        public ReactiveCommand<Guid, Unit> RemoveFromSpecificListCommand { get; }
-        public ReactiveCommand<Unit, Unit> RemoveFromAllListCommand { get; }
 
         public Picture Picture
         {
@@ -81,7 +71,7 @@ namespace TsukiTag.ViewModels
             IPictureControl pictureControl,
             IDbRepository dbRepository,
             INotificationControl notificationControl
-        )
+        ) : base(dbRepository, notificationControl)
         {
             this.ClosePictureCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -95,40 +85,37 @@ namespace TsukiTag.ViewModels
 
             this.AddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-               OnAddToDefaulList();
+               OnAddToDefaulList(Picture);
             });
 
             this.AddToSpecificListCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
             {
-                OnAddToSpecificList(id);
+                OnAddToSpecificList(id, Picture);
             });
 
             this.AddToEligibleListsCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                OnAddToEligibleLists();
+                OnAddToEligibleLists(Picture);
             });
 
             this.AddToAllListsCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                OnAddToAllLists();
+                OnAddToAllLists(Picture);
             });
 
             this.RemoveFromSpecificListCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
             {
-                OnRemoveFromSpecificList(id);
+                OnRemoveFromSpecificList(id, Picture);
             });
 
             this.RemoveFromAllListCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                OnRemoveFromAllLists();
+                OnRemoveFromAllLists(Picture);
             });
 
             this.fillView = true;
 
             this.pictureControl = pictureControl;
-            this.dbRepository = dbRepository;
-            this.notificationControl = notificationControl;
-
             this.picture = picture;
             this.onlineListMenus = GetOnlineListMenus();
         }
@@ -222,147 +209,13 @@ namespace TsukiTag.ViewModels
             return new ObservableCollection<MenuItemViewModel>() { menus };
         }
 
-        private async void OnRemoveFromAllLists()
+        public override void Reinitialize()
         {
-            await Task.Run(async () =>
+            base.Reinitialize();
+
+            RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                if(this.dbRepository.OnlineListPicture.RemoveFromAllLists(Picture))
-                {
-                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionRemoveFromAllSuccess, Language.OnlineLists.ToLower())));
-
-                    RxApp.MainThreadScheduler.Schedule(async () =>
-                    {
-                        OnlineListMenus = GetOnlineListMenus();
-                    });
-                }                
-                else
-                {
-                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError));
-                }
-            });
-        }
-
-        private async void OnRemoveFromSpecificList(Guid id)
-        {
-            await Task.Run(async () =>
-            {
-                var list = this.dbRepository.OnlineList.Get(id);
-                if(list != null)
-                {
-                    if (this.dbRepository.OnlineListPicture.RemoveFromList(id, Picture))
-                    {
-                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionRemoveFromSuccess, Language.OnlineList.ToLower(), list.Name)));
-
-                        RxApp.MainThreadScheduler.Schedule(async () =>
-                        {
-                            OnlineListMenus = GetOnlineListMenus();
-                        });
-                    }
-                    else
-                    {
-                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError));
-                    }
-                }
-                else
-                {
-                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError));
-                }
-            });
-        }
-
-        private async void OnAddToAllLists()
-        {
-            await Task.Run(async () =>
-            {
-                if (this.dbRepository.OnlineListPicture.AddToAllLists(Picture))
-                {
-                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionAddToAllSuccess, Language.OnlineLists.ToLower())));
-
-                    RxApp.MainThreadScheduler.Schedule(async () =>
-                    {
-                        OnlineListMenus = GetOnlineListMenus();
-                    });
-                }
-                else
-                {
-                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError));
-                }
-            });
-        }
-
-        private async void OnAddToEligibleLists()
-        {
-            await Task.Run(async () =>
-            {
-                if (this.dbRepository.OnlineListPicture.AddToAllEligible(Picture))
-                {
-                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionAddToEligibleSuccess, Language.OnlineLists.ToLower())));
-
-                    RxApp.MainThreadScheduler.Schedule(async () =>
-                    {
-                        OnlineListMenus = GetOnlineListMenus();
-                    });
-                }
-                else
-                {
-                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError));
-                }
-            });
-        }
-
-        private async void OnAddToSpecificList(Guid id)
-        {
-            await Task.Run(async () =>
-            {
-                var list = this.dbRepository.OnlineList.Get(id);
-                if (list != null)
-                {
-                    if (this.dbRepository.OnlineListPicture.AddToList(id, Picture))
-                    {
-                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionAddToSuccess, Language.OnlineList.ToLower(), list.Name)));
-
-                        RxApp.MainThreadScheduler.Schedule(async () =>
-                        {
-                            OnlineListMenus = GetOnlineListMenus();
-                        });
-                    }
-                    else
-                    {
-                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError));
-                    }
-                }
-                else
-                {
-                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError));
-                }
-            });
-        }
-
-        private async void OnAddToDefaulList()
-        {
-            await Task.Run(async () =>
-            {
-                var list = this.dbRepository.OnlineList.GetDefault();
-                if (list != null)
-                {
-                    if (this.dbRepository.OnlineListPicture.AddToList(list.Id, Picture))
-                    {
-                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionAddToSuccess, Language.OnlineList.ToLower(), list.Name)));
-
-                        RxApp.MainThreadScheduler.Schedule(async () =>
-                        {
-                            OnlineListMenus = GetOnlineListMenus();
-                        });
-                    }
-                    else
-                    {
-                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError));
-                    }
-                }
-                else
-                {
-                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError));
-                }
+                OnlineListMenus = GetOnlineListMenus();
             });
         }
     }
