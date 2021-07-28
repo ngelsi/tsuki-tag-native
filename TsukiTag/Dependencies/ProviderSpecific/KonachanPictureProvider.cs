@@ -11,7 +11,7 @@ using TsukiTag.Models.ProviderSpecific;
 
 namespace TsukiTag.Dependencies.ProviderSpecific
 {
-    public interface IKonachanPictureProvider : IOnlinePictureProviderElement
+    public interface IKonachanPictureProvider : IPictureProviderElement
     {
 
     }

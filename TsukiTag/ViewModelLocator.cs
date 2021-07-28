@@ -22,7 +22,7 @@ namespace TsukiTag
 
         public static PictureListViewModel PictureListViewModel => ViewModelLocator.GetDataContext<PictureListViewModel>();
 
-        public static OnlineProviderViewModel OnlineProviderViewModel => ViewModelLocator.GetDataContext<OnlineProviderViewModel>();
+        public static ProviderContextViewModel ProviderContextViewModel => ViewModelLocator.GetDataContext<ProviderContextViewModel>();
 
         public static OnlineBrowserViewModel OnlineBrowserViewModel => ViewModelLocator.GetDataContext<OnlineBrowserViewModel>();
 
@@ -31,5 +31,9 @@ namespace TsukiTag
         public static NotificationBarViewModel NotificationBarViewModel => ViewModelLocator.GetDataContext<NotificationBarViewModel>();
         
         public static SettingsViewModel SettingsViewModel => ViewModelLocator.GetDataContext<SettingsViewModel>();
+
+        public static OnlineListBrowserViewModel OnlineListBrowserViewModel => ViewModelLocator.GetDataContext<OnlineListBrowserViewModel>();
+
+        public static OnlineListNavigationBarViewModel OnlineListNavigationBarViewModel => ViewModelLocator.GetDataContext<OnlineListNavigationBarViewModel>();
     }
 }

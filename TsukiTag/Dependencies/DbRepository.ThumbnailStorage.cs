@@ -22,22 +22,36 @@ namespace TsukiTag.Dependencies
 
         private class ThumbnailStorageDb : IThumbnailStorage
         {
+            private LiteDatabase currentConnection;
+
+            private LiteDatabase GetConnection()
+            {
+                if (currentConnection == null)
+                {
+                    currentConnection = new LiteDatabase(ThumbnailRepositoryPath);
+                }
+
+                return currentConnection;
+            }
+
+            ~ThumbnailStorageDb()
+            {
+                currentConnection?.Dispose();
+            }
+
             public Bitmap? FindThumbnail(string md5)
             {
                 using (var ms = new MemoryStream())
                 {
-                    using (var db = new LiteDatabase(ThumbnailRepositoryPath))
+                    var storage = GetConnection().FileStorage;
+                    var existing = storage.FindById(md5);
+
+                    if (existing != null)
                     {
-                        var storage = db.FileStorage;
-                        var existing = storage.FindById(md5);
+                        existing.CopyTo(ms);
+                        ms.Position = 0;
 
-                        if (existing != null)
-                        {
-                            existing.CopyTo(ms);
-                            ms.Position = 0;
-
-                            return new Bitmap(ms);
-                        }
+                        return new Bitmap(ms);
                     }
                 }
 
@@ -51,18 +65,16 @@ namespace TsukiTag.Dependencies
                     bitmap.Save(ms);
                     ms.Position = 0;
 
-                    using (var db = new LiteDatabase(ThumbnailRepositoryPath))
+                    var storage = GetConnection().FileStorage;
+                    var existing = storage.FindById(md5);
+
+                    if (existing != null)
                     {
-                        var storage = db.FileStorage;
-                        var existing = storage.FindById(md5);
-
-                        if (existing != null)
-                        {
-                            storage.Delete(md5);
-                        }
-
-                        storage.Upload(md5, md5, ms);
+                        storage.Delete(md5);
                     }
+
+                    storage.Upload(md5, md5, ms);
+
                 }
             }
         }

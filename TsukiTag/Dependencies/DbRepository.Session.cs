@@ -9,91 +9,123 @@ using TsukiTag.Models.Repository;
 
 namespace TsukiTag.Dependencies
 {
-	public interface IProviderSessionDb
-	{
-		ProviderSession? Get(string context);
+    public interface IProviderSessionDb
+    {
+        ProviderSession? Get(string context);
 
-		void AddOrUpdate(ProviderSession session);
-	}
+        void AddOrUpdate(ProviderSession session);
+    }
 
-	public partial class DbRepository
-	{
-		public IProviderSessionDb ProviderSession { get; protected set; }
+    public partial class DbRepository
+    {
+        public IProviderSessionDb ProviderSession { get; protected set; }
 
-		private class ProviderSessionDb : IProviderSessionDb
-		{
-			public ProviderSessionDb()
-			{
-				EnsureIndexes();
-			}
+        private class ProviderSessionDb : IProviderSessionDb
+        {
+            private readonly IDbRepository parent;
 
-			public ProviderSession? Get(string context)
-			{
-				using (var db = new LiteDatabase(MetadataRepositoryPath))
-				{
-					var coll = db.GetCollection<ProviderSession>();
-					var session = coll
-									.Query()
-									.Where(s => s.Context == context)
-									.FirstOrDefault();
+            public ProviderSessionDb(IDbRepository parent)
+            {
+                this.parent = parent;
+                EnsureIndexes();
+            }
 
-					if (session == null && context == Models.Repository.ProviderSession.OnlineProviderSession)
-					{
-						session = new ProviderSession()
-						{
-							Context = context,
-							Providers = new string[] {
-								Models.Provider.Safebooru.Name,
-								Models.Provider.Gelbooru.Name,
-								Models.Provider.Konachan.Name,
-								Models.Provider.Danbooru.Name,
-								Models.Provider.Yandere.Name
-							},
-							Ratings = new string[]
-							{
-								Models.Rating.Safe.Name
-							}
-						};
+            public ProviderSession? Get(string context)
+            {
+                ProviderSession? session = null;
+                bool newItem = false;
 
-						coll.Insert(session);
-					}
+                using (var db = new LiteDatabase(MetadataRepositoryPath))
+                {
+                    var coll = db.GetCollection<ProviderSession>();
+                    session = coll
+                                .Query()
+                                .Where(s => s.Context == context)
+                                .FirstOrDefault();
+                }
 
-					return session;
-				}
-			}
+                if (session == null && context == Models.Repository.ProviderSession.OnlineProviderSession)
+                {
+                    session = new ProviderSession()
+                    {
+                        Context = context,
+                        Providers = new string[] {
+                                Models.Provider.Safebooru.Name,
+                                Models.Provider.Gelbooru.Name,
+                                Models.Provider.Konachan.Name,
+                                Models.Provider.Danbooru.Name,
+                                Models.Provider.Yandere.Name
+                            },
+                        Ratings = new string[]
+                        {
+                            Models.Rating.Safe.Name
+                        },
+                        Limit = 25
+                    };
 
-			public void AddOrUpdate(ProviderSession session)
-			{
-				if (session != null && !string.IsNullOrEmpty(session.Context))
-				{
-					using (var db = new LiteDatabase(MetadataRepositoryPath))
-					{
-						var collection = db.GetCollection<ProviderSession>();
-						var dbSession = collection
-										.Query()
-										.Where(s => s.Context == session.Context)
-										.FirstOrDefault();
+                    newItem = true;
+                }
+                else if (session == null && context == Models.Repository.ProviderSession.AllOnlineListsSession)
+                {
+                    session = new ProviderSession()
+                    {
+                        Context = context,
+                        Providers = parent.OnlineList.GetAll().Select(s => s.Name).ToArray(),
+                        Ratings = new string[]
+                        {
+                            Models.Rating.Safe.Name
+                        },
+                        Limit = 75
+                    };
 
-						if (dbSession == null)
-						{
-							dbSession = session;
-							collection.Insert(dbSession);
-						}
-						else
-						{
-							collection.Update(session);
-						}
-					}
-				}
-			}
+                    newItem = true;
+                }
 
-			private void EnsureIndexes()
-			{
-				using (var db = new LiteDatabase(MetadataRepositoryPath))
-				{
-					db.GetCollection<ProviderSession>().EnsureIndex(p => p.Context);
-				}
-			}
-		}
-	}
+                if (newItem)
+                {
+                    using (var db = new LiteDatabase(MetadataRepositoryPath))
+                    {
+                        var coll = db.GetCollection<ProviderSession>();
+                        coll.Insert(session);
+                    }
+                }
+
+                return session;
+
+            }
+
+            public void AddOrUpdate(ProviderSession session)
+            {
+                if (session != null && !string.IsNullOrEmpty(session.Context))
+                {
+                    using (var db = new LiteDatabase(MetadataRepositoryPath))
+                    {
+                        var collection = db.GetCollection<ProviderSession>();
+                        var dbSession = collection
+                                        .Query()
+                                        .Where(s => s.Context == session.Context)
+                                        .FirstOrDefault();
+
+                        if (dbSession == null)
+                        {
+                            dbSession = session;
+                            collection.Insert(dbSession);
+                        }
+                        else
+                        {
+                            collection.Update(session);
+                        }
+                    }
+                }
+            }
+
+            private void EnsureIndexes()
+            {
+                using (var db = new LiteDatabase(MetadataRepositoryPath))
+                {
+                    db.GetCollection<ProviderSession>().EnsureIndex(p => p.Context);
+                }
+            }
+        }
+    }
 }

@@ -64,6 +64,10 @@ namespace TsukiTag.ViewModels
                     {
                         this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsListNoName, "settingslistnoname"));
                     }
+                    else if (onlineLists.Any(l => onlineLists.Any(ll => ll.Name == l.Name && ll.Id != l.Id)))
+                    {
+                        this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsListNotUnique, "settingslistnotunique"));
+                    }
                     else
                     {
                         foreach (var list in onlineLists)

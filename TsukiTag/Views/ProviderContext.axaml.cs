@@ -9,9 +9,9 @@ using TsukiTag.ViewModels;
 
 namespace TsukiTag.Views
 {
-    public partial class OnlineProvider : UserControl
+    public partial class ProviderContext : UserControl
     {
-        public OnlineProvider()
+        public ProviderContext()
         {
             InitializeComponent();
 
@@ -20,7 +20,7 @@ namespace TsukiTag.Views
 
         private void OnInitialized(object? sender, System.EventArgs e)
         {
-            if(this.DataContext is OnlineProviderViewModel vm)
+            if(this.DataContext is ProviderContextViewModel vm)
             {
                 vm.Initialize();
             }
@@ -40,7 +40,7 @@ namespace TsukiTag.Views
                 {
                     RxApp.MainThreadScheduler.Schedule(async () =>
                     {
-                        (DataContext as OnlineProviderViewModel)?.OnTabPictureClosed(picture);
+                        (DataContext as ProviderContextViewModel)?.OnTabPictureClosed(picture);
                     });
                 }
             }

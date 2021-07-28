@@ -201,7 +201,7 @@ namespace TsukiTag.Dependencies
                 {
                     if (picture.PreviewImage == null && !string.IsNullOrEmpty(picture.PreviewUrl))
                     {
-                        picture.PreviewImage = await pictureDownloadControl.DownloadBitmap(picture.PreviewUrl);
+                        picture.PreviewImage = await pictureDownloadControl.DownloadBitmap(picture.PreviewUrl, picture.IsLocal ? picture.Md5 : null);
                     }
 
                     var added = false;
@@ -269,7 +269,10 @@ namespace TsukiTag.Dependencies
 
         public async Task<TagCollection> GetTags()
         {
-            return await Task.FromResult(TagCollection.GetTags(this.currentPictureSet.ToList()));
+            return await Task.FromResult(
+                TagCollection.GetTags(
+                    this.currentPictureSet.ToList()
+            ));
         }
 
         public async Task<int> GetSelectedPictureCount()

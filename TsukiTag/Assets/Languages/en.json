@@ -1,9 +1,11 @@
 ﻿{
   "Providers": "Providers",
+  "Session": "Session",
   "AllTags": "All tags",
   "Metadata": "Metadata",
   "Name": "Name",
   "All": "All",
+  "Refresh": "Refresh",
 
   "Safe": "Safe",
   "Questionable": "Questionable",
@@ -36,6 +38,7 @@
   "SettingsCancel": "Cancel",
   "SettingsSave": "Save",
   "SettingsListNoName": "Please specify a name for all online lists before saving.",
+  "SettingsListNotUnique": "Please specify a unique name for the online lists.",
   "SettingsSaved": "Settings successfully saved.",
   "SettingsSaveError": "Something went wrong while saving your settings.",
 
@@ -68,9 +71,12 @@
   "SetThisTagSearch": "Set this tag as search",
 
   "ToastProviderEnd": "No more results from provider {0}.",
+  "ToastOnlineListsEnd": "No more results from online lists.",
+  "ToastOnlineListEnd": "No more results from online list {0}.",
   "ToastProviderError": "Something went wrong while getting pictures from {0}.",
   "ToastProviderTagLimit2": "{0} only supports up to 2 tags per search.",
 
   "NavigationOnline": "Browse online",
+  "NavigatioAllnOnlineLists": "Browse all online lists",
   "NavigationSettings": "Settings"
 }

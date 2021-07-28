@@ -40,6 +40,7 @@ namespace TsukiTag.Models
         private string source;
         private Bitmap previewImage;
         private Bitmap sampleImage;
+        private bool isLocal;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -219,6 +220,14 @@ namespace TsukiTag.Models
             {
                 return $"{previewWidth}x{previewHeight}";
             }
+        }
+
+        [BsonIgnore]
+        [JsonIgnore]
+        public bool IsLocal
+        {
+            get { return isLocal; }
+            set { isLocal = value; }
         }
 
         [BsonIgnore]

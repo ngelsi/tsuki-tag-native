@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TsukiTag.Models.Repository;
 using TsukiTag.Views;
 
 namespace TsukiTag.Models
 {
     public class ProviderTabModel
     {
-        private static ProviderTabModel pictureListTab;
+        private static ProviderTabModel onlineBrowserTab;
+        private static ProviderTabModel allOnlineListsTab;
 
         public string Header { get; set; }
 
@@ -29,12 +31,25 @@ namespace TsukiTag.Models
         {
             get
             {
-                if (pictureListTab == null)
+                if (onlineBrowserTab == null)
                 {
-                    pictureListTab = new ProviderTabModel() { Header = Ioc.SimpleIoc.Localizer.Get("Browse"), Content = new OnlineBrowser(), Identifier = "ONLINE" };
+                    onlineBrowserTab = new ProviderTabModel() { Header = Ioc.SimpleIoc.Localizer.Get("Browse"), Content = new OnlineBrowser(), Identifier = "ONLINE", Context = ProviderSession.OnlineProviderSession };
                 }
 
-                return pictureListTab;
+                return onlineBrowserTab;
+            }
+        }
+
+        public static ProviderTabModel AllOnlineListsTab
+        {
+            get
+            {
+                if (allOnlineListsTab == null)
+                {
+                    allOnlineListsTab = new ProviderTabModel() { Header = Ioc.SimpleIoc.Localizer.Get("Browse"), Content = new OnlineListBrowser(), Identifier = "ALLONLINELISTS", Context = ProviderSession.AllOnlineListsSession };
+                }
+
+                return allOnlineListsTab;
             }
         }
 

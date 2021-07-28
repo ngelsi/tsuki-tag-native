@@ -16,12 +16,14 @@ namespace TsukiTag.ViewModels
     {
         private readonly INavigationControl navigationControl;
 
-        private OnlineProvider onlineProvider;
+        private ProviderContext providerContext;
         private ContentControl currentContent;
 
         public ReactiveCommand<Unit, Unit> SwitchToSettingsCommand { get; }
 
         public ReactiveCommand<Unit, Unit> SwitchToOnlineBrowsingCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> SwitchToAllOnlineListBrowsingCommand { get; }
 
         public ContentControl CurrentContent
         {
@@ -29,20 +31,20 @@ namespace TsukiTag.ViewModels
             set { this.RaiseAndSetIfChanged(ref currentContent, value); }
         }
 
-        //Avalonia exception happens if we try to re-instate the entire online
+        //Avalonia exception happens if we try to re-instate the entire provider
         //content. So for now to circumvent this, we just store the content in memory.
-        //At least the benefit of having the online session not interrupted by visiting
+        //At least the benefit of having the browsing session not interrupted by visiting
         //the settings screen is there.
-        public OnlineProvider OnlineProvider
+        public ProviderContext ProviderContext
         {
             get
             {
-                if(onlineProvider == null)
+                if(providerContext == null)
                 {
-                    onlineProvider = new OnlineProvider();
+                    providerContext = new ProviderContext();
                 }
 
-                return onlineProvider;
+                return providerContext;
             }
         }
 
@@ -53,6 +55,7 @@ namespace TsukiTag.ViewModels
             this.navigationControl = navigationControl;
             this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing;
             this.navigationControl.SwitchedToSettings += OnSwitchedToSettings;
+            this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToAllOnlineListBrowsing;
 
             this.SwitchToSettingsCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -64,13 +67,19 @@ namespace TsukiTag.ViewModels
                 await this.navigationControl.SwitchToOnlineBrowsing();
             });
 
-            CurrentContent = OnlineProvider;
+            this.SwitchToAllOnlineListBrowsingCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await this.navigationControl.SwitchToAllOnlineListBrowsing();
+            });
+
+            CurrentContent = ProviderContext;
         }
 
         ~MainWindowViewModel()
         {
             this.navigationControl.SwitchedToOnlineBrowsing -= OnSwitchedToOnlineBrowsing;
             this.navigationControl.SwitchedToSettings -= OnSwitchedToSettings;
+            this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToAllOnlineListBrowsing;
         }
 
         private void OnSwitchedToSettings(object? sender, EventArgs e)
@@ -85,8 +94,17 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                CurrentContent = OnlineProvider;
+                CurrentContent = ProviderContext;
+            });
+        }
+
+        private void OnSwitchedToAllOnlineListBrowsing(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                CurrentContent = ProviderContext;
             });
         }
     }
 }
+

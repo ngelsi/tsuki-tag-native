@@ -9,14 +9,14 @@ using TsukiTag.Models;
 
 namespace TsukiTag.Dependencies
 {
-    public interface IOnlinePictureProviderElement
+    public interface IPictureProviderElement
     {
         string Provider { get; }
 
         Task<ProviderResult> GetPictures(ProviderFilterElement filter);
     }
 
-    public abstract class OnlinePictureProviderElement : IOnlinePictureProviderElement
+    public abstract class OnlinePictureProviderElement : IPictureProviderElement
     {
         public abstract string Provider { get; }
 

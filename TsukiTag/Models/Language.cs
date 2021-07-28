@@ -33,6 +33,8 @@ namespace TsukiTag.Models
         public static string Metadata => Localizer.Get(nameof(Metadata));
         public static string Name => Localizer.Get(nameof(Name));
         public static string All => Localizer.Get(nameof(All));
+        public static string Session => Localizer.Get(nameof(Session));
+        public static string Refresh => Localizer.Get(nameof(Refresh));
 
         public static string Safe => Localizer.Get(nameof(Safe));
         public static string Questionable => Localizer.Get(nameof(Questionable));
@@ -66,6 +68,7 @@ namespace TsukiTag.Models
         public static string SettingsSave => Localizer.Get(nameof(SettingsSave));
         public static string SettingsCancel => Localizer.Get(nameof(SettingsCancel));
         public static string SettingsListNoName => Localizer.Get(nameof(SettingsListNoName));
+        public static string SettingsListNotUnique => Localizer.Get(nameof(SettingsListNotUnique));
         public static string SettingsSaved => Localizer.Get(nameof(SettingsSaved));
         public static string SettingsSaveError => Localizer.Get(nameof(SettingsSaveError));
 
@@ -99,10 +102,13 @@ namespace TsukiTag.Models
         public static string SetThisTagSearch => Localizer.Get(nameof(SetThisTagSearch));
 
         public static string ToastProviderEnd => Localizer.Get(nameof(ToastProviderEnd));
+        public static string ToastOnlineListEnd => Localizer.Get(nameof(ToastOnlineListEnd));
+        public static string ToastOnlineListsEnd => Localizer.Get(nameof(ToastOnlineListsEnd));
         public static string ToastProviderError => Localizer.Get(nameof(ToastProviderError));
         public static string ToastProviderTagLimit2 => Localizer.Get(nameof(ToastProviderTagLimit2));
 
         public static string NavigationOnline => Localizer.Get(nameof(NavigationOnline));
         public static string NavigationSettings => Localizer.Get(nameof(NavigationSettings));
+        public static string NavigatioAllnOnlineLists => Localizer.Get(nameof(NavigatioAllnOnlineLists));
     }
 }

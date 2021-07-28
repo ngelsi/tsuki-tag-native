@@ -9,9 +9,8 @@ using TsukiTag.Models;
 
 namespace TsukiTag.Dependencies
 {
-    public interface IOnlinePictureProvider
-    {
-        Task GetPictures();
+    public interface IOnlinePictureProvider : IPictureProvider
+    {        
     }
 
     public class OnlinePictureProvider : IOnlinePictureProvider
@@ -53,9 +52,6 @@ namespace TsukiTag.Dependencies
             this.pictureControl = pictureControl;
             this.localizer = localizer;
 
-            this.providerFilterControl.PageChanged += OnPageChanged;
-            this.providerFilterControl.FilterChanged += OnFilterChanged;
-
             this.finishedProviders = new List<string>();
         }
 
@@ -65,7 +61,7 @@ namespace TsukiTag.Dependencies
             this.providerFilterControl.FilterChanged -= OnFilterChanged;
         }
 
-        private List<IOnlinePictureProviderElement> allProviders => new List<IOnlinePictureProviderElement>()
+        private List<IPictureProviderElement> allProviders => new List<IPictureProviderElement>()
             { safebooruPictureProvider, gelbooruPictureProvider, konachanPictureProvider, danbooruPictureProvider, yanderePictureProvider }
             .Where(p => !finishedProviders.Contains(p.Provider))
             .ToList();
@@ -137,6 +133,18 @@ namespace TsukiTag.Dependencies
                     }
                 }
             });
+        }
+
+        public async Task HookToFilter()
+        {
+            this.providerFilterControl.PageChanged += OnPageChanged;
+            this.providerFilterControl.FilterChanged += OnFilterChanged;
+        }
+
+        public async Task UnhookFromFilter()
+        {
+            this.providerFilterControl.PageChanged -= OnPageChanged;
+            this.providerFilterControl.FilterChanged -= OnFilterChanged;
         }
     }
 }

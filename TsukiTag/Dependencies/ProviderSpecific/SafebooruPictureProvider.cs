@@ -12,7 +12,7 @@ using TsukiTag.Models.ProviderSpecific;
 
 namespace TsukiTag.Dependencies.ProviderSpecific
 {
-    public interface ISafebooruPictureProvider : IOnlinePictureProviderElement
+    public interface ISafebooruPictureProvider : IPictureProviderElement
     {
 
     }

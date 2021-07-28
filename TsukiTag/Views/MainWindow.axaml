@@ -25,6 +25,7 @@
       <Menu DockPanel.Dock="Left" VerticalAlignment="Top" HorizontalAlignment="Left">
         <MenuItem Header="TsukiTag">
           <MenuItem Header="{Binding Language.NavigationOnline}" Command="{Binding SwitchToOnlineBrowsingCommand}" />
+          <MenuItem Header="{Binding Language.NavigatioAllnOnlineLists}" Command="{Binding SwitchToAllOnlineListBrowsingCommand}" />
           <Separator />
           <MenuItem Header="{Binding Language.NavigationSettings}" Command="{Binding SwitchToSettingsCommand}" />          
         </MenuItem>

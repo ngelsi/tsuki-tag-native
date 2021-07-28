@@ -130,6 +130,9 @@ namespace TsukiTag.ViewModels
 
             this.pictureControl.PictureSelected += OnPictureSelected;
             this.pictureControl.PictureDeselected += OnPictureDeselected;
+            this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToOnlineListBrowsing;
+            this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing
+                ;
             //this.pictureControl.PicturesReset += OnPicturesReset;
 
             this.PreviousPictureCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -189,10 +192,10 @@ namespace TsukiTag.ViewModels
 
             this.SelectionAddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                foreach(var picture in SelectedPictures.ToList())
+                foreach (var picture in SelectedPictures.ToList())
                 {
                     await OnAddToDefaulList(picture, false);
-                }                
+                }
 
                 await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionSelectionActionSuccess));
             });
@@ -252,6 +255,8 @@ namespace TsukiTag.ViewModels
         {
             this.pictureControl.PictureSelected -= OnPictureSelected;
             this.pictureControl.PictureDeselected -= OnPictureDeselected;
+            this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToOnlineListBrowsing;
+            this.navigationControl.SwitchedToOnlineBrowsing -= OnSwitchedToOnlineBrowsing;
         }
 
         public async void OnTagClicked(string tag)
@@ -344,6 +349,16 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        private void OnSwitchedToOnlineBrowsing(object? sender, EventArgs e)
+        {
+            //OnPicturesReset(this, e);
+        }
+
+        private void OnSwitchedToOnlineListBrowsing(object? sender, EventArgs e)
+        {
+            //OnPicturesReset(this, e);
+        }
+
         private void OnPicturesReset(object? sender, EventArgs e)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
@@ -395,7 +410,7 @@ namespace TsukiTag.ViewModels
                     CurrentPictureIndex = SelectedPictures.Count - 1;
                 }
 
-                if(thisImageMenus == null || selectionMenus == null)
+                if (thisImageMenus == null || selectionMenus == null)
                 {
                     Reinitialize();
                 }

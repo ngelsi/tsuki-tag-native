@@ -19,7 +19,7 @@ namespace TsukiTag.Dependencies
 
         Task<Bitmap> DownloadBitmap(string url);
 
-        Task<Bitmap> DownloadBitmap(string url, string md5);
+        Task<Bitmap> DownloadBitmap(string url, string? md5);
     }
 
     public class PictureDownloader : IPictureDownloader
@@ -76,9 +76,9 @@ namespace TsukiTag.Dependencies
             }
         }
 
-        public async Task<Bitmap> DownloadBitmap(string url, string md5)
+        public async Task<Bitmap> DownloadBitmap(string url, string? md5)
         {
-            var bitmap = this.dbRepository.ThumbnailStorage.FindThumbnail(md5);
+            var bitmap = !string.IsNullOrEmpty(md5) ? this.dbRepository.ThumbnailStorage.FindThumbnail(md5) : null;
             if (bitmap != null)
             {
                 return bitmap;

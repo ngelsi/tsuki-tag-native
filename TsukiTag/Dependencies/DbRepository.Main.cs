@@ -38,7 +38,7 @@ namespace TsukiTag.Dependencies
         {
             EnsureRepositoryPath();
 
-            ProviderSession = new ProviderSessionDb();
+            ProviderSession = new ProviderSessionDb(this);
             OnlineList = new OnlineListDb();
             OnlineListPicture = new OnlineListPictureDb(this);
             OnlineListHistory = new OnlineListHistoryDb();

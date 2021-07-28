@@ -10,7 +10,7 @@ namespace TsukiTag.Extensions
     {
         public static string ReplaceProperties(this string str, object obj)
         {
-            foreach (var property in obj.GetType().GetProperties(System.Reflection.BindingFlags.GetProperty))
+            foreach (var property in obj.GetType().GetProperties().Where(t => t.PropertyType == typeof(string) || t.PropertyType == typeof(int) || t.PropertyType == typeof(bool)))
             {
                 str = str.Replace($"#{property.Name?.ToLower()}#", property.GetValue(obj)?.ToString()?.ToLower(), StringComparison.OrdinalIgnoreCase);
             }

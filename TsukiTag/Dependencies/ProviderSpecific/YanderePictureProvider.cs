@@ -10,7 +10,7 @@ using TsukiTag.Models;
 using TsukiTag.Models.ProviderSpecific;
 namespace TsukiTag.Dependencies.ProviderSpecific
 {
-    public interface IYanderePictureProvider : IOnlinePictureProviderElement
+    public interface IYanderePictureProvider : IPictureProviderElement
     {
 
     }

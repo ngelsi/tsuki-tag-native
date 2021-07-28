@@ -21,6 +21,8 @@ namespace TsukiTag.Dependencies
 
         event EventHandler SwitchedToOnlineBrowsing;
 
+        event EventHandler SwitchedToAllOnlineListBrowsing;
+
         Task SwitchToTagOverview();
 
         Task SwitchToMetadataOverview();
@@ -32,6 +34,8 @@ namespace TsukiTag.Dependencies
         Task SwitchToSettings();
 
         Task SwitchToOnlineBrowsing();
+
+        Task SwitchToAllOnlineListBrowsing();
     }
 
     public class NavigationControl : INavigationControl
@@ -42,6 +46,7 @@ namespace TsukiTag.Dependencies
         public event EventHandler TemporaryMetadataOverviewEnd;
         public event EventHandler SwitchedToSettings;
         public event EventHandler SwitchedToOnlineBrowsing;
+        public event EventHandler SwitchedToAllOnlineListBrowsing;
 
         public NavigationControl()
         {
@@ -93,6 +98,14 @@ namespace TsukiTag.Dependencies
             await Task.Run(() =>
             {
                 SwitchedToOnlineBrowsing?.Invoke(this, EventArgs.Empty);
+            });
+        }
+
+        public async Task SwitchToAllOnlineListBrowsing()
+        {
+            await Task.Run(() =>
+            {
+                SwitchedToAllOnlineListBrowsing?.Invoke(this, EventArgs.Empty);
             });
         }
     }

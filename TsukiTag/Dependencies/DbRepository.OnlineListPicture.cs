@@ -25,6 +25,8 @@ namespace TsukiTag.Dependencies
         bool RemoveFromAllLists(Picture picture);
 
         List<OnlineListPicture> GetAllForPicture(string md5);
+
+        List<OnlineListPicture> GetAllForFilter(ProviderFilter filter);
     }
 
     public partial class DbRepository
@@ -41,6 +43,37 @@ namespace TsukiTag.Dependencies
                 EnsureIndexes();
             }
 
+            public List<OnlineListPicture> GetAllForFilter(ProviderFilter filter)
+            {
+                try
+                {
+                    var allLists = parent.OnlineList.GetAll();
+                    var filterLists = allLists.Where(l => filter.Providers.Contains(l.Name)).Select(s => s.Id).ToList();
+
+                    using (var db = new LiteDatabase(MetadataRepositoryPath))
+                    {
+                        var coll = db.GetCollection<OnlineListPicture>();
+                        var query = coll.Query();
+
+                        query = query.Where(l => filterLists.Contains(l.ListId));
+
+                        foreach (var tag in filter.Tags)
+                        {
+                            query = query.Where("COUNT(FILTER($.Picture.TagList => @ = '" + tag + "')) > 0");
+                        }
+
+                        var completeQuery = query.Skip(filter.Page * filter.Limit).Limit(filter.Limit);
+                        var items = completeQuery.ToList();
+
+                        return items;
+                    }
+                }
+                catch (Exception)
+                {
+                    return new List<OnlineListPicture>();
+                }
+            }
+
             public List<OnlineListPicture> GetAllForPicture(string md5)
             {
                 try
@@ -48,7 +81,7 @@ namespace TsukiTag.Dependencies
                     using (var db = new LiteDatabase(MetadataRepositoryPath))
                     {
                         var coll = db.GetCollection<OnlineListPicture>();
-                        var allItems = coll.Find(p => p.Md5 == md5).ToList();                        
+                        var allItems = coll.Find(p => p.Md5 == md5).ToList();
 
                         return allItems;
                     }
@@ -103,10 +136,10 @@ namespace TsukiTag.Dependencies
                             }
                         }
 
-                        if(newItem != null)
+                        if (newItem != null)
                         {
                             parent.OnlineListHistory.AddHistoryItem(Models.Repository.OnlineListHistory.PictureAdded(newItem));
-                        }                        
+                        }
 
                         parent.ThumbnailStorage.AddOrUpdateThumbnail(picture.Md5, picture.PreviewImage);
 
@@ -131,7 +164,7 @@ namespace TsukiTag.Dependencies
                         var coll = db.GetCollection<OnlineListPicture>();
                         allItems = coll.Find(p => p.Md5 == picture.Md5).ToList();
 
-                        foreach(var item in allItems)
+                        foreach (var item in allItems)
                         {
                             coll.Delete(item.Id);
                         }
@@ -167,7 +200,7 @@ namespace TsukiTag.Dependencies
                         }
                     }
 
-                    if(existing != null)
+                    if (existing != null)
                     {
                         parent.OnlineListHistory.AddHistoryItem(Models.Repository.OnlineListHistory.PictureRemoved(existing));
                     }

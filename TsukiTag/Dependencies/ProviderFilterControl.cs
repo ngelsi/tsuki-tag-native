@@ -22,6 +22,8 @@ namespace TsukiTag.Dependencies
 
         bool CanAdvancePreviousPage();
 
+        Task Refresh();
+
         Task NextPage();
 
         Task PreviousPage();
@@ -41,11 +43,14 @@ namespace TsukiTag.Dependencies
         Task AddProvider(string provider);
 
         Task RemoveProvider(string provider);
+
+        Task ReinitializeFilter(string providerSessionId);
     }
 
     public class ProviderFilterControl : IProviderFilterControl
     {
         private ProviderFilter currentFilter;
+        private string currentSession;
 
         private readonly IDbRepository dbRepository;
 
@@ -60,7 +65,6 @@ namespace TsukiTag.Dependencies
         )
         {
             this.dbRepository = dbRepository;
-            this.InitializeFilter();
         }
 
         public bool CanAdvanceNextPage()
@@ -71,6 +75,14 @@ namespace TsukiTag.Dependencies
         public bool CanAdvancePreviousPage()
         {
             return currentFilter.Page > 0;
+        }
+
+        public async Task Refresh()
+        {
+            await Task.Run(() =>
+            {
+                FilterChanged?.Invoke(this, EventArgs.Empty);
+            });
         }
 
         public async Task NextPage()
@@ -190,11 +202,31 @@ namespace TsukiTag.Dependencies
             return await Task.FromResult(CurrentFilter);
         }
 
+        public async Task ReinitializeFilter(string providerSessionId)
+        {
+            this.currentSession = providerSessionId;
+            var session = dbRepository.ProviderSession.Get(providerSessionId);
+            if (session != null)
+            {
+                var filter = new ProviderFilter();
+                filter.Providers.AddRange(session.Providers);
+                filter.Ratings.AddRange(session.Ratings);
+
+                if (session.Limit > 0)
+                {
+                    filter.Limit = session.Limit;
+                }
+
+                currentFilter = filter;
+                FilterChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
         private async void ApplyBroadcastProviderChanges()
         {
             await Task.Run(() =>
             {
-                var session = dbRepository.ProviderSession.Get(ProviderSession.OnlineProviderSession);
+                var session = dbRepository.ProviderSession.Get(currentSession);
                 if (session != null)
                 {
                     session.Providers = currentFilter.Providers.ToArray();
@@ -205,14 +237,6 @@ namespace TsukiTag.Dependencies
 
                 FilterChanged?.Invoke(this, EventArgs.Empty);
             });
-        }
-
-        private void InitializeFilter()
-        {
-            var session = dbRepository.ProviderSession.Get(ProviderSession.OnlineProviderSession);
-            currentFilter = new ProviderFilter();
-            currentFilter.Providers.AddRange(session.Providers);
-            currentFilter.Ratings.AddRange(session.Ratings);
         }
     }
 }

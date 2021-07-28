@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,9 @@ using TsukiTag.Views;
 
 namespace TsukiTag.ViewModels
 {
-    public class OnlineProviderViewModel : ViewModelBase
+    public class ProviderContextViewModel : ViewModelBase
     {
-        private readonly IOnlinePictureProvider onlinePictureProvider;
+        private readonly IPictureProviderContext pictureProviderContext;
         private readonly IPictureControl pictureControl;
         private readonly INavigationControl navigationControl;
 
@@ -154,18 +155,18 @@ namespace TsukiTag.ViewModels
             }
         }
 
-        public OnlineProviderViewModel(
-            IOnlinePictureProvider onlinePictureProvider,
+        public ProviderContextViewModel(
+            IPictureProviderContext pictureProviderContext,
             IPictureControl pictureControl,
             INavigationControl navigationControl
         )
         {
             this.navigationControl = navigationControl;
-            this.onlinePictureProvider = onlinePictureProvider;
+            this.pictureProviderContext = pictureProviderContext;
             this.pictureControl = pictureControl;
         }
 
-        ~OnlineProviderViewModel()
+        ~ProviderContextViewModel()
         {
             this.pictureControl.PictureOpened -= OnPictureOpened;
             this.pictureControl.PictureClosed -= OnPictureClosed;
@@ -176,6 +177,8 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToTagOverview -= OnSwitchedToTagOverview;
             this.navigationControl.TemporaryMetadataOverviewEnd -= OnTemporaryMetadataOverviewEnd;
             this.navigationControl.TemporaryMetadataOverviewStart -= OnTemporaryMetadataOverviewStart;
+            this.navigationControl.SwitchedToOnlineBrowsing -= OnSwitchedToOnlineBrowsing;
+            this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToAllOnlineListBrowsing;
         }
 
         public async void OnTabPictureClosed(Picture picture)
@@ -267,10 +270,55 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToTagOverview += OnSwitchedToTagOverview;
             this.navigationControl.TemporaryMetadataOverviewEnd += OnTemporaryMetadataOverviewEnd;
             this.navigationControl.TemporaryMetadataOverviewStart += OnTemporaryMetadataOverviewStart;
+            this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing;
+            this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToAllOnlineListBrowsing;
 
+            this.GetPictures();
+        }
+
+        private async Task GetPictures()
+        {
             await Task.Run(async () =>
             {
-                await onlinePictureProvider.GetPictures();
+                await pictureProviderContext.GetPictures();
+            });
+        }
+
+        private void OnSwitchedToAllOnlineListBrowsing(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                //*
+                this.tabs.Remove(this.tabs.ElementAt(0));
+                this.tabs.Insert(0, ProviderTabModel.AllOnlineListsTab);
+                this.SelectedTabIndex = 0;
+                /*/
+                this.tabs = new ObservableCollection<ProviderTabModel>();
+                this.tabs.Add(ProviderTabModel.AllOnlineListsTab);
+                //*/
+
+                this.RaisePropertyChanged(nameof(Tabs));
+
+                await this.pictureProviderContext.SetContextToAllOnlineLists();
+            });
+        }
+
+        private void OnSwitchedToOnlineBrowsing(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                //*
+                this.tabs.Remove(this.tabs.ElementAt(0));
+                this.tabs.Insert(0, ProviderTabModel.OnlineBrowserTab);
+                this.SelectedTabIndex = 0;
+                /*/
+                this.tabs = new ObservableCollection<ProviderTabModel>();
+                this.tabs.Add(ProviderTabModel.OnlineBrowserTab);
+                //*/
+
+                this.RaisePropertyChanged(nameof(Tabs));
+
+                await this.pictureProviderContext.SetContextToOnline();
             });
         }
 

@@ -47,6 +47,8 @@ namespace TsukiTag
         public ILocalizer Localizer => container.GetInstance<ILocalizer>();
         public INotificationControl NotificationControl => container.GetInstance<INotificationControl>();
         public IDbRepository DbRepository => container.GetInstance<IDbRepository>();
+        public IPictureProviderContext PictureProviderContext => container.GetInstance<IPictureProviderContext>();
+        public IOnlineListPictureProvider OnlineListPictureProvider => container.GetInstance<IOnlineListPictureProvider>();
 
         private Container CreateContainer()
         {
@@ -55,12 +57,14 @@ namespace TsukiTag
             container.Register<TagBarViewModel>(Lifestyle.Transient);
             container.Register<OnlineNavigationBarViewModel>(Lifestyle.Transient);
             container.Register<PictureListViewModel>(Lifestyle.Transient);
-            container.Register<OnlineProviderViewModel>(Lifestyle.Transient);
+            container.Register<ProviderContextViewModel>(Lifestyle.Transient);
             container.Register<TagOverviewViewModel>(Lifestyle.Transient);
             container.Register<OnlineBrowserViewModel>(Lifestyle.Transient);
             container.Register<MetadataOverviewViewModel>(Lifestyle.Transient);
             container.Register<NotificationBarViewModel>(Lifestyle.Transient);
             container.Register<SettingsViewModel>(Lifestyle.Transient);
+            container.Register<OnlineListBrowserViewModel>(Lifestyle.Transient);
+            container.Register<OnlineListNavigationBarViewModel>(Lifestyle.Transient);
 
             container.Register<IOnlinePictureProvider, OnlinePictureProvider>(Lifestyle.Singleton);
             container.Register<ISafebooruPictureProvider, SafebooruPictureProvider>(Lifestyle.Singleton);
@@ -75,6 +79,8 @@ namespace TsukiTag
             container.Register<IDbRepository, DbRepository>(Lifestyle.Singleton);
             container.Register<ILocalizer, Localizer>(Lifestyle.Singleton);
             container.Register<INotificationControl, NotificationControl>(Lifestyle.Singleton);
+            container.Register<IPictureProviderContext, PictureProviderContext>(Lifestyle.Singleton);
+            container.Register<IOnlineListPictureProvider, OnlineListPictureProvider>(Lifestyle.Singleton);
 
             container.Verify();
 
