@@ -38,6 +38,8 @@ namespace TsukiTag.Dependencies
 
         void SelectPicture(Picture picture);
 
+        void SelectAllPictures();
+
         void DeselectPicture(Picture picture);
 
         void OpenPicture(Picture picture);
@@ -116,6 +118,18 @@ namespace TsukiTag.Dependencies
             finally
             {
                 semaphoreSlim.Release();
+            }
+        }
+
+        public async void SelectAllPictures()
+        {
+            for(var i = this.currentPictureSet.Count - 1; i >= 0; i--)
+            {
+                var picture = this.currentPictureSet.ElementAtOrDefault(i);
+                if(picture != null)
+                {
+                    SelectPicture(picture);
+                }
             }
         }
 

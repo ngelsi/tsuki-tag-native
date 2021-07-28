@@ -105,6 +105,7 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Unit, Unit> OpenPictureCommand { get; set; }
         public ReactiveCommand<Unit, Unit> SwitchToTabOverviewCommand { get; set; }
         public ReactiveCommand<Unit, Unit> DeselectAllCommand { get; set; }
+        public ReactiveCommand<Unit, Unit> SelectAllCommand { get; set; }
 
         public ReactiveCommand<Unit, Unit> SelectionAddToDefaultListCommand { get; protected set; }
         public ReactiveCommand<Guid, Unit> SelectionAddToSpecificListCommand { get; protected set; }
@@ -163,7 +164,12 @@ namespace TsukiTag.ViewModels
 
             this.DeselectAllCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                this.onDeselectAll();
+                this.OnDeselectAll();
+            });
+
+            this.SelectAllCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                this.OnSelectAll();
             });
 
             this.AddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -344,7 +350,15 @@ namespace TsukiTag.ViewModels
             });
         }
 
-        private async void onDeselectAll()
+        private async void OnSelectAll()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                this.pictureControl.SelectAllPictures();
+            });
+        }
+
+        private async void OnDeselectAll()
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
@@ -503,10 +517,26 @@ namespace TsukiTag.ViewModels
                 }
             };
 
+            var imageMenus = new MenuItemViewModel();
+            imageMenus.Header = Language.ActionThisImage;
+            imageMenus.Items = new List<MenuItemViewModel>()
+            {
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.OpenPicture,
+                        Command = OpenPictureCommand
+                    }
+                }
+            };
+
             menus.Items = new List<MenuItemViewModel>()
             {
                 {
                     onlineListMenus
+                },
+                {
+                    imageMenus
                 }
             };
 
@@ -570,10 +600,33 @@ namespace TsukiTag.ViewModels
                 }
             };
 
+            var selectionMenus = new MenuItemViewModel();
+            selectionMenus.Header = Language.ActionSelection;
+            selectionMenus.Items = new List<MenuItemViewModel>()
+            {
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.SelectAll,
+                        Command = SelectAllCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.DeselectAllPictures,
+                        Command = DeselectAllCommand
+                    }
+                }
+            };
+
             menus.Items = new List<MenuItemViewModel>()
             {
                 {
                     onlineListMenus
+                },
+                {
+                    selectionMenus
                 }
             };
 

@@ -70,6 +70,7 @@
   "AddThisTagSearch": "Add this tag to search",
   "RemoveThisTagSearch": "Remove this tag from search",
   "SetThisTagSearch": "Set this tag as search",
+  "SelectAll":  "Select all pictures",
 
   "ToastProviderEnd": "No more results from provider {0}.",
   "ToastOnlineListsEnd": "No more results from online lists.",

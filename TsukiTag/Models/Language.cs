@@ -101,6 +101,7 @@ namespace TsukiTag.Models
         public static string AddThisTagSearch => Localizer.Get(nameof(AddThisTagSearch));
         public static string RemoveThisTagSearch => Localizer.Get(nameof(RemoveThisTagSearch));
         public static string SetThisTagSearch => Localizer.Get(nameof(SetThisTagSearch));
+        public static string SelectAll => Localizer.Get(nameof(SelectAll));
 
         public static string ToastProviderEnd => Localizer.Get(nameof(ToastProviderEnd));
         public static string ToastOnlineListEnd => Localizer.Get(nameof(ToastOnlineListEnd));
