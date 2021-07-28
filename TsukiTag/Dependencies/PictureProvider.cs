@@ -21,6 +21,8 @@ namespace TsukiTag.Dependencies
         Task SetContextToOnline();
 
         Task SetContextToAllOnlineLists();
+
+        Task SetContextToSpecificOnlineList(Guid id);
     }
 
     public class PictureProviderContext : IPictureProviderContext
@@ -78,6 +80,18 @@ namespace TsukiTag.Dependencies
             await this.providerFilterControl.ReinitializeFilter(ProviderSession.AllOnlineListsSession);
         }
 
+        public async Task SetContextToSpecificOnlineList(Guid id)
+        {
+            if (this.currentProvider != null)
+            {
+                await this.currentProvider.UnhookFromFilter();
+            }
+
+            this.currentProvider = this.onlineListPictureProvider;
+
+            await this.currentProvider.HookToFilter();
+            await this.providerFilterControl.ReinitializeFilter(id.ToString());
+        }
 
         public Task UnhookFromFilter()
         {

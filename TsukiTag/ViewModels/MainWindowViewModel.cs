@@ -2,6 +2,8 @@ using Avalonia.Controls;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Text;
@@ -15,15 +17,29 @@ namespace TsukiTag.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         private readonly INavigationControl navigationControl;
+        private readonly IDbRepository dbRepository;
 
         private ProviderContext providerContext;
         private ContentControl currentContent;
+        private ObservableCollection<MenuItemViewModel> mainWindowMenus;
 
         public ReactiveCommand<Unit, Unit> SwitchToSettingsCommand { get; }
 
         public ReactiveCommand<Unit, Unit> SwitchToOnlineBrowsingCommand { get; }
 
         public ReactiveCommand<Unit, Unit> SwitchToAllOnlineListBrowsingCommand { get; }
+
+        public ReactiveCommand<Guid, Unit> SwitchToSpefificOnlineListBrowsingCommand { get; }
+
+        public ObservableCollection<MenuItemViewModel> MainWindowMenus
+        {
+            get { return mainWindowMenus; }
+            set
+            {
+                mainWindowMenus = value;
+                this.RaisePropertyChanged(nameof(MainWindowMenus));
+            }
+        }
 
         public ContentControl CurrentContent
         {
@@ -39,7 +55,7 @@ namespace TsukiTag.ViewModels
         {
             get
             {
-                if(providerContext == null)
+                if (providerContext == null)
                 {
                     providerContext = new ProviderContext();
                 }
@@ -49,13 +65,16 @@ namespace TsukiTag.ViewModels
         }
 
         public MainWindowViewModel(
-            INavigationControl navigationControl
+            INavigationControl navigationControl,
+            IDbRepository dbRepository
         )
         {
+            this.dbRepository = dbRepository;
             this.navigationControl = navigationControl;
             this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing;
             this.navigationControl.SwitchedToSettings += OnSwitchedToSettings;
             this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToAllOnlineListBrowsing;
+            this.navigationControl.SwitchedToSpecificOnlineListBrowsing += OnSwitchedToSpecificOnlineListBrowsing;
 
             this.SwitchToSettingsCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -72,7 +91,13 @@ namespace TsukiTag.ViewModels
                 await this.navigationControl.SwitchToAllOnlineListBrowsing();
             });
 
+            this.SwitchToSpefificOnlineListBrowsingCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                await this.navigationControl.SwitchToSpecificOnlineListBrowsing(id);
+            });
+
             CurrentContent = ProviderContext;
+            MainWindowMenus = GetMainMenus();
         }
 
         ~MainWindowViewModel()
@@ -80,6 +105,7 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToOnlineBrowsing -= OnSwitchedToOnlineBrowsing;
             this.navigationControl.SwitchedToSettings -= OnSwitchedToSettings;
             this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToAllOnlineListBrowsing;
+            this.navigationControl.SwitchedToSpecificOnlineListBrowsing -= OnSwitchedToSpecificOnlineListBrowsing;
         }
 
         private void OnSwitchedToSettings(object? sender, EventArgs e)
@@ -104,6 +130,64 @@ namespace TsukiTag.ViewModels
             {
                 CurrentContent = ProviderContext;
             });
+        }
+
+        private void OnSwitchedToSpecificOnlineListBrowsing(object? sender, Guid e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                CurrentContent = ProviderContext;
+            });
+        }
+
+
+        private ObservableCollection<MenuItemViewModel> GetMainMenus()
+        {
+            var menus = new MenuItemViewModel();
+            var allLists = this.dbRepository.OnlineList.GetAll();
+
+            menus.Header = "TsukiTag";
+            menus.Items = new List<MenuItemViewModel>()
+            {
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.NavigationOnline,
+                        Command = SwitchToOnlineBrowsingCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.NavigationAllOnlineLists,
+                        Command = SwitchToAllOnlineListBrowsingCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.NavigationSpecificOnlineList,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = SwitchToAllOnlineListBrowsingCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allLists.Select(l => new MenuItemViewModel() { Header = l.Name, Command = SwitchToSpefificOnlineListBrowsingCommand, CommandParameter = l.Id })))
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = "-"
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.NavigationSettings,
+                        Command = SwitchToSettingsCommand
+                    }
+                },
+            };
+
+            return new ObservableCollection<MenuItemViewModel>() { menus };
         }
     }
 }

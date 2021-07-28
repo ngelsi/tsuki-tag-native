@@ -179,6 +179,7 @@ namespace TsukiTag.ViewModels
             this.navigationControl.TemporaryMetadataOverviewStart -= OnTemporaryMetadataOverviewStart;
             this.navigationControl.SwitchedToOnlineBrowsing -= OnSwitchedToOnlineBrowsing;
             this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToAllOnlineListBrowsing;
+            this.navigationControl.SwitchedToSpecificOnlineListBrowsing -= OnSwitchedToSpecificOnlineListBrowsing;
         }
 
         public async void OnTabPictureClosed(Picture picture)
@@ -272,6 +273,7 @@ namespace TsukiTag.ViewModels
             this.navigationControl.TemporaryMetadataOverviewStart += OnTemporaryMetadataOverviewStart;
             this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing;
             this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToAllOnlineListBrowsing;
+            this.navigationControl.SwitchedToSpecificOnlineListBrowsing += OnSwitchedToSpecificOnlineListBrowsing;
 
             this.GetPictures();
         }
@@ -281,6 +283,25 @@ namespace TsukiTag.ViewModels
             await Task.Run(async () =>
             {
                 await pictureProviderContext.GetPictures();
+            });
+        }
+
+        private void OnSwitchedToSpecificOnlineListBrowsing(object? sender, Guid e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                //*
+                this.tabs.Remove(this.tabs.ElementAt(0));
+                this.tabs.Insert(0, ProviderTabModel.AllOnlineListsTab);
+                this.SelectedTabIndex = 0;
+                /*/
+                this.tabs = new ObservableCollection<ProviderTabModel>();
+                this.tabs.Add(ProviderTabModel.AllOnlineListsTab);
+                //*/
+
+                this.RaisePropertyChanged(nameof(Tabs));
+
+                await this.pictureProviderContext.SetContextToSpecificOnlineList(e);
             });
         }
 

@@ -62,7 +62,7 @@
   "NextPicture": "Next selected picture",
   "OpenPicture": "Open picture in new tab",
   "DeselectPicture": "De-select picture",
-  "DeselectAllPictures":  "De-select all pictures",
+  "DeselectAllPictures": "De-select all pictures",
   "SwitchToTag": "Switch to tag view",
   "SwitchToMetadata": "Switch to metadata view",
   "OriginalView": "Switch fit/original view",
@@ -78,6 +78,7 @@
   "ToastProviderTagLimit2": "{0} only supports up to 2 tags per search.",
 
   "NavigationOnline": "Browse online",
-  "NavigatioAllnOnlineLists": "Browse all online lists",
+  "NavigationAllOnlineLists": "Browse all online lists",
+  "NavigationSpecificOnlineList": "Browse online list ...",
   "NavigationSettings": "Settings"
 }

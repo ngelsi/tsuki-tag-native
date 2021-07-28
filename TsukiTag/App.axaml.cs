@@ -23,7 +23,8 @@ namespace TsukiTag
                 desktop.MainWindow = new MainWindow
                 {
                     DataContext = new MainWindowViewModel(
-                        Ioc.SimpleIoc.NavigationControl                        
+                        Ioc.SimpleIoc.NavigationControl,
+                        Ioc.SimpleIoc.DbRepository
                     )
                 };
             }

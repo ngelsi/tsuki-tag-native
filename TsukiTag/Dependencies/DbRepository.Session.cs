@@ -80,6 +80,21 @@ namespace TsukiTag.Dependencies
 
                     newItem = true;
                 }
+                else if (session == null && Guid.TryParse(context, out Guid id))
+                {
+                    session = new ProviderSession()
+                    {
+                        Context = context,
+                        Providers = new string [] { parent.OnlineList.Get(id)?.Name },
+                        Ratings = new string[]
+                        {
+                            Models.Rating.Safe.Name
+                        },
+                        Limit = 75
+                    };
+
+                    newItem = true;
+                }
 
                 if (newItem)
                 {

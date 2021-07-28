@@ -22,13 +22,16 @@
   <DockPanel Margin="{Binding #MainWindow.OffScreenMargin}">
     <DockPanel DockPanel.Dock="Top">
       <local:NotificationBar DockPanel.Dock="Right"></local:NotificationBar>
-      <Menu DockPanel.Dock="Left" VerticalAlignment="Top" HorizontalAlignment="Left">
-        <MenuItem Header="TsukiTag">
-          <MenuItem Header="{Binding Language.NavigationOnline}" Command="{Binding SwitchToOnlineBrowsingCommand}" />
-          <MenuItem Header="{Binding Language.NavigatioAllnOnlineLists}" Command="{Binding SwitchToAllOnlineListBrowsingCommand}" />
-          <Separator />
-          <MenuItem Header="{Binding Language.NavigationSettings}" Command="{Binding SwitchToSettingsCommand}" />          
-        </MenuItem>
+      <Menu DockPanel.Dock="Left" VerticalAlignment="Top" HorizontalAlignment="Left" Items="{Binding MainWindowMenus}">
+        <Menu.Styles>
+          <Style Selector="MenuItem">
+            <Setter Property="Header" Value="{Binding Header}"/>
+            <Setter Property="Items" Value="{Binding Items}"/>
+            <Setter Property="IsEnabled" Value="{Binding IsEnabled}"></Setter>
+            <Setter Property="Command" Value="{Binding Command}"/>
+            <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+          </Style>
+        </Menu.Styles>
       </Menu>
     </DockPanel>
     <DockPanel Margin="0 5 0 0" DockPanel.Dock="Top">

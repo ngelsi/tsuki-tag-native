@@ -110,6 +110,7 @@ namespace TsukiTag.Models
 
         public static string NavigationOnline => Localizer.Get(nameof(NavigationOnline));
         public static string NavigationSettings => Localizer.Get(nameof(NavigationSettings));
-        public static string NavigatioAllnOnlineLists => Localizer.Get(nameof(NavigatioAllnOnlineLists));
+        public static string NavigationAllOnlineLists => Localizer.Get(nameof(NavigationAllOnlineLists));
+        public static string NavigationSpecificOnlineList => Localizer.Get(nameof(NavigationSpecificOnlineList));
     }
 }
