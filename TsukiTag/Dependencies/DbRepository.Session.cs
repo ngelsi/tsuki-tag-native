@@ -105,6 +105,11 @@ namespace TsukiTag.Dependencies
                     }
                 }
 
+                if(context == Models.Repository.ProviderSession.AllOnlineListsSession)
+                {
+                    session.Providers = parent.OnlineList.GetAll().Select(s => s.Name).ToArray();
+                }
+
                 return session;
 
             }
