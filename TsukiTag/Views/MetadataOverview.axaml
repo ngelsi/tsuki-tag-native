@@ -61,6 +61,9 @@
         <Button ToolTip.Tip="{Binding Language.OpenPicture}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" PointerReleased="OpenPressReleased" Command="{Binding OpenPictureCommand}" Classes="actionbutton" Margin="10 0 0 0">
           <i:Icon FontSize="14" Value="fa-clone"></i:Icon>
         </Button>
+        <Button ToolTip.Tip="{Binding Language.DeselectAllPictures}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Command="{Binding DeselectAllCommand}" Classes="actionbutton" Margin="10 0 0 0">
+          <i:Icon FontSize="14" Value="fa-eraser"></i:Icon>
+        </Button>
         <Button ToolTip.Tip="{Binding Language.DeselectPicture}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Command="{Binding DeselectPictureCommand}" Classes="actionbutton" Margin="10 0 0 0">
           <i:Icon FontSize="14" Value="fa-times"></i:Icon>
         </Button>

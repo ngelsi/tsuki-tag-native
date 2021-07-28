@@ -93,6 +93,7 @@ namespace TsukiTag.Models
         public static string NextPicture => Localizer.Get(nameof(NextPicture));
         public static string OpenPicture => Localizer.Get(nameof(OpenPicture));
         public static string DeselectPicture => Localizer.Get(nameof(DeselectPicture));
+        public static string DeselectAllPictures => Localizer.Get(nameof(DeselectAllPictures));
         public static string SwitchToTag => Localizer.Get(nameof(SwitchToTag));
         public static string SwitchToMetadata => Localizer.Get(nameof(SwitchToMetadata));
         public static string OriginalView => Localizer.Get(nameof(OriginalView));

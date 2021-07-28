@@ -104,6 +104,7 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Unit, Unit> DeselectPictureCommand { get; set; }
         public ReactiveCommand<Unit, Unit> OpenPictureCommand { get; set; }
         public ReactiveCommand<Unit, Unit> SwitchToTabOverviewCommand { get; set; }
+        public ReactiveCommand<Unit, Unit> DeselectAllCommand { get; set; }
 
         public ReactiveCommand<Unit, Unit> SelectionAddToDefaultListCommand { get; protected set; }
         public ReactiveCommand<Guid, Unit> SelectionAddToSpecificListCommand { get; protected set; }
@@ -158,6 +159,11 @@ namespace TsukiTag.ViewModels
             this.SwitchToTabOverviewCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 this.OnSwitchToTagOverview();
+            });
+
+            this.DeselectAllCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                this.onDeselectAll();
             });
 
             this.AddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -334,6 +340,21 @@ namespace TsukiTag.ViewModels
                 if (picture != null)
                 {
                     this.pictureControl.DeselectPicture(picture);
+                }
+            });
+        }
+
+        private async void onDeselectAll()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                for(var i = SelectedPictures.Count - 1; i >= 0; i--)
+                {
+                    var picture = SelectedPictures.ElementAtOrDefault(CurrentPictureIndex);
+                    if (picture != null)
+                    {
+                        this.pictureControl.DeselectPicture(picture);
+                    }
                 }
             });
         }

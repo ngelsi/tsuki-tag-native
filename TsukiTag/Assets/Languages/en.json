@@ -62,6 +62,7 @@
   "NextPicture": "Next selected picture",
   "OpenPicture": "Open picture in new tab",
   "DeselectPicture": "De-select picture",
+  "DeselectAllPictures":  "De-select all pictures",
   "SwitchToTag": "Switch to tag view",
   "SwitchToMetadata": "Switch to metadata view",
   "OriginalView": "Switch fit/original view",
