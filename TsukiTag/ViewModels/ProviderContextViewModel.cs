@@ -274,16 +274,6 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing;
             this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToAllOnlineListBrowsing;
             this.navigationControl.SwitchedToSpecificOnlineListBrowsing += OnSwitchedToSpecificOnlineListBrowsing;
-
-            //this.GetPictures();
-        }
-
-        private async Task GetPictures()
-        {
-            await Task.Run(async () =>
-            {
-                await pictureProviderContext.GetPictures();
-            });
         }
 
         private void OnSwitchedToSpecificOnlineListBrowsing(object? sender, Guid e)

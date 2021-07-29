@@ -167,9 +167,12 @@ namespace TsukiTag.ViewModels
             {
                 var currentFilter = await this.providerFilterControl.GetCurrentFilter();
 
-                SafeRatingEnabled = currentFilter.Ratings.Contains(Rating.Safe.Name);
-                QuestionableRatingEnabled = currentFilter.Ratings.Contains(Rating.Questionable.Name);
-                ExplicitRatingEnabled = currentFilter.Ratings.Contains(Rating.Explicit.Name);
+                if (currentFilter != null)
+                {
+                    SafeRatingEnabled = currentFilter.Ratings.Contains(Rating.Safe.Name);
+                    QuestionableRatingEnabled = currentFilter.Ratings.Contains(Rating.Questionable.Name);
+                    ExplicitRatingEnabled = currentFilter.Ratings.Contains(Rating.Explicit.Name);
+                }
             });
         }
 

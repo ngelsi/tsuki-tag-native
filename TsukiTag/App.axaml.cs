@@ -20,13 +20,10 @@ namespace TsukiTag
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = new MainWindowViewModel(
+                desktop.MainWindow = new MainWindow(new MainWindowViewModel(
                         Ioc.SimpleIoc.NavigationControl,
                         Ioc.SimpleIoc.DbRepository
-                    )
-                };
+                ));
             }
 
             RxApp.DefaultExceptionHandler = Observer.Create<Exception>(Console.WriteLine);

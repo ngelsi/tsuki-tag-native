@@ -82,12 +82,14 @@ namespace TsukiTag.ViewModels
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
                 var currentFilter = await this.providerFilterControl.GetCurrentFilter();
-
-                SafebooruEnabled = currentFilter.Providers.Contains(Provider.Safebooru.Name);
-                GelbooruEnabled = currentFilter.Providers.Contains(Provider.Gelbooru.Name);
-                KonachanEnabled = currentFilter.Providers.Contains(Provider.Konachan.Name);
-                DanbooruEnabled = currentFilter.Providers.Contains(Provider.Danbooru.Name);
-                YandereEnabled = currentFilter.Providers.Contains(Provider.Yandere.Name);
+                if(currentFilter != null)
+                {
+                    SafebooruEnabled = currentFilter.Providers.Contains(Provider.Safebooru.Name);
+                    GelbooruEnabled = currentFilter.Providers.Contains(Provider.Gelbooru.Name);
+                    KonachanEnabled = currentFilter.Providers.Contains(Provider.Konachan.Name);
+                    DanbooruEnabled = currentFilter.Providers.Contains(Provider.Danbooru.Name);
+                    YandereEnabled = currentFilter.Providers.Contains(Provider.Yandere.Name);
+                }
             });
         }
 

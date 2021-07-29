@@ -44,9 +44,7 @@ namespace TsukiTag.Dependencies
             this.providerFilterControl = providerFilterControl;
 
             this.onlineListPictureProvider = onlineListPictureProvider;
-            this.onlinePictureProvider = onlinePictureProvider;
-
-            SetContextToOnline().GetAwaiter().GetResult();
+            this.onlinePictureProvider = onlinePictureProvider;          
         }
 
         public Task GetPictures()

@@ -108,6 +108,11 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToSpecificOnlineListBrowsing -= OnSwitchedToSpecificOnlineListBrowsing;
         }
 
+        public async void Initialized()
+        {
+            this.navigationControl.SwitchToOnlineBrowsing();
+        }
+
         private void OnSwitchedToSettings(object? sender, EventArgs e)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
