@@ -47,6 +47,8 @@ namespace TsukiTag.Dependencies
                     result.Succeeded = true;
                     result.Pictures = pictures.DistinctBy(p => p.Id).DistinctBy(p => p.Md5)?.ToList();
                     result.ProviderEnd = result.Pictures.Count == 0;
+
+                    OnResultProcessed(response, filter, result);
                 }
                 else
                 {
@@ -63,6 +65,11 @@ namespace TsukiTag.Dependencies
             }
 
             return result;
+        }
+
+        protected virtual void OnResultProcessed(IRestResponse response, ProviderFilterElement filter, ProviderResult result)
+        {
+
         }
 
         protected virtual void OnNonOkResultReceived(IRestResponse response, ProviderFilterElement filter, ProviderResult result)

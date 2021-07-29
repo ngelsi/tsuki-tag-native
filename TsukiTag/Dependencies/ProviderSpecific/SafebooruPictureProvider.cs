@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
@@ -116,6 +117,17 @@ namespace TsukiTag.Dependencies.ProviderSpecific
             }
 
             return Task.FromResult(pictures);
+        }
+
+        protected override void OnResultProcessed(IRestResponse response, ProviderFilterElement filter, ProviderResult result)
+        {
+            //Sometimes Safebooru responds with an empty response, even when there are no current restrictions present.
+            //So we dont mark this specific situation as the provider is finished.
+
+            if(result.ProviderEnd && (filter.Tags == null || filter.Tags.Count == 0))
+            {
+                result.ProviderEnd = false;
+            }            
         }
     }
 }
