@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading.Tasks;
 using TsukiTag.Dependencies;
@@ -14,6 +16,19 @@ namespace TsukiTag.ViewModels
         private readonly IPictureControl pictureControl;
         private Picture picture;
         private string filterString;
+        private string currentTag;
+
+        public ReactiveCommand<Unit, Unit> AddTagCommand { get; }
+
+        public string CurrentTag
+        {
+            get { return currentTag; }
+            set
+            {
+                currentTag = value?.Replace(" ", "_") ?? string.Empty;
+                this.RaisePropertyChanged(nameof(CurrentTag));
+            }
+        }
 
         public string FilterString
         {
@@ -49,7 +64,7 @@ namespace TsukiTag.ViewModels
                     return Picture?.TagList.Where(s => filterParts.Any(fs => s.IndexOf(fs) > -1)).ToList() ?? new List<string>();
                 }
 
-                return Picture?.TagList ?? new List<string>();
+                return Picture?.TagList?.ToList() ?? new List<string>();
             }
         }
 
@@ -60,11 +75,49 @@ namespace TsukiTag.ViewModels
         {
             this.picture = picture;
             this.pictureControl = pictureControl;
+
+            this.AddTagCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                this.OnTagAdded();
+            });
         }
 
         ~PictureMetadataEditorViewModel()
         {
 
+        }
+
+        public async void OnTagRemoved(string tag)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                Picture.RemoveTag(tag);
+
+                this.RaisePropertyChanged(nameof(Picture));
+                this.RaisePropertyChanged(nameof(Picture.TagList));
+                this.RaisePropertyChanged(nameof(Picture.Tags));
+                this.RaisePropertyChanged(nameof(FilteredTags));
+                this.RaisePropertyChanged(nameof(TagCount));
+            });
+        }
+
+        public async void OnTagAdded()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                if (!string.IsNullOrEmpty(CurrentTag) && !Picture.TagList.Contains(CurrentTag))
+                {
+                    Picture.AddTag(CurrentTag);
+
+                    this.RaisePropertyChanged(nameof(Picture));
+                    this.RaisePropertyChanged(nameof(Picture.TagList));
+                    this.RaisePropertyChanged(nameof(Picture.Tags));
+                    this.RaisePropertyChanged(nameof(FilteredTags));
+                    this.RaisePropertyChanged(nameof(TagCount));
+                }
+
+                CurrentTag = string.Empty;
+            });
         }
     }
 }

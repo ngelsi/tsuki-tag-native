@@ -20,7 +20,7 @@
     </Style>
     <Style Selector="TextBlock.primary">
       <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
-      <Setter Property="FontSize" Value="12"></Setter>
+      <Setter Property="FontSize" Value="14"></Setter>
     </Style>
     <Style Selector="TextBlock.primary:pointerover">
       <Setter Property="Foreground" Value="White"></Setter>
@@ -45,13 +45,13 @@
       <Setter Property="Padding" Value="0"></Setter>
     </Style>
     <Style Selector="TextBlock.metadatatitle,TextBlock.metadatavalue">
-      <Setter Property="FontSize" Value="12"></Setter>
+      <Setter Property="FontSize" Value="14"></Setter>
     </Style>
     <Style Selector="TextBlock.metadatatitle">
       <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
     </Style>
     <Style Selector="TextBox.filter">
-      <Setter Property="FontSize" Value="12"></Setter>
+      <Setter Property="FontSize" Value="13"></Setter>
       <Setter Property="Padding" Value="7"></Setter>
     </Style>
   </UserControl.Styles>
@@ -60,7 +60,7 @@
           <Label DockPanel.Dock="Left" Content="Metadata"></Label>
         </DockPanel>
         <DockPanel DockPanel.Dock="Top">
-          <Grid Margin="13 5 5 5" DockPanel.Dock="Top" ColumnDefinitions="0.3*,0.7*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+          <Grid Margin="13 5 5 5" DockPanel.Dock="Top" ColumnDefinitions="0.4*,0.6*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
             <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="0" Text="Provider:"></TextBlock>
             <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="0" Text="{Binding Picture.Provider}"></TextBlock>
 
@@ -94,15 +94,22 @@
             <Label DockPanel.Dock="Left" Content="Tags"></Label>
             <Label DockPanel.Dock="Left" Margin="5 0 0 0" Content="{Binding TagCount}"></Label>
           </DockPanel>
-          <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10 5 5 5">
-            <TextBox Classes="filter" Watermark="Filter" Width="280" Text="{Binding FilterString}" Name="FilterBox"></TextBox>
+          <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Margin="10 5 5 5">
+            <TextBox Classes="filter" Watermark="{Binding Language.Filter}" Width="280" HorizontalContentAlignment="Left" Text="{Binding FilterString}" Name="FilterBox"></TextBox>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="2 10 0 0">
+              <TextBox KeyDown="OnAddTagKeyDown" Classes="filter" Watermark="{Binding Language.AddTag}" Width="240" HorizontalAlignment="Left" Text="{Binding CurrentTag}" Name="TagBox"></TextBox>
+              <Button Classes="actionbutton" HorizontalAlignment="Left" Margin="15 0 0 0" Command="{Binding AddTagCommand}">
+                <i:Icon Value="fa-plus"></i:Icon>
+              </Button>
+            </StackPanel>
           </StackPanel>
           <ScrollViewer DockPanel.Dock="Top">
             <ItemsRepeater Items="{Binding FilteredTags}" Margin="10 5 5 5">
               <ItemsRepeater.ItemTemplate>
                 <DataTemplate>
                   <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="5 5 0 0" Text="{Binding}" Classes="primary"></TextBlock>                    
+                    <TextBlock Margin="5 5 0 0" Text="x" Classes="primary" PointerPressed="TagRemoveGotPress"></TextBlock>
+                    <TextBlock Margin="5 5 0 0" Text="{Binding}" Classes="primary"></TextBlock>
                   </StackPanel>
                 </DataTemplate>
               </ItemsRepeater.ItemTemplate>

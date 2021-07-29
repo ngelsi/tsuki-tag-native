@@ -6,6 +6,7 @@
   "Name": "Name",
   "All": "All",
   "Refresh": "Refresh",
+  "Filter":  "Filter",
 
   "Safe": "Safe",
   "Questionable": "Questionable",
@@ -70,7 +71,8 @@
   "AddThisTagSearch": "Add this tag to search",
   "RemoveThisTagSearch": "Remove this tag from search",
   "SetThisTagSearch": "Set this tag as search",
-  "SelectAll":  "Select all pictures",
+  "SelectAll": "Select all pictures",
+  "AddTag":  "Add tag",
 
   "ToastProviderEnd": "No more results from provider {0}.",
   "ToastOnlineListsEnd": "No more results from online lists.",

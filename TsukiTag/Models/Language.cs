@@ -35,6 +35,7 @@ namespace TsukiTag.Models
         public static string All => Localizer.Get(nameof(All));
         public static string Session => Localizer.Get(nameof(Session));
         public static string Refresh => Localizer.Get(nameof(Refresh));
+        public static string Filter => Localizer.Get(nameof(Filter));
 
         public static string Safe => Localizer.Get(nameof(Safe));
         public static string Questionable => Localizer.Get(nameof(Questionable));
@@ -102,6 +103,7 @@ namespace TsukiTag.Models
         public static string RemoveThisTagSearch => Localizer.Get(nameof(RemoveThisTagSearch));
         public static string SetThisTagSearch => Localizer.Get(nameof(SetThisTagSearch));
         public static string SelectAll => Localizer.Get(nameof(SelectAll));
+        public static string AddTag => Localizer.Get(nameof(AddTag));
 
         public static string ToastProviderEnd => Localizer.Get(nameof(ToastProviderEnd));
         public static string ToastOnlineListEnd => Localizer.Get(nameof(ToastOnlineListEnd));

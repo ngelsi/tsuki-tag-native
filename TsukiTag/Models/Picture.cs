@@ -143,7 +143,7 @@ namespace TsukiTag.Models
         public string Tags
         {
             get { return tags?.Trim(); }
-            set { tags = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Tags))); }
+            set { tags = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Tags))); PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TagList))); }
         }
 
         public string UserTags
@@ -324,7 +324,7 @@ namespace TsukiTag.Models
                 var list = TagList;
                 list.Add(tag);
 
-                Tags = string.Join(' ', list.Distinct());
+                Tags = string.Join(' ', list.Distinct().OrderBy(s => s));
             }
         }
 
@@ -340,7 +340,7 @@ namespace TsukiTag.Models
         {
             if (!string.IsNullOrEmpty(tag))
             {
-                Tags = string.Join(' ', TagList.Where(t => t != tag).Distinct());
+                Tags = string.Join(' ', TagList.Where(t => t != tag).Distinct().OrderBy(s => s));
             }
         }
 
