@@ -21,7 +21,7 @@ namespace TsukiTag.Dependencies.ProviderSpecific
     {
         private const string BaseUrl = "https://gelbooru.com/index.php?page=dapi&s=post&q=index";
 
-        public override string Provider => TsukiTag.Models.Provider.Safebooru.Name;
+        public override string Provider => TsukiTag.Models.Provider.Gelbooru.Name;
 
         public override bool IsXml => true;
 
