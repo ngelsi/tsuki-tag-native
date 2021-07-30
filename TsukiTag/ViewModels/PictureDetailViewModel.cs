@@ -167,7 +167,7 @@ namespace TsukiTag.ViewModels
             var menus = new MenuItemViewModel();
             var allLists = this.dbRepository.OnlineList.GetAll();
             var eligibleLists = allLists.Where(l => l.IsEligible(Picture)).ToList();
-            var containingLists = this.dbRepository.OnlineListPicture.GetAllForPicture(picture.Md5).Select(s => allLists.FirstOrDefault(l => l.Id == s.ListId)).Where(s => s != null).ToList();
+            var containingLists = this.dbRepository.OnlineListPicture.GetAllForPicture(picture.Md5).Select(s => allLists.FirstOrDefault(l => l.Id == s.ResourceListId)).Where(s => s != null).ToList();
 
             menus.Header = Language.ActionOnlineLists;
             menus.Items = new List<MenuItemViewModel>() {

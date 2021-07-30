@@ -41,6 +41,7 @@ namespace TsukiTag.Models
         private Bitmap previewImage;
         private Bitmap sampleImage;
         private bool isLocal;
+        private Bitmap sourceImage;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -244,6 +245,14 @@ namespace TsukiTag.Models
         {
             get { return sampleImage; }
             set { sampleImage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SampleImage))); }
+        }
+
+        [BsonIgnore]
+        [JsonIgnore]
+        public Bitmap SourceImage
+        {
+            get { return sourceImage; }
+            set { sourceImage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceImage))); }
         }
 
         public string Extension

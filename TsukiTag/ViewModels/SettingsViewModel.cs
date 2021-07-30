@@ -37,6 +37,16 @@ namespace TsukiTag.ViewModels
             this.AddTagsToRemoveCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnAddTagstoRemove(id); });
             this.AddOptionalConditionTagCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnAddOptionalConditionTag(id); });
             this.AddMandatoryConditionTagCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnAddMandatoryConditionTag(id); });
+
+            this.AddNewWorkspaceCommand = ReactiveCommand.CreateFromTask(async () => { OnNewWorkspaceAdded(); });
+            this.SetWorkspaceToDefaultCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnSetWorkspaceToDefault(id); });
+            this.RemoveWorkspaceCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnRemoveWorkspace(id); });
+            this.AddWorkspaceTagsToAddCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnWorkspaceAddTagstoAdd(id); });
+            this.AddWorkspaceTagsToRemoveCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnWorkspaceAddTagstoRemove(id); });
+            this.AddWorkspaceOptionalConditionTagCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnWorkspaceAddOptionalConditionTag(id); });
+            this.AddWorkspaceMandatoryConditionTagCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnWorkspaceAddMandatoryConditionTag(id); });
+            this.BrowseWorkspaceFolderCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnWorkspaceBrowseFolder(id); });
+
             this.SettingsCancelledCommand = ReactiveCommand.CreateFromTask(async () => { OnSettingsCancelled(); });
             this.SettingsSavedCommand = ReactiveCommand.CreateFromTask(async () => { OnSettingsSaved(); });
         }
@@ -44,6 +54,7 @@ namespace TsukiTag.ViewModels
         public async void Initialize()
         {
             OnlineLists = new ObservableCollection<OnlineList>(this.dbRepository.OnlineList.GetAll());
+            Workspaces = new ObservableCollection<Workspace>(this.dbRepository.Workspace.GetAll());
         }
 
         public async void OnSettingsCancelled()
@@ -68,6 +79,22 @@ namespace TsukiTag.ViewModels
                     {
                         this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsListNotUnique, "settingslistnotunique"));
                     }
+                    else if (workspaces.Any(w => string.IsNullOrEmpty(w.Name)))
+                    {
+                        this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsWorkspaceNoName, "settingsworkspacenoname"));
+                    }
+                    else if (workspaces.Any(w => string.IsNullOrEmpty(w.FolderPath)))
+                    {
+                        this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsWorkspaceNoPath, "settingsworkspacenopath"));
+                    }
+                    else if (workspaces.Any(l => workspaces.Any(ll => ll.Name == l.Name && ll.Id != l.Id)))
+                    {
+                        this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsWorkspaceNotUnique, "settingsworkspacenotunique"));
+                    }
+                    else if (workspaces.Any(l => workspaces.Any(ll => ll.FolderPath == l.FolderPath && ll.Id != l.Id)))
+                    {
+                        this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsWorkspaceSamePath, "settingsworkspacesamepath"));
+                    }
                     else
                     {
                         foreach (var list in onlineLists)
@@ -78,8 +105,24 @@ namespace TsukiTag.ViewModels
                             list.TagsToRemove = list.TagsToRemove == null ? null : list.TagsToRemove.Except(new string[] { string.Empty }).ToArray();
                         }
 
+                        var illegalCharacters = System.IO.Path.GetInvalidFileNameChars();
+                        foreach (var workspace in workspaces)
+                        {
+                            workspace.CurrentTagToAdd = string.Empty;
+                            workspace.CurrentTagToRemove = string.Empty;
+                            workspace.TagsToAdd = workspace.TagsToAdd == null ? null : workspace.TagsToAdd.Except(new string[] { string.Empty }).ToArray();
+                            workspace.TagsToRemove = workspace.TagsToRemove == null ? null : workspace.TagsToRemove.Except(new string[] { string.Empty }).ToArray();
+                            workspace.FileNameTemplate = new string(workspace.FileNameTemplate.Where(c => c == '#' || !illegalCharacters.Contains(c)).ToArray());
+
+                            if (!workspace.FileNameTemplate.EndsWith(".#extension#", StringComparison.OrdinalIgnoreCase))
+                            {
+                                workspace.FileNameTemplate += ".#extension#";
+                            }
+                        }
 
                         this.dbRepository.OnlineList.AddOrUpdate(onlineLists.ToList());
+                        this.dbRepository.Workspace.AddOrUpdate(workspaces.ToList());
+
                         this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsSaved, "settingssaved"));
                         this.Initialize();
                     }

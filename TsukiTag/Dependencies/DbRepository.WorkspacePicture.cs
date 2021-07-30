@@ -1,10 +1,12 @@
-﻿using LiteDB;
+﻿using Avalonia.Media.Imaging;
+using LiteDB;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TsukiTag.Extensions;
 using TsukiTag.Models;
 using TsukiTag.Models.Repository;
 
@@ -12,7 +14,7 @@ using TsukiTag.Models.Repository;
 namespace TsukiTag.Dependencies
 {
 
-    public interface IOnlineListPictureDb
+    public interface IWorkspacePictureDb
     {
         bool AddToList(Guid resourceListId, Picture picture);
 
@@ -24,35 +26,35 @@ namespace TsukiTag.Dependencies
 
         bool RemoveFromAllLists(Picture picture);
 
-        List<OnlineListPicture> GetAllForPicture(string md5);
+        List<WorkspacePicture> GetAllForPicture(string md5);
 
-        List<OnlineListPicture> GetAllForFilter(ProviderFilter filter);
+        List<WorkspacePicture> GetAllForFilter(ProviderFilter filter);
     }
 
     public partial class DbRepository
     {
-        public IOnlineListPictureDb OnlineListPicture { get; protected set; }
+        public IWorkspacePictureDb WorkspacePicture { get; protected set; }
 
-        private class OnlineListPictureDb : IOnlineListPictureDb
+        private class WorkspacePictureDb : IWorkspacePictureDb
         {
             private readonly IDbRepository parent;
 
-            public OnlineListPictureDb(DbRepository parent)
+            public WorkspacePictureDb(DbRepository parent)
             {
                 this.parent = parent;
                 EnsureIndexes();
             }
 
-            public List<OnlineListPicture> GetAllForFilter(ProviderFilter filter)
+            public List<WorkspacePicture> GetAllForFilter(ProviderFilter filter)
             {
                 try
                 {
-                    var allLists = parent.OnlineList.GetAll();
+                    var allLists = parent.Workspace.GetAll();
                     var filterLists = allLists.Where(l => filter.Providers.Contains(l.Name)).Select(s => s.Id).ToList();
 
                     using (var db = new LiteDatabase(MetadataRepositoryPath))
                     {
-                        var coll = db.GetCollection<OnlineListPicture>();
+                        var coll = db.GetCollection<WorkspacePicture>();
                         var query = coll.Query();
 
                         query = query.Where(l => filterLists.Contains(l.ResourceListId));
@@ -70,17 +72,17 @@ namespace TsukiTag.Dependencies
                 }
                 catch (Exception)
                 {
-                    return new List<OnlineListPicture>();
+                    return new List<WorkspacePicture>();
                 }
             }
 
-            public List<OnlineListPicture> GetAllForPicture(string md5)
+            public List<WorkspacePicture> GetAllForPicture(string md5)
             {
                 try
                 {
                     using (var db = new LiteDatabase(MetadataRepositoryPath))
                     {
-                        var coll = db.GetCollection<OnlineListPicture>();
+                        var coll = db.GetCollection<WorkspacePicture>();
                         var allItems = coll.Find(p => p.Md5 == md5).ToList();
 
                         return allItems;
@@ -88,33 +90,33 @@ namespace TsukiTag.Dependencies
                 }
                 catch (Exception)
                 {
-                    return new List<OnlineListPicture>();
+                    return new List<WorkspacePicture>();
                 }
             }
 
             public bool AddToAllLists(Picture picture)
             {
-                return AddToLists(picture, parent.OnlineList.GetAll());
+                return AddToLists(picture, parent.Workspace.GetAll());
             }
 
             public bool AddToAllEligible(Picture picture)
             {
-                return AddToLists(picture, parent.OnlineList.GetAll().Where(l => l.IsEligible(picture)).ToList());
+                return AddToLists(picture, parent.Workspace.GetAll().Where(l => l.IsEligible(picture)).ToList());
             }
 
             public bool AddToList(Guid resourceListId, Picture picture)
             {
                 try
                 {
-                    var list = parent.OnlineList.Get(resourceListId);
+                    var list = parent.Workspace.Get(resourceListId);
                     var newid = Guid.NewGuid();
-                    OnlineListPicture newItem = null;
+                    WorkspacePicture newItem = null;
 
                     if (list != null)
                     {
                         using (var db = new LiteDatabase(MetadataRepositoryPath))
                         {
-                            var coll = db.GetCollection<OnlineListPicture>();
+                            var coll = db.GetCollection<WorkspacePicture>();
 
                             var existing = coll.FindOne(p => p.Md5 == picture.Md5 && p.ResourceListId == resourceListId);
                             if (existing != null)
@@ -124,7 +126,7 @@ namespace TsukiTag.Dependencies
                             }
                             else
                             {
-                                newItem = new OnlineListPicture()
+                                newItem = new WorkspacePicture()
                                 {
                                     Id = newid,
                                     ResourceListId = resourceListId,
@@ -138,7 +140,7 @@ namespace TsukiTag.Dependencies
 
                         if (newItem != null)
                         {
-                            parent.OnlineListHistory.AddHistoryItem(Models.Repository.OnlineListHistory.PictureAdded<OnlineListHistory>(newItem));
+                            parent.WorkspaceHistory.AddHistoryItem(Models.Repository.WorkspaceHistory.PictureAdded<WorkspaceHistory>(newItem));
                         }
 
                         parent.ThumbnailStorage.AddOrUpdateThumbnail(picture.Md5, picture.PreviewImage);
@@ -158,10 +160,10 @@ namespace TsukiTag.Dependencies
             {
                 try
                 {
-                    List<OnlineListPicture> allItems;
+                    List<WorkspacePicture> allItems;
                     using (var db = new LiteDatabase(MetadataRepositoryPath))
                     {
-                        var coll = db.GetCollection<OnlineListPicture>();
+                        var coll = db.GetCollection<WorkspacePicture>();
                         allItems = coll.Find(p => p.Md5 == picture.Md5).ToList();
 
                         foreach (var item in allItems)
@@ -172,7 +174,7 @@ namespace TsukiTag.Dependencies
 
                     if (allItems?.Count > 0)
                     {
-                        parent.OnlineListHistory.AddHistoryItem(Models.Repository.OnlineListHistory.PictureRemoved<OnlineListHistory>(picture.Md5, allItems.Cast<PictureResourcePicture>().ToList()));
+                        parent.WorkspaceHistory.AddHistoryItem(Models.Repository.WorkspaceHistory.PictureRemoved<WorkspaceHistory>(picture.Md5, allItems.Cast<PictureResourcePicture>().ToList()));
                     }
 
                     return true;
@@ -188,10 +190,10 @@ namespace TsukiTag.Dependencies
             {
                 try
                 {
-                    OnlineListPicture existing = null;
+                    WorkspacePicture existing = null;
                     using (var db = new LiteDatabase(MetadataRepositoryPath))
                     {
-                        var coll = db.GetCollection<OnlineListPicture>();
+                        var coll = db.GetCollection<WorkspacePicture>();
                         existing = coll.FindOne(p => p.Md5 == picture.Md5 && p.ResourceListId == resourceListId);
 
                         if (existing != null)
@@ -202,7 +204,7 @@ namespace TsukiTag.Dependencies
 
                     if (existing != null)
                     {
-                        parent.OnlineListHistory.AddHistoryItem(Models.Repository.OnlineListHistory.PictureRemoved<OnlineListHistory>(existing));
+                        parent.WorkspaceHistory.AddHistoryItem(Models.Repository.WorkspaceHistory.PictureRemoved<WorkspaceHistory>(existing));
                     }
 
                     return true;
@@ -213,17 +215,17 @@ namespace TsukiTag.Dependencies
                 }
             }
 
-            private bool AddToLists(Picture picture, List<OnlineList> lists)
+            private bool AddToLists(Picture picture, List<Workspace> workspaces)
             {
                 try
                 {
-                    var pictures = new List<OnlineListPicture>();
+                    var pictures = new List<WorkspacePicture>();
 
                     using (var db = new LiteDatabase(MetadataRepositoryPath))
                     {
-                        var coll = db.GetCollection<OnlineListPicture>();
+                        var coll = db.GetCollection<WorkspacePicture>();
 
-                        foreach (var list in lists)
+                        foreach (var list in workspaces)
                         {
                             var existing = coll.FindOne(p => p.Md5 == picture.Md5 && p.ResourceListId == list.Id);
                             if (existing != null)
@@ -235,7 +237,7 @@ namespace TsukiTag.Dependencies
                             }
                             else
                             {
-                                var newItem = new OnlineListPicture()
+                                var newItem = new WorkspacePicture()
                                 {
                                     Id = Guid.NewGuid(),
                                     ResourceListId = list.Id,
@@ -252,7 +254,7 @@ namespace TsukiTag.Dependencies
 
                     if (pictures.Count > 0)
                     {
-                        parent.OnlineListHistory.AddHistoryItem(Models.Repository.OnlineListHistory.PictureAdded<OnlineListHistory>(picture.Md5, pictures.Cast<PictureResourcePicture>().ToList()));
+                        parent.WorkspaceHistory.AddHistoryItem(Models.Repository.WorkspaceHistory.PictureAdded<WorkspaceHistory>(picture.Md5, pictures.Cast<PictureResourcePicture>().ToList()));
                         parent.ThumbnailStorage.AddOrUpdateThumbnail(picture.Md5, picture.PreviewImage);
                     }
 
@@ -268,8 +270,8 @@ namespace TsukiTag.Dependencies
             {
                 using (var db = new LiteDatabase(MetadataRepositoryPath))
                 {
-                    db.GetCollection<OnlineListPicture>().EnsureIndex(p => p.Md5);
-                    db.GetCollection<OnlineListPicture>().EnsureIndex(p => p.ResourceListId);
+                    db.GetCollection<WorkspacePicture>().EnsureIndex(p => p.Md5);
+                    db.GetCollection<WorkspacePicture>().EnsureIndex(p => p.ResourceListId);
                 }
             }
         }

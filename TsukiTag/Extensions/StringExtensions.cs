@@ -15,6 +15,8 @@ namespace TsukiTag.Extensions
                 str = str.Replace($"#{property.Name?.ToLower()}#", property.GetValue(obj)?.ToString()?.ToLower(), StringComparison.OrdinalIgnoreCase);
             }
 
+            str = str.Replace($"#guid#", Guid.NewGuid().ToString("N"));
+
             return str;
         }
 
@@ -27,6 +29,8 @@ namespace TsukiTag.Extensions
             {
                 strs.Add(property.Name.ToLower());
             }
+
+            strs.Add("guid");
 
             return strs;
         }

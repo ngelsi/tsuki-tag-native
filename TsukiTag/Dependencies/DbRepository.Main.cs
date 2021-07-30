@@ -20,6 +20,12 @@ namespace TsukiTag.Dependencies
         IOnlineListHistoryDb OnlineListHistory { get; }
 
         IThumbnailStorage ThumbnailStorage { get; }
+
+        IWorkspaceDb Workspace { get; }
+
+        IWorkspacePictureDb WorkspacePicture { get; }
+
+        IWorkspaceHistoryDb WorkspaceHistory { get; }
     }
 
     public partial class DbRepository : IDbRepository
@@ -43,6 +49,9 @@ namespace TsukiTag.Dependencies
             OnlineListPicture = new OnlineListPictureDb(this);
             OnlineListHistory = new OnlineListHistoryDb();
             ThumbnailStorage = new ThumbnailStorageDb();
+            Workspace = new WorkspaceDb();
+            WorkspacePicture = new WorkspacePictureDb(this);
+            WorkspaceHistory = new WorkspaceHistoryDb();
         }
 
         private void EnsureRepositoryPath()

@@ -1,5 +1,5 @@
-﻿using HarfBuzzSharp;
-using LiteDB;
+﻿using LiteDB;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -78,6 +78,7 @@ namespace TsukiTag.Dependencies
                     foreach (var deletedList in deletedLists)
                     {
                         coll.Delete(deletedList.Id);
+                        db.GetCollection<OnlineListPicture>().DeleteMany(p => p.ResourceListId == deletedList.Id);                        
                     }
                 }
 

@@ -68,12 +68,43 @@ namespace TsukiTag.Models
         public static string PictureTemplateHelp => $"{Localizer.Get(nameof(TemplateDescription))}{typeof(Picture).GetPropertyTemplateNameIteration()}";
         public static string SettingsSave => Localizer.Get(nameof(SettingsSave));
         public static string SettingsCancel => Localizer.Get(nameof(SettingsCancel));
+        
+        public static string Workspaces => Localizer.Get(nameof(Workspaces));
+        public static string Workspace => Localizer.Get(nameof(Workspace));
+        public static string WorkspacesDescription => Localizer.Get(nameof(WorkspacesDescription));
+        public static string WorkspaceIsDefault => Localizer.Get(nameof(WorkspaceIsDefault));
+        public static string WorkspaceRemove => Localizer.Get(nameof(WorkspaceRemove));
+        public static string WorkspaceAdd => Localizer.Get(nameof(WorkspaceAdd));
+        public static string WorkspaceFavorite => Localizer.Get(nameof(WorkspaceFavorite));
+        public static string WorkspaceTagsToAdd => Localizer.Get(nameof(WorkspaceTagsToAdd));
+        public static string WorkspaceTagsToAddDescription => Localizer.Get(nameof(WorkspaceTagsToAddDescription));
+        public static string WorkspaceTagsToRemove => Localizer.Get(nameof(WorkspaceTagsToRemove));
+        public static string WorkspaceTagsToRemoveDescription => Localizer.Get(nameof(WorkspaceTagsToRemoveDescription));
+        public static string WorkspaceOptionalConditionTag => Localizer.Get(nameof(WorkspaceOptionalConditionTag));
+        public static string WorkspaceOptionalConditionTagDescription => Localizer.Get(nameof(WorkspaceOptionalConditionTagDescription));
+        public static string WorkspaceMandatoryConditionTag => Localizer.Get(nameof(WorkspaceMandatoryConditionTag));
+        public static string WorkspaceMandatoryConditionTagDescription => Localizer.Get(nameof(WorkspaceMandatoryConditionTagDescription));
+        public static string WorkspaceFolderPath => Localizer.Get(nameof(WorkspaceFolderPath));
+        public static string WorkspaceFileNameTemplate => Localizer.Get(nameof(WorkspaceFileNameTemplate));
+        public static string WorkspaceDownloadSourcePictures => Localizer.Get(nameof(WorkspaceDownloadSourcePictures));
+        public static string WorkspaceConvertToJpg => Localizer.Get(nameof(WorkspaceConvertToJpg));
+        public static string WorkspaceInjectTags => Localizer.Get(nameof(WorkspaceInjectTags));
+        public static string WorkspaceInjectMetadata => Localizer.Get(nameof(WorkspaceInjectMetadata));
+        public static string WorkspaceDeleteFileOnRemove => Localizer.Get(nameof(WorkspaceDeleteFileOnRemove));
+
+        public static string SettingsWorkspaceNoName => Localizer.Get(nameof(SettingsWorkspaceNoName));
+        public static string SettingsWorkspaceNotUnique => Localizer.Get(nameof(SettingsWorkspaceNotUnique));
+        public static string SettingsWorkspaceNoPath => Localizer.Get(nameof(SettingsWorkspaceNoPath));
+        public static string SettingsWorkspaceSamePath => Localizer.Get(nameof(SettingsWorkspaceSamePath));
+
+
         public static string SettingsListNoName => Localizer.Get(nameof(SettingsListNoName));
         public static string SettingsListNotUnique => Localizer.Get(nameof(SettingsListNotUnique));
         public static string SettingsSaved => Localizer.Get(nameof(SettingsSaved));
         public static string SettingsSaveError => Localizer.Get(nameof(SettingsSaveError));
 
         public static string ActionOnlineLists => Localizer.Get(nameof(ActionOnlineLists));
+        public static string ActionWorkspaces => Localizer.Get(nameof(ActionWorkspaces));
         public static string ActionAddToDefault => Localizer.Get(nameof(ActionAddToDefault));
         public static string ActionAddToEligible => Localizer.Get(nameof(ActionAddToEligible));
         public static string ActionAddTo => Localizer.Get(nameof(ActionAddTo));
@@ -108,6 +139,8 @@ namespace TsukiTag.Models
         public static string ToastProviderEnd => Localizer.Get(nameof(ToastProviderEnd));
         public static string ToastOnlineListEnd => Localizer.Get(nameof(ToastOnlineListEnd));
         public static string ToastOnlineListsEnd => Localizer.Get(nameof(ToastOnlineListsEnd));
+        public static string ToastWorkspacesEnd => Localizer.Get(nameof(ToastWorkspacesEnd));
+        public static string ToastWorkspaceEnd => Localizer.Get(nameof(ToastWorkspaceEnd));
         public static string ToastProviderError => Localizer.Get(nameof(ToastProviderError));
         public static string ToastProviderTagLimit2 => Localizer.Get(nameof(ToastProviderTagLimit2));
 
@@ -115,5 +148,7 @@ namespace TsukiTag.Models
         public static string NavigationSettings => Localizer.Get(nameof(NavigationSettings));
         public static string NavigationAllOnlineLists => Localizer.Get(nameof(NavigationAllOnlineLists));
         public static string NavigationSpecificOnlineList => Localizer.Get(nameof(NavigationSpecificOnlineList));
+        public static string NavigationAllWorkspaces => Localizer.Get(nameof(NavigationAllWorkspaces));
+        public static string NavigationSpecificWorkspace => Localizer.Get(nameof(NavigationSpecificWorkspace));
     }
 }

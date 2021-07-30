@@ -9,27 +9,27 @@ using TsukiTag.Models.Repository;
 
 namespace TsukiTag.Dependencies
 {
-    public interface IOnlineListHistoryDb
+    public interface IWorkspaceHistoryDb
     {
-        void AddHistoryItem(OnlineListHistory history);
+        void AddHistoryItem(WorkspaceHistory history);
     }
 
     public partial class DbRepository
     {
-        public IOnlineListHistoryDb OnlineListHistory { get; protected set; }
+        public IWorkspaceHistoryDb WorkspaceHistory { get; protected set; }
 
-        private class OnlineListHistoryDb : IOnlineListHistoryDb
+        private class WorkspaceHistoryDb : IWorkspaceHistoryDb
         {
-            public OnlineListHistoryDb()
+            public WorkspaceHistoryDb()
             {
                 EnsureIndexes();
             }
 
-            public void AddHistoryItem(OnlineListHistory history)
+            public void AddHistoryItem(WorkspaceHistory history)
             {
                 using (var db = new LiteDatabase(HistoryRepositoryPath))
                 {
-                    db.GetCollection<OnlineListHistory>().Insert(history);
+                    db.GetCollection<WorkspaceHistory>().Insert(history);
                 }
             }
 
@@ -37,8 +37,8 @@ namespace TsukiTag.Dependencies
             {
                 using (var db = new LiteDatabase(HistoryRepositoryPath))
                 {
-                    db.GetCollection<OnlineListHistory>().EnsureIndex(p => p.PictureMd5);
-                    db.GetCollection<OnlineListHistory>().EnsureIndex(p => p.Date);
+                    db.GetCollection<WorkspaceHistory>().EnsureIndex(p => p.PictureMd5);
+                    db.GetCollection<WorkspaceHistory>().EnsureIndex(p => p.Date);
                 }
             }
         }

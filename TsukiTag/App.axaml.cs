@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
@@ -11,6 +12,8 @@ namespace TsukiTag
 {
     public class App : Application
     {
+        public static Window MainWindow;
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -24,6 +27,8 @@ namespace TsukiTag
                         Ioc.SimpleIoc.NavigationControl,
                         Ioc.SimpleIoc.DbRepository
                 ));
+
+                MainWindow = desktop.MainWindow;
             }
 
             RxApp.DefaultExceptionHandler = Observer.Create<Exception>(Console.WriteLine);

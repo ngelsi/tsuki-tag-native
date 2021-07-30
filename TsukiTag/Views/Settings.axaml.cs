@@ -32,14 +32,15 @@ namespace TsukiTag.Views
             }
         }
 
+        #region Online lists
         private void OnCurrentTagToAddKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Enter)
+            if (e.Key == Key.Enter)
             {
                 var textbox = (sender as TextBox);
                 var id = (textbox?.DataContext as OnlineList)?.Id;
 
-                if(id != null)
+                if (id != null)
                 {
                     (this.DataContext as SettingsViewModel)?.OnAddTagstoAdd(id.Value);
                 }
@@ -159,6 +160,138 @@ namespace TsukiTag.Views
                 });
             }
         }
+        #endregion Online lists
 
+        #region Workspaces
+
+        private void OnWorkspaceCurrentTagToAddKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                var textbox = (sender as TextBox);
+                var id = (textbox?.DataContext as Workspace)?.Id;
+
+                if (id != null)
+                {
+                    (this.DataContext as SettingsViewModel)?.OnWorkspaceAddTagstoAdd(id.Value);
+                }
+            }
+        }
+
+        private void OnWorkspaceCurrentTagToRemoveKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                var textbox = (sender as TextBox);
+                var id = (textbox?.DataContext as Workspace)?.Id;
+
+                if (id != null)
+                {
+                    (this.DataContext as SettingsViewModel)?.OnWorkspaceAddTagstoRemove(id.Value);
+                }
+            }
+        }
+
+        private void OnWorkspaceOptionalConditionTagKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                var textbox = (sender as TextBox);
+                var id = (textbox?.DataContext as Workspace)?.Id;
+
+                if (id != null)
+                {
+                    (this.DataContext as SettingsViewModel)?.OnWorkspaceAddOptionalConditionTag(id.Value);
+                }
+            }
+        }
+
+        private void OnWorkspaceMandatoryConditionTagKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                var textbox = (sender as TextBox);
+                var id = (textbox?.DataContext as Workspace)?.Id;
+
+                if (id != null)
+                {
+                    (this.DataContext as SettingsViewModel)?.OnWorkspaceAddMandatoryConditionTag(id.Value);
+                }
+            }
+        }
+
+        private void OnWorkspaceRemoveTagstoAddPressed(object sender, PointerPressedEventArgs e)
+        {
+            var icon = (sender as Projektanker.Icons.Avalonia.Icon);
+            var button = (icon?.Parent as Button);
+            var tag = (button?.DataContext as string);
+
+            var itemscontrol = button.FindAncestorOfType<ItemsControl>();
+            var id = (itemscontrol?.DataContext as Workspace)?.Id;
+
+            if (tag != null && id != null)
+            {
+                RxApp.MainThreadScheduler.Schedule(async () =>
+                {
+                    (this.DataContext as SettingsViewModel)?.OnWorkspaceRemoveTagsToAdd(id.Value, tag);
+                });
+            }
+        }
+
+        private void OnWorkspaceRemoveTagstoRemovePressed(object sender, PointerPressedEventArgs e)
+        {
+            var icon = (sender as Projektanker.Icons.Avalonia.Icon);
+            var button = (icon?.Parent as Button);
+            var tag = (button?.DataContext as string);
+
+            var itemscontrol = button.FindAncestorOfType<ItemsControl>();
+            var id = (itemscontrol?.DataContext as Workspace)?.Id;
+
+            if (tag != null && id != null)
+            {
+                RxApp.MainThreadScheduler.Schedule(async () =>
+                {
+                    (this.DataContext as SettingsViewModel)?.OnWorkspaceRemoveTagsToRemove(id.Value, tag);
+                });
+            }
+        }
+
+        private void OnWorkspaceRemoveOptionalConditionTagPressed(object sender, PointerPressedEventArgs e)
+        {
+            var icon = (sender as Projektanker.Icons.Avalonia.Icon);
+            var button = (icon?.Parent as Button);
+            var tag = (button?.DataContext as string);
+
+            var itemscontrol = button.FindAncestorOfType<ItemsControl>();
+            var id = (itemscontrol?.DataContext as Workspace)?.Id;
+
+            if (tag != null && id != null)
+            {
+                RxApp.MainThreadScheduler.Schedule(async () =>
+                {
+                    (this.DataContext as SettingsViewModel)?.OnWorkspaceRemoveOptionalConditionTag(id.Value, tag);
+                });
+            }
+        }
+
+        private void OnWorkspaceRemoveMandatoryConditionTagPressed(object sender, PointerPressedEventArgs e)
+        {
+            var icon = (sender as Projektanker.Icons.Avalonia.Icon);
+            var button = (icon?.Parent as Button);
+            var tag = (button?.DataContext as string);
+
+            var itemscontrol = button.FindAncestorOfType<ItemsControl>();
+            var id = (itemscontrol?.DataContext as Workspace)?.Id;
+
+            if (tag != null && id != null)
+            {
+                RxApp.MainThreadScheduler.Schedule(async () =>
+                {
+                    (this.DataContext as SettingsViewModel)?.OnWorkspaceRemoveMandatoryConditionTag(id.Value, tag);
+                });
+            }
+        }
+
+        #endregion Workspaces
     }
 }

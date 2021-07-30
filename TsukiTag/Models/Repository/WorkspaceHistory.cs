@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace TsukiTag.Models.Repository
 {
-    public class OnlineListPicture : PictureResourcePicture
+    public class WorkspaceHistory : PictureResourceHistory
     {
+
     }
 }
