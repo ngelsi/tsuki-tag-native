@@ -118,11 +118,13 @@ namespace TsukiTag.ViewModels
             this.pictureControl = pictureControl;
             this.picture = picture;
             this.onlineListMenus = GetOnlineListMenus();
+
+            this.dbRepository.OnlineList.OnlineListsChanged += OnOnlineListsChanged;
         }
 
         ~PictureDetailViewModel()
         {
-
+            this.dbRepository.OnlineList.OnlineListsChanged -= OnOnlineListsChanged;
         }
 
         public async void OnSwitchDisplay()
@@ -130,6 +132,14 @@ namespace TsukiTag.ViewModels
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
                 MaximizedView = !maximizedView;
+            });
+        }
+
+        public async void OnInternalClose()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                this.dbRepository.OnlineList.OnlineListsChanged -= OnOnlineListsChanged;
             });
         }
 
@@ -144,12 +154,20 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        private async void OnOnlineListsChanged(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                this.OnlineListMenus = GetOnlineListMenus();
+            });
+        }
+
         private ObservableCollection<MenuItemViewModel> GetOnlineListMenus()
         {
             var menus = new MenuItemViewModel();
             var allLists = this.dbRepository.OnlineList.GetAll();
             var eligibleLists = allLists.Where(l => l.IsEligible(Picture)).ToList();
-            var containingLists = this.dbRepository.OnlineListPicture.GetAllForPicture(picture.Md5).Select(s => allLists.FirstOrDefault(l => l.Id == s.ListId)).ToList();
+            var containingLists = this.dbRepository.OnlineListPicture.GetAllForPicture(picture.Md5).Select(s => allLists.FirstOrDefault(l => l.Id == s.ListId)).Where(s => s != null).ToList();
 
             menus.Header = Language.ActionOnlineLists;
             menus.Items = new List<MenuItemViewModel>() {

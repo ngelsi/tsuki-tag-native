@@ -75,6 +75,7 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToSettings += OnSwitchedToSettings;
             this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToAllOnlineListBrowsing;
             this.navigationControl.SwitchedToSpecificOnlineListBrowsing += OnSwitchedToSpecificOnlineListBrowsing;
+            this.dbRepository.OnlineList.OnlineListsChanged += OnOnlineListsChanged;
 
             this.SwitchToSettingsCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -106,11 +107,20 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToSettings -= OnSwitchedToSettings;
             this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToAllOnlineListBrowsing;
             this.navigationControl.SwitchedToSpecificOnlineListBrowsing -= OnSwitchedToSpecificOnlineListBrowsing;
+            this.dbRepository.OnlineList.OnlineListsChanged -= OnOnlineListsChanged;
         }
 
         public async void Initialized()
         {
             this.navigationControl.SwitchToOnlineBrowsing();
+        }
+
+        private async void OnOnlineListsChanged(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                MainWindowMenus = GetMainMenus();
+            });
         }
 
         private void OnSwitchedToSettings(object? sender, EventArgs e)

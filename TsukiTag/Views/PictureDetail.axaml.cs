@@ -1,6 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using ReactiveUI;
+using System.Reactive.Concurrency;
 using TsukiTag.Models;
 using TsukiTag.ViewModels;
 
@@ -23,6 +25,14 @@ namespace TsukiTag.Views
                 Ioc.SimpleIoc.DbRepository,
                 Ioc.SimpleIoc.NotificationControl
             );
+        }
+
+        ~PictureDetail()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                (DataContext as PictureDetailViewModel)?.OnInternalClose();
+            });
         }
 
         private void InitializeComponent()

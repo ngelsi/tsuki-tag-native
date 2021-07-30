@@ -133,8 +133,9 @@ namespace TsukiTag.ViewModels
             this.pictureControl.PictureSelected += OnPictureSelected;
             this.pictureControl.PictureDeselected += OnPictureDeselected;
             this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToOnlineListBrowsing;
-            this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing
-                ;
+            this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing;
+            this.dbRepository.OnlineList.OnlineListsChanged += OnOnlineListsChanged;
+
             //this.pictureControl.PicturesReset += OnPicturesReset;
 
             this.PreviousPictureCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -269,6 +270,7 @@ namespace TsukiTag.ViewModels
             this.pictureControl.PictureDeselected -= OnPictureDeselected;
             this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToOnlineListBrowsing;
             this.navigationControl.SwitchedToOnlineBrowsing -= OnSwitchedToOnlineBrowsing;
+            this.dbRepository.OnlineList.OnlineListsChanged -= OnOnlineListsChanged;
         }
 
         public async void OnTagClicked(string tag)
@@ -315,6 +317,15 @@ namespace TsukiTag.ViewModels
                 {
                     this.pictureControl.OpenPicture(picture);
                 }
+            });
+        }
+
+        private async void OnOnlineListsChanged(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                this.ThisImageMenus = GetThisImageMenus();
+                this.SelectionMenus = GetSelectionMenus();
             });
         }
 

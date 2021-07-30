@@ -54,6 +54,7 @@ namespace TsukiTag.Dependencies
                 {
                     result.Succeeded = false;
                     result.ProviderEnd = true;
+                    result.ErrorCode = "ToastProviderError";
 
                     OnNonOkResultReceived(response, filter, result);
                 }

@@ -12,6 +12,8 @@ namespace TsukiTag.Dependencies
 {
     public interface IOnlineListDb
     {
+        event EventHandler OnlineListsChanged;
+
         List<OnlineList> GetAll();
 
         OnlineList Get(Guid id);
@@ -27,6 +29,8 @@ namespace TsukiTag.Dependencies
 
         private class OnlineListDb : IOnlineListDb
         {
+            public event EventHandler OnlineListsChanged;
+
             public OnlineList Get(Guid id)
             {
                 using (var db = new LiteDatabase(MetadataRepositoryPath))
@@ -76,6 +80,8 @@ namespace TsukiTag.Dependencies
                         coll.Delete(deletedList.Id);
                     }
                 }
+
+                OnlineListsChanged?.Invoke(this, EventArgs.Empty);
             }
 
             public List<OnlineList> GetAll()

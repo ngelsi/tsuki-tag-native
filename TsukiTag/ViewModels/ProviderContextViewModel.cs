@@ -208,7 +208,6 @@ namespace TsukiTag.ViewModels
                     }
 
                     var oldIndex = selectedTabIndex;
-
                     this.tabs.Remove(tab);
 
                     this.RaisePropertyChanged(nameof(SelectedTabIndex));
