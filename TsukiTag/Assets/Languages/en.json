@@ -111,6 +111,10 @@
   "ToastWorkspaceEnd": "No more results from workspace {0}.",
   "ToastProviderError": "Something went wrong while getting pictures from {0}.",
   "ToastProviderTagLimit2": "{0} only supports up to 2 tags per search.",
+  "ToastWorkspaceProcessingSingle": "Processing '{0}' for workspace '{1}'",
+  "ToastWorkspaceProcessing": "Processing '{0}' for workspace '{1}' {2}/{3}",
+  "ToastWorkspaceProcessed": "Workspace processing finished",
+  "ToastWorkspaceProcessError": "Something went wrong during workspace processing.",
 
   "NavigationOnline": "Browse online",
   "NavigationAllOnlineLists": "Browse all online lists",

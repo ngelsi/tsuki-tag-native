@@ -315,6 +315,11 @@ namespace TsukiTag.Models
             }
         }
 
+        public void OverrideExtension(string extension)
+        {
+            this.extension = extension;
+        }
+
         public void AddUserTag(string tag)
         {
             if (!string.IsNullOrEmpty(tag))

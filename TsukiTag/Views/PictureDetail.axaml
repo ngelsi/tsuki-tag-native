@@ -18,7 +18,7 @@
         <ExperimentalAcrylicMaterial TintColor="Black" MaterialOpacity="0.85" TintOpacity="1"></ExperimentalAcrylicMaterial>
       </ExperimentalAcrylicBorder.Material>
       <DockPanel Height="25">
-        <Menu Items="{Binding OnlineListMenus}">
+        <Menu Items="{Binding Menus}">
           <Menu.Styles>
             <Style Selector="MenuItem">
               <Setter Property="Header" Value="{Binding Header}"/>

@@ -31,20 +31,18 @@ namespace TsukiTag.Dependencies
         {
             public event EventHandler WorkspacesChanged;
 
+            private List<Workspace> workspaceCache;
+
             public Workspace Get(Guid id)
             {
-                using (var db = new LiteDatabase(MetadataRepositoryPath))
-                {
-                    return db.GetCollection<Workspace>().FindOne(l => l.Id == id);
-                }
+                EnsureWorkspaceCache();
+                return workspaceCache.FirstOrDefault(w => w.Id == id);
             }
 
             public Workspace GetDefault()
             {
-                using (var db = new LiteDatabase(MetadataRepositoryPath))
-                {
-                    return db.GetCollection<Workspace>().FindOne(l => l.IsDefault);
-                }
+                EnsureWorkspaceCache();
+                return workspaceCache.FirstOrDefault(w => w.IsDefault == true);
             }
 
             public void AddOrUpdate(List<Workspace> workspaces)
@@ -89,17 +87,27 @@ namespace TsukiTag.Dependencies
                     }
                 }
 
+                EnsureWorkspaceCache(true);
                 WorkspacesChanged?.Invoke(this, EventArgs.Empty);
             }
 
             public List<Workspace> GetAll()
-            {
-                using (var db = new LiteDatabase(MetadataRepositoryPath))
-                {
-                    var coll = db.GetCollection<Workspace>();
-                    var workspaces = coll.Query().ToList();
+            {                
+                EnsureWorkspaceCache();
+                return workspaceCache;
+            }
 
-                    return workspaces.OrderBy(l => l.Name).ToList();
+            private void EnsureWorkspaceCache(bool reset = false)
+            {
+                if(reset || workspaceCache == null)
+                {
+                    using (var db = new LiteDatabase(MetadataRepositoryPath))
+                    {
+                        var coll = db.GetCollection<Workspace>();
+                        var workspaces = coll.Query().ToList();
+
+                        workspaceCache = workspaces.OrderBy(l => l.Name).ToList();
+                    }
                 }
             }
         }

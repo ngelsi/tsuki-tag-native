@@ -23,7 +23,8 @@ namespace TsukiTag.Views
                 picture,
                 Ioc.SimpleIoc.PictureControl,
                 Ioc.SimpleIoc.DbRepository,
-                Ioc.SimpleIoc.NotificationControl
+                Ioc.SimpleIoc.NotificationControl,
+                Ioc.SimpleIoc.PictureWorker
             );
         }
 

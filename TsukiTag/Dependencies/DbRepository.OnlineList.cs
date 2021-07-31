@@ -31,20 +31,18 @@ namespace TsukiTag.Dependencies
         {
             public event EventHandler OnlineListsChanged;
 
+            private List<OnlineList> onlineListCache;
+
             public OnlineList Get(Guid id)
             {
-                using (var db = new LiteDatabase(MetadataRepositoryPath))
-                {
-                    return db.GetCollection<OnlineList>().FindOne(l => l.Id == id);
-                }
+                EnsureOnlineListCache();
+                return onlineListCache.FirstOrDefault(l => l.Id == id);
             }
 
             public OnlineList GetDefault()
             {
-                using (var db = new LiteDatabase(MetadataRepositoryPath))
-                {
-                    return db.GetCollection<OnlineList>().FindOne(l => l.IsDefault);
-                }
+                EnsureOnlineListCache();
+                return onlineListCache.FirstOrDefault(l => l.IsDefault == true);
             }
 
             public void AddOrUpdate(List<OnlineList> lists)
@@ -82,34 +80,44 @@ namespace TsukiTag.Dependencies
                     }
                 }
 
+                EnsureOnlineListCache(true);
                 OnlineListsChanged?.Invoke(this, EventArgs.Empty);
             }
 
             public List<OnlineList> GetAll()
             {
-                using (var db = new LiteDatabase(MetadataRepositoryPath))
+                EnsureOnlineListCache();
+                return onlineListCache;
+            }
+
+            private void EnsureOnlineListCache(bool reset = false)
+            {
+                if(reset || onlineListCache == null)
                 {
-                    var coll = db.GetCollection<OnlineList>();
-                    var lists = coll.Query().ToList();
-
-                    if (lists == null || lists.Count == 0)
+                    using (var db = new LiteDatabase(MetadataRepositoryPath))
                     {
-                        lists = new List<OnlineList>();
+                        var coll = db.GetCollection<OnlineList>();
+                        var lists = coll.Query().ToList();
 
-                        var favoriteList = new OnlineList()
+                        if (lists == null || lists.Count == 0)
                         {
-                            Id = Models.Repository.OnlineList.DefaultFavoriteList,
-                            IsDefault = true,
-                            Name = Models.Language.ListFavorite,
-                            TagsToAdd = new string[] { $"list_favorites", $"provider_#provider#", $"rating_#rating#" }
-                        };
+                            lists = new List<OnlineList>();
 
-                        coll.Insert(favoriteList);
+                            var favoriteList = new OnlineList()
+                            {
+                                Id = Models.Repository.OnlineList.DefaultFavoriteList,
+                                IsDefault = true,
+                                Name = Models.Language.ListFavorite,
+                                TagsToAdd = new string[] { $"list_favorites", $"provider_#provider#", $"rating_#rating#" }
+                            };
 
-                        lists.Add(favoriteList);
+                            coll.Insert(favoriteList);
+
+                            lists.Add(favoriteList);
+                        }
+
+                        onlineListCache = lists.OrderBy(l => l.Name).ToList();
                     }
-
-                    return lists.OrderBy(l => l.Name).ToList();
                 }
             }
         }

@@ -16,15 +16,9 @@ namespace TsukiTag.Dependencies
 
     public interface IWorkspacePictureDb
     {
-        bool AddToList(Guid resourceListId, Picture picture);
+        bool AddToWorkspace(Guid resourceListId, Picture picture, string filePath);
 
-        bool AddToAllLists(Picture picture);
-
-        bool AddToAllEligible(Picture picture);
-
-        bool RemoveFromList(Guid resourceListId, Picture picture);
-
-        bool RemoveFromAllLists(Picture picture);
+        bool RemoveFromWorkspace(Guid resourceListId, Picture picture);
 
         List<WorkspacePicture> GetAllForPicture(string md5);
 
@@ -94,25 +88,15 @@ namespace TsukiTag.Dependencies
                 }
             }
 
-            public bool AddToAllLists(Picture picture)
-            {
-                return AddToLists(picture, parent.Workspace.GetAll());
-            }
-
-            public bool AddToAllEligible(Picture picture)
-            {
-                return AddToLists(picture, parent.Workspace.GetAll().Where(l => l.IsEligible(picture)).ToList());
-            }
-
-            public bool AddToList(Guid resourceListId, Picture picture)
+            public bool AddToWorkspace(Guid resourceListId, Picture picture, string filePath)
             {
                 try
                 {
-                    var list = parent.Workspace.Get(resourceListId);
+                    var workspace = parent.Workspace.Get(resourceListId);
                     var newid = Guid.NewGuid();
                     WorkspacePicture newItem = null;
 
-                    if (list != null)
+                    if (workspace != null)
                     {
                         using (var db = new LiteDatabase(MetadataRepositoryPath))
                         {
@@ -121,7 +105,9 @@ namespace TsukiTag.Dependencies
                             var existing = coll.FindOne(p => p.Md5 == picture.Md5 && p.ResourceListId == resourceListId);
                             if (existing != null)
                             {
-                                existing.Picture = list.ProcessPicture(picture.MetadatawiseClone());
+                                existing.Picture = workspace.ProcessPicture(picture.MetadatawiseClone());
+                                existing.FilePath = filePath;
+
                                 coll.Update(existing);
                             }
                             else
@@ -131,7 +117,8 @@ namespace TsukiTag.Dependencies
                                     Id = newid,
                                     ResourceListId = resourceListId,
                                     Md5 = picture.Md5,
-                                    Picture = list.ProcessPicture(picture.MetadatawiseClone())
+                                    Picture = workspace.ProcessPicture(picture.MetadatawiseClone()),
+                                    FilePath = filePath
                                 };
 
                                 coll.Insert(newItem);
@@ -156,37 +143,7 @@ namespace TsukiTag.Dependencies
                 }
             }
 
-            public bool RemoveFromAllLists(Picture picture)
-            {
-                try
-                {
-                    List<WorkspacePicture> allItems;
-                    using (var db = new LiteDatabase(MetadataRepositoryPath))
-                    {
-                        var coll = db.GetCollection<WorkspacePicture>();
-                        allItems = coll.Find(p => p.Md5 == picture.Md5).ToList();
-
-                        foreach (var item in allItems)
-                        {
-                            coll.Delete(item.Id);
-                        }
-                    }
-
-                    if (allItems?.Count > 0)
-                    {
-                        parent.WorkspaceHistory.AddHistoryItem(Models.Repository.WorkspaceHistory.PictureRemoved<WorkspaceHistory>(picture.Md5, allItems.Cast<PictureResourcePicture>().ToList()));
-                    }
-
-                    return true;
-
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-            }
-
-            public bool RemoveFromList(Guid resourceListId, Picture picture)
+            public bool RemoveFromWorkspace(Guid resourceListId, Picture picture)
             {
                 try
                 {
@@ -205,57 +162,6 @@ namespace TsukiTag.Dependencies
                     if (existing != null)
                     {
                         parent.WorkspaceHistory.AddHistoryItem(Models.Repository.WorkspaceHistory.PictureRemoved<WorkspaceHistory>(existing));
-                    }
-
-                    return true;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-            }
-
-            private bool AddToLists(Picture picture, List<Workspace> workspaces)
-            {
-                try
-                {
-                    var pictures = new List<WorkspacePicture>();
-
-                    using (var db = new LiteDatabase(MetadataRepositoryPath))
-                    {
-                        var coll = db.GetCollection<WorkspacePicture>();
-
-                        foreach (var list in workspaces)
-                        {
-                            var existing = coll.FindOne(p => p.Md5 == picture.Md5 && p.ResourceListId == list.Id);
-                            if (existing != null)
-                            {
-                                existing.Picture = list.ProcessPicture(picture.MetadatawiseClone());
-
-                                coll.Update(existing);
-                                pictures.Add(existing);
-                            }
-                            else
-                            {
-                                var newItem = new WorkspacePicture()
-                                {
-                                    Id = Guid.NewGuid(),
-                                    ResourceListId = list.Id,
-                                    Md5 = picture.Md5,
-                                    Picture = list.ProcessPicture(picture.MetadatawiseClone())
-                                };
-
-                                coll.Insert(newItem);
-                                pictures.Add(newItem);
-                            }
-                        }
-
-                    }
-
-                    if (pictures.Count > 0)
-                    {
-                        parent.WorkspaceHistory.AddHistoryItem(Models.Repository.WorkspaceHistory.PictureAdded<WorkspaceHistory>(picture.Md5, pictures.Cast<PictureResourcePicture>().ToList()));
-                        parent.ThumbnailStorage.AddOrUpdateThumbnail(picture.Md5, picture.PreviewImage);
                     }
 
                     return true;

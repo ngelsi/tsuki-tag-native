@@ -53,13 +53,13 @@ namespace TsukiTag.ViewModels
             }
         }
 
-        public ObservableCollection<MenuItemViewModel> OnlineListMenus
+        public ObservableCollection<MenuItemViewModel> Menus
         {
             get { return onlineListMenus; }
             set
             {
                 onlineListMenus = value;
-                this.RaisePropertyChanged(nameof(OnlineListMenus));
+                this.RaisePropertyChanged(nameof(Menus));
             }
         }
 
@@ -70,8 +70,9 @@ namespace TsukiTag.ViewModels
             Picture picture,
             IPictureControl pictureControl,
             IDbRepository dbRepository,
-            INotificationControl notificationControl
-        ) : base(dbRepository, notificationControl)
+            INotificationControl notificationControl,
+            IPictureWorker pictureWorker
+        ) : base(dbRepository, pictureWorker, notificationControl)
         {
             this.ClosePictureCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -85,7 +86,7 @@ namespace TsukiTag.ViewModels
 
             this.AddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-               OnAddToDefaulList(Picture);
+                OnAddToDefaulList(Picture);
             });
 
             this.AddToSpecificListCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
@@ -113,18 +114,50 @@ namespace TsukiTag.ViewModels
                 OnRemoveFromAllLists(Picture);
             });
 
+            this.AddToDefaultWorkspaceCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnAddToDefaultWorkspace(Picture);
+            });
+
+            this.AddToSpecificWorkspaceCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                OnAddToSpecificWorkspace(id, Picture);
+            });
+
+            this.AddToEligibleWorkspacesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnAddToEligibleWorkspaces(Picture);
+            });
+
+            this.AddToAllWorkspacesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnAddToAllWorkspaces(Picture);
+            });
+
+            this.RemoveFromSpecificWorkspaceCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                OnRemoveFromSpecificWorkspace(id, Picture);
+            });
+
+            this.RemoveFromAllWorkspaceCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnRemoveFromAllWorkspaces(Picture);
+            });
+
             this.fillView = true;
 
             this.pictureControl = pictureControl;
             this.picture = picture;
-            this.onlineListMenus = GetOnlineListMenus();
+            this.onlineListMenus = GetMenus();
 
-            this.dbRepository.OnlineList.OnlineListsChanged += OnOnlineListsChanged;
+            this.dbRepository.OnlineList.OnlineListsChanged += OnResourceListsChanged;
+            this.dbRepository.Workspace.WorkspacesChanged += OnResourceListsChanged;
         }
 
         ~PictureDetailViewModel()
         {
-            this.dbRepository.OnlineList.OnlineListsChanged -= OnOnlineListsChanged;
+            this.dbRepository.OnlineList.OnlineListsChanged -= OnResourceListsChanged;
+            this.dbRepository.Workspace.WorkspacesChanged -= OnResourceListsChanged;
         }
 
         public async void OnSwitchDisplay()
@@ -139,7 +172,9 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                this.dbRepository.OnlineList.OnlineListsChanged -= OnOnlineListsChanged;
+                this.dbRepository.OnlineList.OnlineListsChanged -= OnResourceListsChanged;
+                this.dbRepository.Workspace.WorkspacesChanged -= OnResourceListsChanged;
+
             });
         }
 
@@ -154,23 +189,23 @@ namespace TsukiTag.ViewModels
             });
         }
 
-        private async void OnOnlineListsChanged(object? sender, EventArgs e)
+        private async void OnResourceListsChanged(object? sender, EventArgs e)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                this.OnlineListMenus = GetOnlineListMenus();
+                this.Menus = GetMenus();
             });
         }
 
-        private ObservableCollection<MenuItemViewModel> GetOnlineListMenus()
+        private ObservableCollection<MenuItemViewModel> GetMenus()
         {
-            var menus = new MenuItemViewModel();
+            var onlineListMenus = new MenuItemViewModel();
             var allLists = this.dbRepository.OnlineList.GetAll();
             var eligibleLists = allLists.Where(l => l.IsEligible(Picture)).ToList();
             var containingLists = this.dbRepository.OnlineListPicture.GetAllForPicture(picture.Md5).Select(s => allLists.FirstOrDefault(l => l.Id == s.ResourceListId)).Where(s => s != null).ToList();
 
-            menus.Header = Language.ActionOnlineLists;
-            menus.Items = new List<MenuItemViewModel>() {
+            onlineListMenus.Header = Language.ActionOnlineLists;
+            onlineListMenus.Items = new List<MenuItemViewModel>() {
                 {
                     new MenuItemViewModel()
                     {
@@ -185,7 +220,7 @@ namespace TsukiTag.ViewModels
                         Items = eligibleLists.Count > 0 ? new List<MenuItemViewModel>(
                             new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = AddToEligibleListsCommand } }, { new MenuItemViewModel() { Header = "-" } } }
                             .Concat(eligibleLists.Select(l => new MenuItemViewModel() { Header = l.Name, Command = AddToSpecificListCommand, CommandParameter = l.Id }))
-                        ) : null,                        
+                        ) : null,
                         IsEnabled = eligibleLists.Count > 0
                     }
                 },
@@ -224,7 +259,70 @@ namespace TsukiTag.ViewModels
                 }
             };
 
-            return new ObservableCollection<MenuItemViewModel>() { menus };
+            var workspaceMenus = new MenuItemViewModel();
+            var allWorkspaces = this.dbRepository.Workspace.GetAll();
+            var defaultWorkspace = allWorkspaces.FirstOrDefault(w => w.IsDefault);
+            var eligibleWorkspaces = allWorkspaces.Where(l => l.IsEligible(Picture)).ToList();
+            var containingWorkspaces = this.dbRepository.WorkspacePicture.GetAllForPicture(picture.Md5).Select(s => allWorkspaces.FirstOrDefault(l => l.Id == s.ResourceListId)).Where(s => s != null).ToList();
+
+            workspaceMenus.Header = Language.ActionWorkspaces;
+            workspaceMenus.IsEnabled = allWorkspaces.Count > 0;
+            workspaceMenus.Items = new List<MenuItemViewModel>() {
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = $"{Language.ActionAddToDefault} {(defaultWorkspace != null ? "(" + defaultWorkspace.Name + ")" : "")}",
+                        Command = AddToDefaultWorkspaceCommand,
+                        IsEnabled = defaultWorkspace != null
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionAddToEligible,
+                        Items = eligibleWorkspaces.Count > 0 ? new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = AddToEligibleWorkspacesCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(eligibleWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = AddToSpecificWorkspaceCommand, CommandParameter = l.Id }))
+                        ) : null,
+                        IsEnabled = eligibleWorkspaces.Count > 0
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionAddTo,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = AddToAllWorkspacesCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = AddToSpecificWorkspaceCommand, CommandParameter = l.Id })))
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = "-"
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRemoveFromAll,
+                        IsEnabled = containingWorkspaces.Count > 0,
+                        Command = RemoveFromAllWorkspaceCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRemoveFrom,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = RemoveFromAllWorkspaceCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(containingWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = RemoveFromSpecificWorkspaceCommand,  CommandParameter = l.Id }))),
+                        IsEnabled = containingWorkspaces.Count > 0
+                    }
+                }
+            };
+
+            return new ObservableCollection<MenuItemViewModel>() { onlineListMenus, workspaceMenus };
         }
 
         public override void Reinitialize()
@@ -233,7 +331,7 @@ namespace TsukiTag.ViewModels
 
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                OnlineListMenus = GetOnlineListMenus();
+                Menus = GetMenus();
             });
         }
     }

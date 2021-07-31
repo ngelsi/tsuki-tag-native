@@ -155,6 +155,12 @@ namespace TsukiTag.Dependencies
 
             try
             {
+                if (picture.SourceImage != null)
+                {
+                    picture.SourceImage.Dispose();
+                    picture.SourceImage = null;
+                }
+
                 picture.Selected = false;
                 selectedPictures.Remove(picture);
 
@@ -256,6 +262,12 @@ namespace TsukiTag.Dependencies
         {
             await Task.Run(() =>
             {
+                if (picture.SourceImage != null)
+                {
+                    picture.SourceImage.Dispose();
+                    picture.SourceImage = null;
+                }
+
                 openedPictures.Remove(picture);
                 PictureClosed?.Invoke(this, picture);
             });
@@ -283,10 +295,21 @@ namespace TsukiTag.Dependencies
 
         public async Task<TagCollection> GetTags()
         {
-            return await Task.FromResult(
-                TagCollection.GetTags(
-                    this.currentPictureSet.ToList()
-            ));
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                return await Task.FromResult(
+                    TagCollection.GetTags(
+                        this.currentPictureSet.ToList()
+                ));
+            }
+            catch { }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
+
+            return await Task.FromResult(new TagCollection());
         }
 
         public async Task<int> GetSelectedPictureCount()

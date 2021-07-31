@@ -114,14 +114,22 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Guid, Unit> SelectionRemoveFromSpecificListCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> SelectionRemoveFromAllListCommand { get; protected set; }
 
+        public ReactiveCommand<Unit, Unit> SelectionAddToDefaultWorkspaceCommand { get; protected set; }
+        public ReactiveCommand<Guid, Unit> SelectionAddToSpecificWorkspaceCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SelectionAddToEligibleWorkspacesCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SelectionAddToAllWorkspacesCommand { get; protected set; }
+        public ReactiveCommand<Guid, Unit> SelectionRemoveFromSpecificWorkspaceCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SelectionRemoveFromAllWorkspaceCommand { get; protected set; }
+
 
         public MetadataOverviewViewModel(
             IPictureControl pictureControl,
             IProviderFilterControl providerFilterControl,
             INavigationControl navigationControl,
             INotificationControl notificationControl,
-            IDbRepository dbRepository
-        ) : base(dbRepository, notificationControl)
+            IDbRepository dbRepository,
+            IPictureWorker pictureWorker
+        ) : base(dbRepository, pictureWorker, notificationControl)
         {
             this.SelectedPictures = new ObservableCollection<Picture>();
 
@@ -134,7 +142,8 @@ namespace TsukiTag.ViewModels
             this.pictureControl.PictureDeselected += OnPictureDeselected;
             this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToOnlineListBrowsing;
             this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing;
-            this.dbRepository.OnlineList.OnlineListsChanged += OnOnlineListsChanged;
+            this.dbRepository.OnlineList.OnlineListsChanged += OnResourceListChanged;
+            this.dbRepository.Workspace.WorkspacesChanged += OnResourceListChanged;
 
             //this.pictureControl.PicturesReset += OnPicturesReset;
 
@@ -173,6 +182,8 @@ namespace TsukiTag.ViewModels
                 this.OnSelectAll();
             });
 
+            #region Online List This Image
+
             this.AddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 OnAddToDefaulList(CurrentPicture);
@@ -202,6 +213,44 @@ namespace TsukiTag.ViewModels
             {
                 OnRemoveFromAllLists(CurrentPicture);
             });
+
+            #endregion Online List This Image
+
+            #region Workspace This Image
+
+            this.AddToDefaultWorkspaceCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnAddToDefaultWorkspace(CurrentPicture);
+            });
+
+            this.AddToSpecificWorkspaceCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                OnAddToSpecificWorkspace(id, CurrentPicture);
+            });
+
+            this.AddToEligibleWorkspacesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnAddToEligibleWorkspaces(CurrentPicture);
+            });
+
+            this.AddToAllWorkspacesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnAddToAllWorkspaces(CurrentPicture);
+            });
+
+            this.RemoveFromSpecificWorkspaceCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                OnRemoveFromSpecificWorkspace(id, CurrentPicture);
+            });
+
+            this.RemoveFromAllWorkspaceCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnRemoveFromAllWorkspaces(CurrentPicture);
+            });
+
+            #endregion Workspace This Image
+
+            #region Online List Selection
 
             this.SelectionAddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -262,6 +311,92 @@ namespace TsukiTag.ViewModels
 
                 await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionSelectionActionSuccess));
             });
+
+            #endregion Online List Selection
+
+            #region Workspace Selection
+
+            this.SelectionAddToDefaultWorkspaceCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                foreach (var picture in SelectedPictures.ToList())
+                {
+                    await OnAddToDefaultWorkspace(picture, true);
+
+                    if (picture.SourceImage != null)
+                    {
+                        picture.SourceImage.Dispose();
+                        picture.SourceImage = null;
+                    }
+                }                
+
+                GC.Collect();
+            });
+
+            this.SelectionAddToSpecificWorkspaceCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                foreach (var picture in SelectedPictures.ToList())
+                {
+                    await OnAddToSpecificWorkspace(id, picture, true);
+
+                    if (picture.SourceImage != null)
+                    {
+                        picture.SourceImage.Dispose();
+                        picture.SourceImage = null;
+                    }
+                }
+
+                GC.Collect();
+            });
+
+            this.SelectionAddToEligibleWorkspacesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                foreach (var picture in SelectedPictures.ToList())
+                {
+                    await OnAddToEligibleWorkspaces(picture, true);
+
+                    if (picture.SourceImage != null)
+                    {
+                        picture.SourceImage.Dispose();
+                        picture.SourceImage = null;
+                    }
+                }
+
+                GC.Collect();
+            });
+
+            this.SelectionAddToAllWorkspacesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                foreach (var picture in SelectedPictures.ToList())
+                {
+                    await OnAddToAllWorkspaces(picture, true);
+
+                    if (picture.SourceImage != null)
+                    {
+                        picture.SourceImage.Dispose();
+                        picture.SourceImage = null;
+                    }
+                }
+
+                GC.Collect();
+            });
+
+            this.SelectionRemoveFromSpecificWorkspaceCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                foreach (var picture in SelectedPictures.ToList())
+                {
+                    await OnRemoveFromSpecificWorkspace(id, picture, true);
+                }
+            });
+
+            this.SelectionRemoveFromAllWorkspaceCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                foreach (var picture in SelectedPictures.ToList())
+                {
+                    await OnRemoveFromAllWorkspaces(picture, true);
+                }
+            });
+
+            #endregion Workspace Selection
         }
 
         ~MetadataOverviewViewModel()
@@ -270,7 +405,8 @@ namespace TsukiTag.ViewModels
             this.pictureControl.PictureDeselected -= OnPictureDeselected;
             this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToOnlineListBrowsing;
             this.navigationControl.SwitchedToOnlineBrowsing -= OnSwitchedToOnlineBrowsing;
-            this.dbRepository.OnlineList.OnlineListsChanged -= OnOnlineListsChanged;
+            this.dbRepository.OnlineList.OnlineListsChanged -= OnResourceListChanged;
+            this.dbRepository.Workspace.WorkspacesChanged -= OnResourceListChanged;
         }
 
         public async void OnTagClicked(string tag)
@@ -320,7 +456,7 @@ namespace TsukiTag.ViewModels
             });
         }
 
-        private async void OnOnlineListsChanged(object? sender, EventArgs e)
+        private async void OnResourceListChanged(object? sender, EventArgs e)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
@@ -528,6 +664,61 @@ namespace TsukiTag.ViewModels
                 }
             };
 
+            var workspaceMenus = new MenuItemViewModel();
+            var allWorkspaces = this.dbRepository.Workspace.GetAll();
+            var defaultWorkspace = allWorkspaces.FirstOrDefault(w => w.IsDefault);
+
+            workspaceMenus.Header = Language.ActionWorkspaces;
+            workspaceMenus.IsEnabled = allWorkspaces.Count > 0;
+            workspaceMenus.Items = new List<MenuItemViewModel>() {
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = $"{Language.ActionAddToDefault} {(defaultWorkspace != null ? "(" + defaultWorkspace.Name + ")" : "")}",
+                        Command = AddToDefaultWorkspaceCommand,
+                        IsEnabled = defaultWorkspace != null
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionAddToEligible,
+                        Command = AddToEligibleWorkspacesCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionAddTo,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = AddToAllWorkspacesCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = AddToSpecificWorkspaceCommand, CommandParameter = l.Id })))
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = "-"
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRemoveFromAll,
+                        Command = RemoveFromAllWorkspaceCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRemoveFrom,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = RemoveFromAllWorkspaceCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = RemoveFromSpecificWorkspaceCommand,  CommandParameter = l.Id })))
+                    }
+                }
+            };
+
             var imageMenus = new MenuItemViewModel();
             imageMenus.Header = Language.ActionThisImage;
             imageMenus.Items = new List<MenuItemViewModel>()
@@ -547,6 +738,9 @@ namespace TsukiTag.ViewModels
                     onlineListMenus
                 },
                 {
+                    workspaceMenus
+                },
+                {
                     imageMenus
                 }
             };
@@ -558,6 +752,7 @@ namespace TsukiTag.ViewModels
         {
             var menus = new MenuItemViewModel();
             var allLists = this.dbRepository.OnlineList.GetAll();
+            var allWorkspaces = this.dbRepository.Workspace.GetAll();
 
             menus.Header = Language.ActionSelection;
 
@@ -611,6 +806,56 @@ namespace TsukiTag.ViewModels
                 }
             };
 
+            var workspaceMenus = new MenuItemViewModel();
+            workspaceMenus.Header = Language.ActionWorkspaces;
+            workspaceMenus.Items = new List<MenuItemViewModel>() {
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = $"{Language.ActionAddToDefault} ({allWorkspaces.FirstOrDefault(s => s.IsDefault)?.Name})",
+                        Command = SelectionAddToDefaultWorkspaceCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionAddToEligible,
+                        Command = SelectionAddToEligibleWorkspacesCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionAddTo,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = SelectionAddToAllWorkspacesCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = SelectionAddToSpecificWorkspaceCommand, CommandParameter = l.Id })))
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = "-"
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRemoveFromAll,
+                        Command = SelectionRemoveFromAllWorkspaceCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRemoveFrom,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = SelectionRemoveFromAllWorkspaceCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = SelectionRemoveFromSpecificWorkspaceCommand,  CommandParameter = l.Id }))),
+                    }
+                }
+            };
+
             var selectionMenus = new MenuItemViewModel();
             selectionMenus.Header = Language.ActionSelection;
             selectionMenus.Items = new List<MenuItemViewModel>()
@@ -635,6 +880,9 @@ namespace TsukiTag.ViewModels
             {
                 {
                     onlineListMenus
+                },
+                {
+                    workspaceMenus
                 },
                 {
                     selectionMenus

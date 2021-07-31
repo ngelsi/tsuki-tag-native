@@ -26,7 +26,7 @@ namespace TsukiTag.Models
 
         public static ToastMessage Uncloseable(string text, string? id = null)
         {
-            return new ToastMessage() { Id = id ?? Guid.NewGuid().ToString(), IsCloseable = true, Text = text };
+            return new ToastMessage() { Id = id ?? Guid.NewGuid().ToString(), IsCloseable = false, Text = text };
         }
     }
 }

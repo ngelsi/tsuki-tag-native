@@ -60,22 +60,28 @@ namespace TsukiTag.Dependencies
 
             public void AddOrUpdateThumbnail(string md5, Bitmap bitmap)
             {
-                using (var ms = new MemoryStream())
+                try
                 {
-                    bitmap.Save(ms);
-                    ms.Position = 0;
-
-                    var storage = GetConnection().FileStorage;
-                    var existing = storage.FindById(md5);
-
-                    if (existing != null)
+                    using (var ms = new MemoryStream())
                     {
-                        storage.Delete(md5);
+                        bitmap.Save(ms);
+                        ms.Position = 0;
+
+                        var storage = GetConnection().FileStorage;
+                        var existing = storage.FindById(md5);
+
+                        if (existing != null)
+                        {
+                            storage.Delete(md5);
+                        }
+
+                        storage.Upload(md5, md5, ms);
                     }
-
-                    storage.Upload(md5, md5, ms);
-
                 }
+                catch(Exception)
+                {
+
+                }                
             }
         }
     }

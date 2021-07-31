@@ -68,7 +68,7 @@ namespace TsukiTag.Models
         public static string PictureTemplateHelp => $"{Localizer.Get(nameof(TemplateDescription))}{typeof(Picture).GetPropertyTemplateNameIteration()}";
         public static string SettingsSave => Localizer.Get(nameof(SettingsSave));
         public static string SettingsCancel => Localizer.Get(nameof(SettingsCancel));
-        
+
         public static string Workspaces => Localizer.Get(nameof(Workspaces));
         public static string Workspace => Localizer.Get(nameof(Workspace));
         public static string WorkspacesDescription => Localizer.Get(nameof(WorkspacesDescription));
@@ -143,6 +143,10 @@ namespace TsukiTag.Models
         public static string ToastWorkspaceEnd => Localizer.Get(nameof(ToastWorkspaceEnd));
         public static string ToastProviderError => Localizer.Get(nameof(ToastProviderError));
         public static string ToastProviderTagLimit2 => Localizer.Get(nameof(ToastProviderTagLimit2));
+        public static string ToastWorkspaceProcessingSingle => Localizer.Get(nameof(ToastWorkspaceProcessingSingle));
+        public static string ToastWorkspaceProcessing => Localizer.Get(nameof(ToastWorkspaceProcessing));
+        public static string ToastWorkspaceProcessed => Localizer.Get(nameof(ToastWorkspaceProcessed));
+        public static string ToastWorkspaceProcessError => Localizer.Get(nameof(ToastWorkspaceProcessError));
 
         public static string NavigationOnline => Localizer.Get(nameof(NavigationOnline));
         public static string NavigationSettings => Localizer.Get(nameof(NavigationSettings));

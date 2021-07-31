@@ -49,6 +49,7 @@ namespace TsukiTag
         public IDbRepository DbRepository => container.GetInstance<IDbRepository>();
         public IPictureProviderContext PictureProviderContext => container.GetInstance<IPictureProviderContext>();
         public IOnlineListPictureProvider OnlineListPictureProvider => container.GetInstance<IOnlineListPictureProvider>();
+        public IPictureWorker PictureWorker => container.GetInstance<IPictureWorker>();
 
         private Container CreateContainer()
         {
@@ -81,6 +82,7 @@ namespace TsukiTag
             container.Register<INotificationControl, NotificationControl>(Lifestyle.Singleton);
             container.Register<IPictureProviderContext, PictureProviderContext>(Lifestyle.Singleton);
             container.Register<IOnlineListPictureProvider, OnlineListPictureProvider>(Lifestyle.Singleton);
+            container.Register<IPictureWorker, PictureWorker>(Lifestyle.Singleton);
 
             container.Verify();
 

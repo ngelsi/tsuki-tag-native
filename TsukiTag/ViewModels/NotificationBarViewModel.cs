@@ -84,6 +84,17 @@ namespace TsukiTag.ViewModels
                 {
                     Messages.Add(e);
                 }
+                else
+                {
+                    var message = messages.FirstOrDefault(m => m.Id == e.Id);
+                    if(message != null)
+                    {
+                        var index = messages.IndexOf(message);
+                        
+                        Messages.Insert(index, e);
+                        Messages.Remove(message);
+                    }
+                }
 
                 IsTooltipOpen = true;
 
