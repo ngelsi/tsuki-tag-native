@@ -50,6 +50,7 @@ namespace TsukiTag
         public IPictureProviderContext PictureProviderContext => container.GetInstance<IPictureProviderContext>();
         public IOnlineListPictureProvider OnlineListPictureProvider => container.GetInstance<IOnlineListPictureProvider>();
         public IPictureWorker PictureWorker => container.GetInstance<IPictureWorker>();
+        public IWorkspacePictureProvider WorkspacePictureProvider => container.GetInstance<IWorkspacePictureProvider>();
 
         private Container CreateContainer()
         {
@@ -66,6 +67,8 @@ namespace TsukiTag
             container.Register<SettingsViewModel>(Lifestyle.Transient);
             container.Register<OnlineListBrowserViewModel>(Lifestyle.Transient);
             container.Register<OnlineListNavigationBarViewModel>(Lifestyle.Transient);
+            container.Register<WorkspaceBrowserViewModel>(Lifestyle.Transient);
+            container.Register<WorkspaceNavigationBarViewModel>(Lifestyle.Transient);
 
             container.Register<IOnlinePictureProvider, OnlinePictureProvider>(Lifestyle.Singleton);
             container.Register<ISafebooruPictureProvider, SafebooruPictureProvider>(Lifestyle.Singleton);
@@ -83,6 +86,7 @@ namespace TsukiTag
             container.Register<IPictureProviderContext, PictureProviderContext>(Lifestyle.Singleton);
             container.Register<IOnlineListPictureProvider, OnlineListPictureProvider>(Lifestyle.Singleton);
             container.Register<IPictureWorker, PictureWorker>(Lifestyle.Singleton);
+            container.Register<IWorkspacePictureProvider, WorkspacePictureProvider>(Lifestyle.Singleton);
 
             container.Verify();
 

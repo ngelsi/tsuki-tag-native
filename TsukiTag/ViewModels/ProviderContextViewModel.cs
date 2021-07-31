@@ -180,6 +180,8 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToOnlineBrowsing -= OnSwitchedToOnlineBrowsing;
             this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToAllOnlineListBrowsing;
             this.navigationControl.SwitchedToSpecificOnlineListBrowsing -= OnSwitchedToSpecificOnlineListBrowsing;
+            this.navigationControl.SwitchedToAllWorkspaceBrowsing -= OnSwitchedToAllWorkspaceBrowsing;
+            this.navigationControl.SwitchedToSpecificWorkspaceBrowsing -= OnSwitchedToSpecificWorkspaceBrowsing;
         }
 
         public async void OnTabPictureClosed(Picture picture)
@@ -273,6 +275,46 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing;
             this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToAllOnlineListBrowsing;
             this.navigationControl.SwitchedToSpecificOnlineListBrowsing += OnSwitchedToSpecificOnlineListBrowsing;
+            this.navigationControl.SwitchedToAllWorkspaceBrowsing += OnSwitchedToAllWorkspaceBrowsing;
+            this.navigationControl.SwitchedToSpecificWorkspaceBrowsing += OnSwitchedToSpecificWorkspaceBrowsing;
+        }
+
+        private void OnSwitchedToSpecificWorkspaceBrowsing(object? sender, Guid e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                //*
+                this.tabs.Remove(this.tabs.ElementAt(0));
+                this.tabs.Insert(0, ProviderTabModel.AllWorkspacesTab);
+                this.SelectedTabIndex = 0;
+                /*/
+                this.tabs = new ObservableCollection<ProviderTabModel>();
+                this.tabs.Add(ProviderTabModel.AllWorkspacesTab);
+                //*/
+
+                this.RaisePropertyChanged(nameof(Tabs));
+
+                await this.pictureProviderContext.SetContextToSpecificWorkspace(e);
+            });
+        }
+
+        private void OnSwitchedToAllWorkspaceBrowsing(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                //*
+                this.tabs.Remove(this.tabs.ElementAt(0));
+                this.tabs.Insert(0, ProviderTabModel.AllWorkspacesTab);
+                this.SelectedTabIndex = 0;
+                /*/
+                this.tabs = new ObservableCollection<ProviderTabModel>();
+                this.tabs.Add(ProviderTabModel.AllWorkspacesTab);
+                //*/
+
+                this.RaisePropertyChanged(nameof(Tabs));
+
+                await this.pictureProviderContext.SetContextToAllWorkspaces();
+            });
         }
 
         private void OnSwitchedToSpecificOnlineListBrowsing(object? sender, Guid e)

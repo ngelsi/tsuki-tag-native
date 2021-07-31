@@ -3,6 +3,15 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <AssemblyVersion>0.8.0.0</AssemblyVersion>
+    <FileVersion>0.8.0.0</FileVersion>
+    <Version>0.8.0</Version>
+    <Authors>Norbert Gelsi (norbert.gelsi@gmail.com)</Authors>
+    <Copyright>Norbert Gelsi (c) norbert.gelsi@gmail.com, GNU GPL 3.0</Copyright>
+    <Description>Anime imageboard browser, aggregator, downloader, tagger, converter, collection manager. Download images from imageboards while keeping or modifying the original tag list, browse and create your own collections, configure workspaces for customizable image downloads with file and tag templating support.</Description>
+    <PackageLicenseExpression>GNU GPL 3.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/ngelsi/tsuki-tag-native</PackageProjectUrl>
+    <PackageTags>anime imageboard aggregator booru image-tagging collection-manager image-collection</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Assets\Icons\" />

@@ -42,6 +42,7 @@ namespace TsukiTag.Models
         private Bitmap sampleImage;
         private bool isLocal;
         private Bitmap sourceImage;
+        private string fileUrl;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -221,6 +222,14 @@ namespace TsukiTag.Models
             {
                 return $"{previewWidth}x{previewHeight}";
             }
+        }
+
+        [BsonIgnore]
+        [JsonIgnore]
+        public string FileUrl
+        {
+            get { return fileUrl; }
+            set { fileUrl = value; }
         }
 
         [BsonIgnore]

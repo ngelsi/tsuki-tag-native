@@ -31,6 +31,10 @@ namespace TsukiTag.ViewModels
 
         public ReactiveCommand<Guid, Unit> SwitchToSpefificOnlineListBrowsingCommand { get; }
 
+        public ReactiveCommand<Unit, Unit> SwitchToAllWorkspaceBrowsingCommand { get; }
+
+        public ReactiveCommand<Guid, Unit> SwitchToSpefificWorkspaceBrowsingCommand { get; }
+
         public ObservableCollection<MenuItemViewModel> MainWindowMenus
         {
             get { return mainWindowMenus; }
@@ -75,7 +79,11 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToSettings += OnSwitchedToSettings;
             this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToAllOnlineListBrowsing;
             this.navigationControl.SwitchedToSpecificOnlineListBrowsing += OnSwitchedToSpecificOnlineListBrowsing;
-            this.dbRepository.OnlineList.OnlineListsChanged += OnOnlineListsChanged;
+            this.navigationControl.SwitchedToAllWorkspaceBrowsing += OnSwitchedToAllWorkspaceBrowsing;
+            this.navigationControl.SwitchedToSpecificWorkspaceBrowsing += OnSwitchedToSpecificWorkspaceBrowsing;
+
+            this.dbRepository.OnlineList.OnlineListsChanged += OnResourceListsChanged;
+            this.dbRepository.Workspace.WorkspacesChanged += OnResourceListsChanged;
 
             this.SwitchToSettingsCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -97,6 +105,16 @@ namespace TsukiTag.ViewModels
                 await this.navigationControl.SwitchToSpecificOnlineListBrowsing(id);
             });
 
+            this.SwitchToAllWorkspaceBrowsingCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await this.navigationControl.SwitchToAllWorkspaceBrowsing();
+            });
+
+            this.SwitchToSpefificWorkspaceBrowsingCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                await this.navigationControl.SwitchToSpecificWorkspaceBrowsing(id);
+            });
+
             CurrentContent = ProviderContext;
             MainWindowMenus = GetMainMenus();
         }
@@ -107,7 +125,11 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToSettings -= OnSwitchedToSettings;
             this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToAllOnlineListBrowsing;
             this.navigationControl.SwitchedToSpecificOnlineListBrowsing -= OnSwitchedToSpecificOnlineListBrowsing;
-            this.dbRepository.OnlineList.OnlineListsChanged -= OnOnlineListsChanged;
+            this.navigationControl.SwitchedToAllWorkspaceBrowsing -= OnSwitchedToAllWorkspaceBrowsing;
+            this.navigationControl.SwitchedToSpecificWorkspaceBrowsing -= OnSwitchedToSpecificWorkspaceBrowsing;
+            
+            this.dbRepository.OnlineList.OnlineListsChanged -= OnResourceListsChanged;
+            this.dbRepository.Workspace.WorkspacesChanged -= OnResourceListsChanged;
         }
 
         public async void Initialized()
@@ -115,7 +137,7 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchToOnlineBrowsing();
         }
 
-        private async void OnOnlineListsChanged(object? sender, EventArgs e)
+        private async void OnResourceListsChanged(object? sender, EventArgs e)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
@@ -155,11 +177,28 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        private void OnSwitchedToAllWorkspaceBrowsing(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                CurrentContent = ProviderContext;
+            });
+        }
+
+        private void OnSwitchedToSpecificWorkspaceBrowsing(object? sender, Guid e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                CurrentContent = ProviderContext;
+            });
+        }
+
 
         private ObservableCollection<MenuItemViewModel> GetMainMenus()
         {
             var menus = new MenuItemViewModel();
             var allLists = this.dbRepository.OnlineList.GetAll();
+            var allWorkspaces = this.dbRepository.Workspace.GetAll();
 
             menus.Header = "TsukiTag";
             menus.Items = new List<MenuItemViewModel>()
@@ -185,6 +224,22 @@ namespace TsukiTag.ViewModels
                         Items = new List<MenuItemViewModel>(
                             new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = SwitchToAllOnlineListBrowsingCommand } }, { new MenuItemViewModel() { Header = "-" } } }
                             .Concat(allLists.Select(l => new MenuItemViewModel() { Header = l.Name, Command = SwitchToSpefificOnlineListBrowsingCommand, CommandParameter = l.Id })))
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.NavigationAllWorkspaces,
+                        Command = SwitchToAllWorkspaceBrowsingCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.NavigationSpecificWorkspace,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = SwitchToAllWorkspaceBrowsingCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = SwitchToSpefificWorkspaceBrowsingCommand, CommandParameter = l.Id })))
                     }
                 },
                 {

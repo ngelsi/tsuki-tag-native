@@ -13,6 +13,7 @@ namespace TsukiTag.Models
     {
         private static ProviderTabModel onlineBrowserTab;
         private static ProviderTabModel allOnlineListsTab;
+        private static ProviderTabModel allWorkspacesTab;
 
         public string Header { get; set; }
 
@@ -37,6 +38,19 @@ namespace TsukiTag.Models
                 }
 
                 return onlineBrowserTab;
+            }
+        }
+
+        public static ProviderTabModel AllWorkspacesTab
+        {
+            get
+            {
+                if (allWorkspacesTab == null)
+                {
+                    allWorkspacesTab = new ProviderTabModel() { Header = Ioc.SimpleIoc.Localizer.Get("Browse"), Content = new WorkspaceBrowser(), Identifier = "ALLWORKSPACES", Context = ProviderSession.AllWorkspacesSession };
+                }
+
+                return allWorkspacesTab;
             }
         }
 

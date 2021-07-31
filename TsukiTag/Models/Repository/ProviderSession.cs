@@ -12,6 +12,7 @@ namespace TsukiTag.Models.Repository
     {
         public const string OnlineProviderSession = "f73d0d69-a674-4da0-9ea5-009c318a1587";
         public const string AllOnlineListsSession = "f73d0d69-a674-4da0-9ea5-009c318a1588";
+        public const string AllWorkspacesSession = "f73d0d69-a674-4da0-9ea5-009c318a1589";
 
         public Guid Id { get; set; }
 

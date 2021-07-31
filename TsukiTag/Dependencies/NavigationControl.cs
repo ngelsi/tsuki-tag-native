@@ -25,6 +25,10 @@ namespace TsukiTag.Dependencies
 
         event EventHandler<Guid> SwitchedToSpecificOnlineListBrowsing;
 
+        event EventHandler SwitchedToAllWorkspaceBrowsing;
+
+        event EventHandler<Guid> SwitchedToSpecificWorkspaceBrowsing;
+
         Task SwitchToTagOverview();
 
         Task SwitchToMetadataOverview();
@@ -40,6 +44,10 @@ namespace TsukiTag.Dependencies
         Task SwitchToAllOnlineListBrowsing();
 
         Task SwitchToSpecificOnlineListBrowsing(Guid id);
+
+        Task SwitchToAllWorkspaceBrowsing();
+        
+        Task SwitchToSpecificWorkspaceBrowsing(Guid id);
     }
 
     public class NavigationControl : INavigationControl
@@ -52,6 +60,8 @@ namespace TsukiTag.Dependencies
         public event EventHandler SwitchedToOnlineBrowsing;
         public event EventHandler SwitchedToAllOnlineListBrowsing;
         public event EventHandler<Guid> SwitchedToSpecificOnlineListBrowsing;
+        public event EventHandler SwitchedToAllWorkspaceBrowsing;
+        public event EventHandler<Guid> SwitchedToSpecificWorkspaceBrowsing;
 
         public NavigationControl()
         {
@@ -119,6 +129,22 @@ namespace TsukiTag.Dependencies
             await Task.Run(() =>
             {
                 SwitchedToSpecificOnlineListBrowsing?.Invoke(this, id);
+            });
+        }
+
+        public async Task SwitchToAllWorkspaceBrowsing()
+        {
+            await Task.Run(() =>
+            {
+                SwitchedToAllWorkspaceBrowsing?.Invoke(this, EventArgs.Empty);
+            });
+        }
+
+        public async Task SwitchToSpecificWorkspaceBrowsing(Guid id)
+        {
+            await Task.Run(() =>
+            {
+                SwitchedToSpecificWorkspaceBrowsing?.Invoke(this, id);
             });
         }
     }

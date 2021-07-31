@@ -113,7 +113,7 @@
   "ToastProviderTagLimit2": "{0} only supports up to 2 tags per search.",
   "ToastWorkspaceProcessingSingle": "Processing '{0}' for workspace '{1}'",
   "ToastWorkspaceProcessing": "Processing '{0}' for workspace '{1}' {2}/{3}",
-  "ToastWorkspaceProcessed": "Workspace processing finished",
+  "ToastWorkspaceProcessed": "Workspace processing finished. Check history for more information.",
   "ToastWorkspaceProcessError": "Something went wrong during workspace processing.",
 
   "NavigationOnline": "Browse online",

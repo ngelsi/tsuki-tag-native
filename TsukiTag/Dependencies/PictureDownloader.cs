@@ -20,6 +20,8 @@ namespace TsukiTag.Dependencies
         Task<Bitmap> DownloadBitmap(string url);
 
         Task<Bitmap> DownloadBitmap(string url, string? md5);
+
+        Task<Bitmap> DownloadLocalBitmap(string filePath);
     }
 
     public class PictureDownloader : IPictureDownloader
@@ -57,6 +59,16 @@ namespace TsukiTag.Dependencies
                     return stream;
                 }
             }
+        }
+
+        public async Task<Bitmap> DownloadLocalBitmap(string filePath)
+        {
+            if(File.Exists(filePath))
+            {
+                return await Task.FromResult(new Bitmap(filePath));
+            }
+
+            return await Task.FromResult<Bitmap>(null);
         }
 
         public async Task<Bitmap> DownloadBitmap(string url)

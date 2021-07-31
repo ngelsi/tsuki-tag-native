@@ -123,10 +123,10 @@ namespace TsukiTag.Dependencies
 
         public async void SelectAllPictures()
         {
-            for(var i = this.currentPictureSet.Count - 1; i >= 0; i--)
+            for (var i = this.currentPictureSet.Count - 1; i >= 0; i--)
             {
                 var picture = this.currentPictureSet.ElementAtOrDefault(i);
-                if(picture != null)
+                if (picture != null)
                 {
                     SelectPicture(picture);
                 }
@@ -178,6 +178,11 @@ namespace TsukiTag.Dependencies
             await semaphoreSlim.WaitAsync();
             try
             {
+                if (!string.IsNullOrEmpty(picture.FileUrl))
+                {
+                    picture.SampleImage = await pictureDownloadControl.DownloadLocalBitmap(picture.FileUrl);
+                }
+
                 if (picture.SampleImage == null && !string.IsNullOrEmpty(picture.Url))
                 {
                     picture.SampleImage = await pictureDownloadControl.DownloadBitmap(picture.Url);

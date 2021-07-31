@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:TsukiTag.ViewModels"
+             xmlns:local="using:TsukiTag.Views"
+             xmlns:ts="using:TsukiTag"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             DataContext="{x:Static ts:ViewModelIoc.WorkspaceNavigationBarViewModel}"
+             x:Class="TsukiTag.Views.WorkspaceNavigationBar">
+  <UserControl.Styles>
+    <Style Selector="ToggleSwitch">
+      <Setter Property="OnContent" Value=""></Setter>
+      <Setter Property="OffContent" Value=""></Setter>
+    </Style>
+    <Style Selector="Label">
+      <Setter Property="Margin" Value="5 7 5 5"></Setter>
+    </Style>
+  </UserControl.Styles>
+  <Menu VerticalAlignment="Top" HorizontalAlignment="Left">
+    <MenuItem Header="{Binding Language.Session}" Padding="0 5 5 5">
+      <MenuItem Header="Ratings" IsEnabled="False"></MenuItem>
+      <Separator></Separator>
+      <MenuItem Command="{Binding SwitchRatingCommand}" CommandParameter="s">
+        <MenuItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <ToggleSwitch IsChecked="{Binding SafeRatingEnabled}" Command="{Binding SwitchRatingCommand}" CommandParameter="s"></ToggleSwitch>
+            <Label Content="{Binding Language.Safe}"></Label>
+          </StackPanel>
+        </MenuItem.Header>
+      </MenuItem>
+      <MenuItem Command="{Binding SwitchRatingCommand}" CommandParameter="q">
+        <MenuItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <ToggleSwitch IsChecked="{Binding QuestionableRatingEnabled}" Command="{Binding SwitchRatingCommand}" CommandParameter="q"></ToggleSwitch>
+            <Label Content="{Binding Language.Questionable}"></Label>
+          </StackPanel>
+        </MenuItem.Header>
+      </MenuItem>
+      <MenuItem Command="{Binding SwitchRatingCommand}" CommandParameter="e">
+        <MenuItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <ToggleSwitch IsChecked="{Binding ExplicitRatingEnabled}" Command="{Binding SwitchRatingCommand}" CommandParameter="e"></ToggleSwitch>
+            <Label Content="{Binding Language.Explicit}"></Label>
+          </StackPanel>
+        </MenuItem.Header>
+      </MenuItem>
+    </MenuItem>
+    <MenuItem ToolTip.Tip="{Binding Language.PreviousPage}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToPreviousPage}" Command="{Binding PreviousPageCommand}">
+      <MenuItem.Header>
+        <i:Icon Value="fa-arrow-left"></i:Icon>
+      </MenuItem.Header>
+    </MenuItem>
+    <MenuItem ToolTip.Tip="{Binding Language.NextPage}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
+      <MenuItem.Header>
+        <i:Icon Value="fa-arrow-right"></i:Icon>
+      </MenuItem.Header>
+    </MenuItem>
+    <MenuItem ToolTip.Tip="{Binding Language.Refresh}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Command="{Binding RefreshCommand}">
+      <MenuItem.Header>
+        <i:Icon Value="fa-random"></i:Icon>
+      </MenuItem.Header>
+    </MenuItem>
+  </Menu>
+</UserControl>

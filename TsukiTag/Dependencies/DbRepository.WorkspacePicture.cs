@@ -61,6 +61,11 @@ namespace TsukiTag.Dependencies
                         var completeQuery = query.Skip(filter.Page * filter.Limit).Limit(filter.Limit);
                         var items = completeQuery.ToList();
 
+                        items.ForEach((item) =>
+                        {
+                            item.Picture.FileUrl = item.FilePath;
+                        });
+
                         return items;
                     }
                 }
@@ -78,6 +83,11 @@ namespace TsukiTag.Dependencies
                     {
                         var coll = db.GetCollection<WorkspacePicture>();
                         var allItems = coll.Find(p => p.Md5 == md5).ToList();
+
+                        allItems.ForEach((item) =>
+                        {
+                            item.Picture.FileUrl = item.FilePath;
+                        });
 
                         return allItems;
                     }

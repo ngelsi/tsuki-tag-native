@@ -80,12 +80,27 @@ namespace TsukiTag.Dependencies
 
                     newItem = true;
                 }
+                else if (session == null && context == Models.Repository.ProviderSession.AllWorkspacesSession)
+                {
+                    session = new ProviderSession()
+                    {
+                        Context = context,
+                        Providers = parent.Workspace.GetAll().Select(s => s.Name).ToArray(),
+                        Ratings = new string[]
+                        {
+                            Models.Rating.Safe.Name
+                        },
+                        Limit = 75
+                    };
+
+                    newItem = true;
+                }
                 else if (session == null && Guid.TryParse(context, out Guid id))
                 {
                     session = new ProviderSession()
                     {
                         Context = context,
-                        Providers = new string [] { parent.OnlineList.Get(id)?.Name },
+                        Providers = new string [] { parent.OnlineList.Get(id)?.Name ?? parent.Workspace.Get(id)?.Name },
                         Ratings = new string[]
                         {
                             Models.Rating.Safe.Name
@@ -108,6 +123,10 @@ namespace TsukiTag.Dependencies
                 if(context == Models.Repository.ProviderSession.AllOnlineListsSession)
                 {
                     session.Providers = parent.OnlineList.GetAll().Select(s => s.Name).ToArray();
+                }
+                else if (context == Models.Repository.ProviderSession.AllWorkspacesSession)
+                {
+                    session.Providers = parent.Workspace.GetAll().Select(s => s.Name).ToArray();
                 }
 
                 return session;
