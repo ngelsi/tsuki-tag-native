@@ -12,7 +12,8 @@
     <PackageLicenseExpression>GNU GPL 3.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ngelsi/tsuki-tag-native</PackageProjectUrl>
     <PackageTags>anime imageboard aggregator booru image-tagging collection-manager image-collection</PackageTags>
-    <PackageIcon>256x256.png</PackageIcon>
+    <PackageIcon>Assets\Icons\256x256.png</PackageIcon>
+    <ApplicationIcon>Assets\Icons\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Assets\Icons\" />
@@ -51,6 +52,7 @@
     <PackageReference Include="Nito.AsyncEx" Version="5.1.0" />
     <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="3.1.0" />
     <PackageReference Include="RestSharp" Version="106.11.7" />
+    <PackageReference Include="runtime.osx.10.10-x64.CoreCompat.System.Drawing" Version="5.8.64" />
     <PackageReference Include="SimpleInjector" Version="5.3.2" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
