@@ -75,6 +75,11 @@ namespace TsukiTag.Dependencies
                             continue;
                         }
 
+                        if (filter.ExcludedTags.Any(e => picture.Picture.TagList.Contains(e)))
+                        {
+                            continue;
+                        }
+
                         pictureControl.AddPicture(picture.Picture);
                     }
                 }

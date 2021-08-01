@@ -19,20 +19,56 @@
     </Style>
   </UserControl.Styles>
   <DockPanel>
-    <AutoCompleteBox Items="{Binding TagSuggestions}" KeyDown="TagBoxGotKeyDown" DockPanel.Dock="Top" Text="{Binding TagString}" Watermark="Search tags" Margin="5 0 10 0"></AutoCompleteBox>
-    <DockPanel DockPanel.Dock="Top" Height="30">
-      <ItemsRepeater Items="{Binding CurrentTags}">
-        <ItemsRepeater.Layout>
-          <StackLayout Orientation="Horizontal" Spacing="1"></StackLayout>
-        </ItemsRepeater.Layout>
-        <ItemsRepeater.ItemTemplate>
-          <DataTemplate>
-            <StackPanel Margin="10 10 0 0">              
-              <TextBlock FontSize="16" Classes="primary" Text="{Binding}" PointerPressed="TagLabelGotPress"></TextBlock>
-            </StackPanel>
-          </DataTemplate>
-        </ItemsRepeater.ItemTemplate>
-      </ItemsRepeater>
-    </DockPanel>
+    <Grid DockPanel.Dock="Top">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"></RowDefinition>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="0.5*"></ColumnDefinition>
+        <ColumnDefinition Width="0.5*"></ColumnDefinition>
+      </Grid.ColumnDefinitions>
+
+      <DockPanel Grid.Row="0" Grid.Column="0">
+        <AutoCompleteBox DockPanel.Dock="Top" Items="{Binding TagSuggestions}" KeyDown="TagBoxGotKeyDown" Text="{Binding TagString}" Watermark="{Binding Language.SearchTags}" Margin="5 0 10 0"></AutoCompleteBox>
+        <DockPanel DockPanel.Dock="Top">
+          <ItemsControl Items="{Binding CurrentTags}" DockPanel.Dock="Top">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal"></WrapPanel>
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                  <TextBlock TextWrapping="Wrap" Margin="10 10 0 0" FontSize="16" Classes="primary" Text="{Binding}" PointerPressed="TagLabelGotPress"></TextBlock>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </DockPanel>
+      </DockPanel>
+      <DockPanel Grid.Row="0" Grid.Column="1">
+        <DockPanel DockPanel.Dock="Top">
+          <Button Margin="0 -5 0 0" DockPanel.Dock="Right" ToolTip.Tip="{Binding Language.ExcludeTagsDescription}" ToolTip.ShowDelay="0" ToolTip.Placement="Bottom" Classes="actionbutton">
+            <i:Icon Margin="0 0 0 0" FontSize="20" Value="fa-info-circle"></i:Icon>
+          </Button>
+          <AutoCompleteBox DockPanel.Dock="Right" Items="{Binding TagSuggestions}" KeyDown="ExcludeTagBoxGotKeyDown" Text="{Binding ExcludedTagString}" Watermark="{Binding Language.ExcludeTags}" Margin="5 0 10 0"></AutoCompleteBox>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+          <ItemsControl Items="{Binding CurrentExcludedTags}" DockPanel.Dock="Top">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal"></WrapPanel>
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Margin="10 10 0 0">
+                  <TextBlock FontSize="16" Classes="primary" Text="{Binding}" PointerPressed="ExcludeTagLabelGotPress"></TextBlock>
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </DockPanel>
+      </DockPanel>
+    </Grid>
   </DockPanel>
 </UserControl>

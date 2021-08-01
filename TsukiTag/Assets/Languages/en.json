@@ -113,6 +113,9 @@
   "SetThisTagSearch": "Set this tag as search",
   "SelectAll": "Select all pictures",
   "AddTag": "Add tag",
+  "SearchTags": "Search tags",
+  "ExcludeTags": "Exclude tags",
+  "ExcludeTagsDescription":  "Excluding pictures based on these tags happen locally and not on provider side. If no or very few pictures are being displayed, the excluded tags are too strict for the current search.",
 
   "ToastProviderEnd": "No more results from provider {0}.",
   "ToastOnlineListsEnd": "No more results from online lists.",

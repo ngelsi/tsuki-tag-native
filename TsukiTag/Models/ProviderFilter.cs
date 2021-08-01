@@ -18,6 +18,8 @@ namespace TsukiTag.Models
 
         public List<string> Tags { get; set; }
 
+        public List<string> ExcludedTags { get; set; }
+
         public string TagString => string.Join(" ", Tags);
 
         public ProviderFilterElement FilterElement => new ProviderFilterElement() { Limit = Limit, Page = Page, Tags = new List<string>(Tags), Ratings = new List<string>(Ratings) };
@@ -27,6 +29,7 @@ namespace TsukiTag.Models
             Providers = new List<string>();
             Ratings = new List<string>();
             Tags = new List<string>();
+            ExcludedTags = new List<string>();
 
             Limit = 25;
         }

@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using DynamicData;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,11 +21,19 @@ namespace TsukiTag.ViewModels
         private TagCollection tagCollection;
         private ObservableCollection<string> currentTags;
         private ObservableCollection<string> tagSuggestions;
+        private ObservableCollection<string> currentExcludedTags;
+        private string excludedTagString;
 
         public ObservableCollection<string> CurrentTags
         {
             get { return currentTags; }
             set { currentTags = value; this.RaisePropertyChanged(nameof(CurrentTags)); }
+        }
+
+        public ObservableCollection<string> CurrentExcludedTags
+        {
+            get { return currentExcludedTags; }
+            set { currentExcludedTags = value; this.RaisePropertyChanged(nameof(CurrentExcludedTags)); }
         }
 
         public ObservableCollection<string> TagSuggestions
@@ -40,6 +49,12 @@ namespace TsukiTag.ViewModels
             {
                 tagString = value; this.RaisePropertyChanged((nameof(TagString)));                
             }
+        }
+
+        public string ExcludedTagString
+        {
+            get { return excludedTagString; }
+            set { excludedTagString = value; this.RaisePropertyChanged(nameof(ExcludedTagString)); }
         }
 
         public TagBarViewModel(
@@ -70,6 +85,14 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        public async void OnExcludeTagClicked(string tag)
+        {
+            await Task.Run(async () =>
+            {
+                await this.providerFilterControl.RemoveExcludeTag(tag);
+            });
+        }
+
         public async void OnTagAdded(string tag)
         {
             await Task.Run(async () =>
@@ -83,11 +106,32 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        public async void OnExcludeTagAdded(string tag)
+        {
+            await Task.Run(async () =>
+            {
+                await this.providerFilterControl.AddExcludeTag(tag);
+            });
+
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                ExcludedTagString = string.Empty;
+            });
+        }
+
         public async void OnAutoCompleteInitiated(string filter)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {               
                 TagString = tagSuggestions.Select(t => new { index = t.IndexOf(filter, StringComparison.OrdinalIgnoreCase), value = t }).Where(t => t.index > -1).OrderBy(t => t.index).FirstOrDefault()?.value ?? filter;
+            });
+        }
+
+        public async void OnExcludeAutoCompleteInitiated(string filter)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                ExcludedTagString = tagSuggestions.Select(t => new { index = t.IndexOf(filter, StringComparison.OrdinalIgnoreCase), value = t }).Where(t => t.index > -1).OrderBy(t => t.index).FirstOrDefault()?.value ?? filter;
             });
         }
 
@@ -112,7 +156,9 @@ namespace TsukiTag.ViewModels
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
                 var filter = await this.providerFilterControl.GetCurrentFilter();
+
                 CurrentTags = new ObservableCollection<string>(filter.Tags);
+                CurrentExcludedTags = new ObservableCollection<string>(filter.ExcludedTags);
             });
         }
     }

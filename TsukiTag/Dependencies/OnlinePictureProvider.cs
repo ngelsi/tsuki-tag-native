@@ -122,6 +122,11 @@ namespace TsukiTag.Dependencies
                                     continue;
                                 }
 
+                                if(filter.ExcludedTags.Any(e => picture.TagList.Contains(e)))
+                                {
+                                    continue;
+                                }
+
                                 if(picture.IsMedia)
                                 {
                                     continue;

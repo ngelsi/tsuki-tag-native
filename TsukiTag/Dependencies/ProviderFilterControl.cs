@@ -34,6 +34,10 @@ namespace TsukiTag.Dependencies
 
         Task RemoveTag(string tag);
 
+        Task AddExcludeTag(string tag);
+
+        Task RemoveExcludeTag(string tag);
+
         Task SetTag(string tag);
 
         Task RemoveRating(string rating);
@@ -116,10 +120,38 @@ namespace TsukiTag.Dependencies
         {
             await Task.Run(() =>
             {
-                if (!currentFilter.Tags.Contains(tag))
+                if (currentFilter.ExcludedTags.Contains(tag))
+                {
+                    currentFilter.Page = 0;
+                    currentFilter.ExcludedTags.Remove(tag);
+
+                    FilterChanged?.Invoke(this, EventArgs.Empty);
+                }
+                else if (!currentFilter.Tags.Contains(tag))
                 {
                     currentFilter.Page = 0;
                     currentFilter.Tags.Add(tag);
+
+                    FilterChanged?.Invoke(this, EventArgs.Empty);                    
+                }
+            });
+        }
+
+        public async Task AddExcludeTag(string tag)
+        {
+            await Task.Run(() =>
+            {
+                if (currentFilter.Tags.Contains(tag))
+                {
+                    currentFilter.Page = 0;
+                    currentFilter.Tags.Remove(tag);
+
+                    FilterChanged?.Invoke(this, EventArgs.Empty);
+                }
+                else if(!currentFilter.ExcludedTags.Contains(tag))
+                {
+                    currentFilter.Page = 0;
+                    currentFilter.ExcludedTags.Add(tag);
 
                     FilterChanged?.Invoke(this, EventArgs.Empty);
                 }
@@ -130,10 +162,34 @@ namespace TsukiTag.Dependencies
         {
             await Task.Run(() =>
             {
-                currentFilter.Page = 0;
-                currentFilter.Tags.Remove(tag);
+                if(currentFilter.Tags.Contains(tag))
+                {
+                    currentFilter.Page = 0;
+                    currentFilter.Tags.Remove(tag);
 
-                FilterChanged?.Invoke(this, EventArgs.Empty);
+                    FilterChanged?.Invoke(this, EventArgs.Empty);
+                }
+                else if (!currentFilter.ExcludedTags.Contains(tag))
+                {
+                    currentFilter.Page = 0;
+                    currentFilter.ExcludedTags.Add(tag);
+
+                    FilterChanged?.Invoke(this, EventArgs.Empty);
+                }
+            });
+        }
+
+        public async Task RemoveExcludeTag(string tag)
+        {
+            await Task.Run(() =>
+            {
+                if(currentFilter.ExcludedTags.Contains(tag))
+                {
+                    currentFilter.Page = 0;
+                    currentFilter.ExcludedTags.Remove(tag);
+
+                    FilterChanged?.Invoke(this, EventArgs.Empty);
+                }
             });
         }
 
@@ -144,6 +200,7 @@ namespace TsukiTag.Dependencies
                 currentFilter.Page = 0;
                 currentFilter.Tags.Clear();
                 currentFilter.Tags.Add(tag);
+                currentFilter.ExcludedTags.Clear(); 
 
                 FilterChanged?.Invoke(this, EventArgs.Empty);
             });
