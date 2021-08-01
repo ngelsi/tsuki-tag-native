@@ -73,7 +73,10 @@ namespace TsukiTag.Dependencies
                         Providers = parent.OnlineList.GetAll().Select(s => s.Name).ToArray(),
                         Ratings = new string[]
                         {
-                            Models.Rating.Safe.Name
+                            Models.Rating.Safe.Name,
+                            Models.Rating.Questionable.Name,
+                            Models.Rating.Explicit.Name,
+
                         },
                         Limit = 75
                     };
@@ -88,7 +91,9 @@ namespace TsukiTag.Dependencies
                         Providers = parent.Workspace.GetAll().Select(s => s.Name).ToArray(),
                         Ratings = new string[]
                         {
-                            Models.Rating.Safe.Name
+                            Models.Rating.Safe.Name,
+                            Models.Rating.Questionable.Name,
+                            Models.Rating.Explicit.Name,
                         },
                         Limit = 75
                     };
@@ -103,7 +108,9 @@ namespace TsukiTag.Dependencies
                         Providers = new string [] { parent.OnlineList.Get(id)?.Name ?? parent.Workspace.Get(id)?.Name },
                         Ratings = new string[]
                         {
-                            Models.Rating.Safe.Name
+                            Models.Rating.Safe.Name,
+                            Models.Rating.Questionable.Name,
+                            Models.Rating.Explicit.Name,
                         },
                         Limit = 75
                     };
