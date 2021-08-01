@@ -4,11 +4,7 @@ Tsuki-tag is an aggregated imageboard browser and collection manager, which lets
 
 ![Tsuki-tag main window](./docs/images/main01.jpg)
 
-<br><br>
-
 ![Tsuki-tag main window](./docs/images/main02.jpg)
-
-<br><br>
 
 # Features
 
@@ -45,7 +41,7 @@ These lists feature:
 - Browse the online lists the same way as you would browse the online providers.
 - The image metadata and thumbnail will be saved into a local database upon adding to an online list. When the image is being opened, it will always be downloaded from the original online provider.
 - Automatically add or remove tags from an image metadata when adding it to an online list, with templating support to use image attributes as tags.
-- Create optional or mandatory tag combinations to an online list. An image then can be automatically be added to and processed by multiple online lists using a single operation, if it passes the configured tag requirements of a given online list.
+- Create optional or mandatory tag combinations to an online list. An image then can be automatically added to and processed by multiple online lists using a single operation, if it passes the configured tag requirements of a given online list.
 
 <br>
 
@@ -53,7 +49,7 @@ These lists feature:
 
 # Workspaces
 
-In addition to the features of online lists, Tsuki-tag also allows you to create workspaces, which are online lists with a configured folder in your local drive. When adding images to a workspace, the image is also downloaded to the specified folder. <br> 
+In addition to the features of online lists, Tsuki-tag also allows you to create workspaces, which are online lists with a configured folder on your local drive. When adding images to a workspace, the image is also downloaded to the specified folder. <br> 
 Workspace features include:
 
 - Browse workspaces the same way as you would browse the online providers.
