@@ -57,6 +57,12 @@ namespace TsukiTag.Models.Repository
             {
                 convertToJpg = value;
                 NotifyPropertyChanged(nameof(ConvertToJpg));
+
+                if(value == false)
+                {
+                    InjectTags = false;
+                    InjectMetadata = false;
+                }
             }
         }
 

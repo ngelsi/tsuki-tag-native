@@ -5,6 +5,7 @@
              xmlns:vm="using:TsukiTag.ViewModels"
              xmlns:local="using:TsukiTag.Views"
              xmlns:converters="using:TsukiTag.Converters"
+             xmlns:model="using:TsukiTag.Models"
              xmlns:ts="using:TsukiTag"
              xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -23,13 +24,13 @@
       <Setter Property="Cursor" Value="Hand"></Setter>
     </Style>
     <Style Selector="TextBlock.metadatatitle,TextBlock.metadatavalue">
-      <Setter Property="FontSize" Value="12"></Setter>
+      <Setter Property="FontSize" Value="13"></Setter>
     </Style>
     <Style Selector="TextBlock.metadatatitle">
       <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
     </Style>
     <Style Selector="TextBox.metadatavalue">
-      <Setter Property="FontSize" Value="12"></Setter>
+      <Setter Property="FontSize" Value="13"></Setter>
       <Setter Property="BorderThickness" Value="0"></Setter>
       <Setter Property="IsReadOnly" Value="True"></Setter>
       <Setter Property="TextWrapping" Value="Wrap"></Setter>
@@ -38,7 +39,7 @@
       <Setter Property="Padding" Value="0"></Setter>
     </Style>
     <Style Selector="TextBox.filter">
-      <Setter Property="FontSize" Value="12"></Setter>
+      <Setter Property="FontSize" Value="13"></Setter>
       <Setter Property="Padding" Value="7"></Setter>
     </Style>
   </UserControl.Styles>
@@ -104,37 +105,40 @@
       <StackPanel DockPanel.Dock="Top" Margin="0 10 0 10">
         <Image Source="{Binding CurrentPicture, Converter={StaticResource bitmapConverter}}" Width="{Binding CurrentPicture.PreviewWidth}" Height="{Binding CurrentPicture.PreviewHeight}" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
       </StackPanel>
-      <Grid Margin="13 5 5 5" DockPanel.Dock="Top" ColumnDefinitions="0.3*,0.7*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="0" Text="Provider:"></TextBlock>
+      <Grid Margin="13 5 5 5" DockPanel.Dock="Top" ColumnDefinitions="0.35*,0.65*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="0" Text="{Binding Language.Provider}"></TextBlock>
         <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="0" Text="{Binding CurrentPicture.Provider}"></TextBlock>
 
-        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="1" Text="Rating:"></TextBlock>
-        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="1" Text="{Binding CurrentPicture.RatingDisplay}"></TextBlock>
+        <TextBlock IsVisible="{Binding CurrentPicture.IsLocal}" Classes="metadatatitle" Grid.Column="0" Grid.Row="1" Text="{Binding CurrentPicture.LocalProviderType}"></TextBlock>
+        <TextBlock IsVisible="{Binding CurrentPicture.IsLocal}" Classes="metadatavalue" Grid.Column="1" Grid.Row="1" Text="{Binding CurrentPicture.LocalProvider}"></TextBlock>
 
-        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="2" Text="Dimensions:"></TextBlock>
-        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="2" Text="{Binding CurrentPicture.Dimensions}"></TextBlock>
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="2" Text="{Binding Language.Rating}"></TextBlock>
+        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="2" Text="{Binding CurrentPicture.RatingDisplay}"></TextBlock>
 
-        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="3" Text="Score:"></TextBlock>
-        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="3" Text="{Binding CurrentPicture.Score}"></TextBlock>
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="3" Text="{Binding Language.Dimensions}"></TextBlock>
+        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="3" Text="{Binding CurrentPicture.Dimensions}"></TextBlock>
 
-        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="4" Text="Extension:"></TextBlock>
-        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="4" Text="{Binding CurrentPicture.Extension}"></TextBlock>
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="4" Text="{Binding Language.Score}"></TextBlock>
+        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="4" Text="{Binding CurrentPicture.Score}"></TextBlock>
 
-        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="5" Text="ID:"></TextBlock>
-        <TextBox Classes="metadatavalue" Grid.Column="1" Grid.Row="5" Text="{Binding CurrentPicture.Id, Mode=OneWay}" Height="15"/>
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="5" Text="{Binding Language.Extension}"></TextBlock>
+        <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="5" Text="{Binding CurrentPicture.Extension}"></TextBlock>
+
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="6" Text="{Binding Language.Id}"></TextBlock>
+        <TextBox Classes="metadatavalue" Grid.Column="1" Grid.Row="6" Text="{Binding CurrentPicture.Id, Mode=OneWay}" Height="15"/>
       </Grid>
 
       <StackPanel Margin="13 0 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-        <TextBlock Classes="metadatatitle" Text="URL"></TextBlock>
+        <TextBlock Classes="metadatatitle" Text="{Binding Language.Url}"></TextBlock>
         <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Url, Mode=OneWay}" Width="280"/>
       </StackPanel>
       <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-        <TextBlock Classes="metadatatitle" Text="Source"></TextBlock>
+        <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
         <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Source, Mode=OneWay}" Width="280"/>
       </StackPanel>
       <DockPanel DockPanel.Dock="Top">
         <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
-          <Label DockPanel.Dock="Left" Content="Tags"></Label>
+          <Label DockPanel.Dock="Left" Content="{Binding Language.Tags}"></Label>
           <Label DockPanel.Dock="Left" Margin="5 0 0 0" Content="{Binding TagCount}"></Label>
         </DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10 5 5 5">

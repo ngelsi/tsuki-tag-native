@@ -65,6 +65,13 @@ namespace TsukiTag.Dependencies
                         var completeQuery = query.Skip(filter.Page * filter.Limit).Limit(filter.Limit);
                         var items = completeQuery.ToList();
 
+                        items.ForEach((item) =>
+                        {
+                            item.Picture.IsLocal = true;
+                            item.Picture.LocalProviderType = Language.OnlineList;
+                            item.Picture.LocalProvider = parent.OnlineList.Get(item.ResourceListId)?.Name;
+                        });
+
                         return items;
                     }
                 }
@@ -81,9 +88,16 @@ namespace TsukiTag.Dependencies
                     using (var db = new LiteDatabase(MetadataRepositoryPath))
                     {
                         var coll = db.GetCollection<OnlineListPicture>();
-                        var allItems = coll.Find(p => p.Md5 == md5).ToList();
+                        var items = coll.Find(p => p.Md5 == md5).ToList();
 
-                        return allItems;
+                        items.ForEach((item) =>
+                        {
+                            item.Picture.IsLocal = true;
+                            item.Picture.LocalProviderType = Language.OnlineList;
+                            item.Picture.LocalProvider = parent.OnlineList.Get(item.ResourceListId)?.Name;
+                        });
+
+                        return items;
                     }
                 }
                 catch (Exception)

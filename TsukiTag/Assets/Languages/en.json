@@ -8,6 +8,16 @@
   "Refresh": "Refresh",
   "Filter": "Filter",
 
+  "Rating": "Rating",
+  "Provider": "Provider",
+  "Dimensions": "Dimensions",
+  "Score": "Score",
+  "Extension": "Extension",
+  "Id": "ID",
+  "Url": "URL",
+  "Source": "Source",
+  "Tags": "Tags",
+
   "Safe": "Safe",
   "Questionable": "Questionable",
   "Explicit": "Explicit",

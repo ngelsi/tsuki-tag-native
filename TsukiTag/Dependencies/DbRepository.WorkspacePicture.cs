@@ -64,6 +64,9 @@ namespace TsukiTag.Dependencies
                         items.ForEach((item) =>
                         {
                             item.Picture.FileUrl = item.FilePath;
+                            item.Picture.IsLocal = true;
+                            item.Picture.LocalProviderType = Language.Workspace;
+                            item.Picture.LocalProvider = parent.Workspace.Get(item.ResourceListId)?.Name;
                         });
 
                         return items;
@@ -87,6 +90,9 @@ namespace TsukiTag.Dependencies
                         allItems.ForEach((item) =>
                         {
                             item.Picture.FileUrl = item.FilePath;
+                            item.Picture.IsLocal = true;
+                            item.Picture.LocalProviderType = Language.Workspace;
+                            item.Picture.LocalProvider = parent.Workspace.Get(item.ResourceListId)?.Name;
                         });
 
                         return allItems;

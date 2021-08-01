@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,9 @@ namespace TsukiTag.ViewModels
     public class PictureMetadataEditorViewModel : ViewModelBase
     {
         private readonly IPictureControl pictureControl;
+        private readonly IProviderFilterControl providerFilterControl;
+        private readonly INavigationControl navigationControl;
+
         private Picture picture;
         private string filterString;
         private string currentTag;
@@ -70,11 +74,15 @@ namespace TsukiTag.ViewModels
 
         public PictureMetadataEditorViewModel(
             Picture picture,
-            IPictureControl pictureControl
+            IPictureControl pictureControl,
+            IProviderFilterControl providerFilterControl,
+            INavigationControl navigationControl
         )
         {
             this.picture = picture;
             this.pictureControl = pictureControl;
+            this.navigationControl = navigationControl;
+            this.providerFilterControl = providerFilterControl;
 
             this.AddTagCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -98,6 +106,33 @@ namespace TsukiTag.ViewModels
                 this.RaisePropertyChanged(nameof(Picture.Tags));
                 this.RaisePropertyChanged(nameof(FilteredTags));
                 this.RaisePropertyChanged(nameof(TagCount));
+            });
+        }
+
+        public async void OnFilterTagAdded(string tag)
+        {
+            await Task.Run(async () =>
+            {
+                await this.providerFilterControl.AddTag(tag);
+                await this.navigationControl.SwitchToBrowsingTab();
+            });
+        }
+
+        public async void OnFilterTagRemoved(string tag)
+        {
+            await Task.Run(async () =>
+            {
+                await this.providerFilterControl.RemoveTag(tag);
+                await this.navigationControl.SwitchToBrowsingTab();
+            });
+        }
+
+        public async void OnFilterTagClicked(string tag)
+        {
+            await Task.Run(async () =>
+            {
+                await this.providerFilterControl.SetTag(tag);
+                await this.navigationControl.SwitchToBrowsingTab();
             });
         }
 

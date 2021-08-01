@@ -152,12 +152,15 @@ namespace TsukiTag.ViewModels
 
             this.dbRepository.OnlineList.OnlineListsChanged += OnResourceListsChanged;
             this.dbRepository.Workspace.WorkspacesChanged += OnResourceListsChanged;
+
+            this.picture.PropertyChanged += OnPicturePropertiesChanged;
         }
 
         ~PictureDetailViewModel()
         {
             this.dbRepository.OnlineList.OnlineListsChanged -= OnResourceListsChanged;
             this.dbRepository.Workspace.WorkspacesChanged -= OnResourceListsChanged;
+            this.picture.PropertyChanged -= OnPicturePropertiesChanged;
         }
 
         public async void OnSwitchDisplay()
@@ -174,7 +177,7 @@ namespace TsukiTag.ViewModels
             {
                 this.dbRepository.OnlineList.OnlineListsChanged -= OnResourceListsChanged;
                 this.dbRepository.Workspace.WorkspacesChanged -= OnResourceListsChanged;
-
+                this.picture.PropertyChanged -= OnPicturePropertiesChanged;
             });
         }
 
@@ -185,8 +188,14 @@ namespace TsukiTag.ViewModels
                 if (Picture != null)
                 {
                     this.pictureControl.ClosePicture(picture);
+                    OnInternalClose();
                 }
             });
+        }
+
+        private async void OnPicturePropertiesChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnResourceListsChanged(sender, e);
         }
 
         private async void OnResourceListsChanged(object? sender, EventArgs e)

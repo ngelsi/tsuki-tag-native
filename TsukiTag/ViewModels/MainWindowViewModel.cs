@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TsukiTag.Dependencies;
 using TsukiTag.Models;
+using TsukiTag.Models.Repository;
 using TsukiTag.Views;
 
 namespace TsukiTag.ViewModels
@@ -230,13 +231,15 @@ namespace TsukiTag.ViewModels
                     new MenuItemViewModel()
                     {
                         Header = Language.NavigationAllWorkspaces,
-                        Command = SwitchToAllWorkspaceBrowsingCommand
+                        Command = SwitchToAllWorkspaceBrowsingCommand,
+                        IsEnabled = allWorkspaces.Count > 0
                     }
                 },
                 {
                     new MenuItemViewModel()
                     {
                         Header = Language.NavigationSpecificWorkspace,
+                        IsEnabled = allWorkspaces.Count > 0,
                         Items = new List<MenuItemViewModel>(
                             new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = SwitchToAllWorkspaceBrowsingCommand } }, { new MenuItemViewModel() { Header = "-" } } }
                             .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = SwitchToSpefificWorkspaceBrowsingCommand, CommandParameter = l.Id })))

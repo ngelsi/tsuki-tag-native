@@ -12,6 +12,7 @@
     <PackageLicenseExpression>GNU GPL 3.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ngelsi/tsuki-tag-native</PackageProjectUrl>
     <PackageTags>anime imageboard aggregator booru image-tagging collection-manager image-collection</PackageTags>
+    <PackageIcon>256x256.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Assets\Icons\" />
@@ -33,6 +34,10 @@
     <None Remove="Assets\Fonts\SourceCodePro-SemiBold.ttf" />
     <None Remove="Assets\Fonts\SourceCodePro-SemiBoldItalic.ttf" />
     <None Remove="Assets\Languages\en.json" />
+    <None Include="Assets\Icons\256x256.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.6" />

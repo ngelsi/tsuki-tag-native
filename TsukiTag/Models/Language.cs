@@ -37,6 +37,18 @@ namespace TsukiTag.Models
         public static string Refresh => Localizer.Get(nameof(Refresh));
         public static string Filter => Localizer.Get(nameof(Filter));
 
+
+        public static string Rating => Localizer.Get(nameof(Rating));
+        public static string Provider => Localizer.Get(nameof(Provider));
+        public static string Dimensions => Localizer.Get(nameof(Dimensions));
+        public static string Score => Localizer.Get(nameof(Score));
+        public static string Extension => Localizer.Get(nameof(Extension));
+        public static string Id => Localizer.Get(nameof(Id));
+        public static string Url => Localizer.Get(nameof(Url));
+        public static string Source => Localizer.Get(nameof(Source));
+        public static string Tags => Localizer.Get(nameof(Tags));
+
+
         public static string Safe => Localizer.Get(nameof(Safe));
         public static string Questionable => Localizer.Get(nameof(Questionable));
         public static string Explicit => Localizer.Get(nameof(Explicit));

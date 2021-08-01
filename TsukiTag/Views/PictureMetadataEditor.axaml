@@ -61,37 +61,40 @@
         </DockPanel>
         <DockPanel DockPanel.Dock="Top">
           <Grid Margin="13 5 5 5" DockPanel.Dock="Top" ColumnDefinitions="0.4*,0.6*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="0" Text="Provider:"></TextBlock>
+            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="0" Text="{Binding Language.Provider}"></TextBlock>
             <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="0" Text="{Binding Picture.Provider}"></TextBlock>
 
-            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="1" Text="Rating:"></TextBlock>
-            <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="1" Text="{Binding Picture.RatingDisplay}"></TextBlock>
+            <TextBlock IsVisible="{Binding Picture.IsLocal}" Classes="metadatatitle" Grid.Column="0" Grid.Row="1" Text="{Binding Picture.LocalProviderType}"></TextBlock>
+            <TextBlock IsVisible="{Binding Picture.IsLocal}" Classes="metadatavalue" Grid.Column="1" Grid.Row="1" Text="{Binding Picture.LocalProvider}"></TextBlock>
 
-            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="2" Text="Dimensions:"></TextBlock>
-            <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="2" Text="{Binding Picture.Dimensions}"></TextBlock>
+            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="2" Text="{Binding Language.Rating}"></TextBlock>
+            <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="2" Text="{Binding Picture.RatingDisplay}"></TextBlock>
 
-            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="3" Text="Score:"></TextBlock>
-            <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="3" Text="{Binding Picture.Score}"></TextBlock>
+            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="3" Text="{Binding Language.Dimensions}"></TextBlock>
+            <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="3" Text="{Binding Picture.Dimensions}"></TextBlock>
 
-            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="4" Text="Extension:"></TextBlock>
-            <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="4" Text="{Binding Picture.Extension}"></TextBlock>
+            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="4" Text="{Binding Language.Score}"></TextBlock>
+            <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="4" Text="{Binding Picture.Score}"></TextBlock>
 
-            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="5" Text="ID:"></TextBlock>
-            <TextBox Classes="metadatavalue" Grid.Column="1" Grid.Row="5" Text="{Binding Picture.Id, Mode=OneWay}" Height="15"/>
+            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="5" Text="{Binding Language.Extension}"></TextBlock>
+            <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="5" Text="{Binding Picture.Extension}"></TextBlock>
+
+            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="6" Text="{Binding Language.Id}"></TextBlock>
+            <TextBox Classes="metadatavalue" Grid.Column="1" Grid.Row="6" Text="{Binding Picture.Id, Mode=OneWay}" Height="15"/>
           </Grid>
 
           <StackPanel Margin="13 0 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-            <TextBlock Classes="metadatatitle" Text="URL"></TextBlock>
+            <TextBlock Classes="metadatatitle" Text="{Binding Language.Url}"></TextBlock>
             <TextBox Classes="metadatavalue" Text="{Binding Picture.Url, Mode=OneWay}" Width="280"/>
           </StackPanel>
           <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-            <TextBlock Classes="metadatatitle" Text="Source"></TextBlock>
+            <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
             <TextBox Classes="metadatavalue" Text="{Binding Picture.Source, Mode=OneWay}" Width="280"/>
           </StackPanel>
         </DockPanel>
         <DockPanel DockPanel.Dock="Top">
           <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
-            <Label DockPanel.Dock="Left" Content="Tags"></Label>
+            <Label DockPanel.Dock="Left" Content="{Binding Language.Tags}"></Label>
             <Label DockPanel.Dock="Left" Margin="5 0 0 0" Content="{Binding TagCount}"></Label>
           </DockPanel>
           <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Margin="10 5 5 5">
@@ -109,7 +112,9 @@
                 <DataTemplate>
                   <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="5 5 0 0" Text="x" Classes="primary" PointerPressed="TagRemoveGotPress"></TextBlock>
-                    <TextBlock Margin="5 5 0 0" Text="{Binding}" Classes="primary"></TextBlock>
+                    <TextBlock Margin="5 5 0 0" Text="+" Classes="primary" PointerPressed="TagPlusGotPress"></TextBlock>
+                    <TextBlock Margin="5 5 0 0" Text="-" Classes="primary" PointerPressed="TagMinusGotPress"></TextBlock>
+                    <TextBlock Margin="5 5 0 0" Text="{Binding}" Classes="primary" PointerPressed="TagLabelGotPress"></TextBlock>
                   </StackPanel>
                 </DataTemplate>
               </ItemsRepeater.ItemTemplate>

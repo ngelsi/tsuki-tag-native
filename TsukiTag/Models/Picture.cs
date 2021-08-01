@@ -43,6 +43,8 @@ namespace TsukiTag.Models
         private bool isLocal;
         private Bitmap sourceImage;
         private string fileUrl;
+        private string localProvider;
+        private string localProviderType;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -238,6 +240,22 @@ namespace TsukiTag.Models
         {
             get { return isLocal; }
             set { isLocal = value; }
+        }
+
+        [BsonIgnore]
+        [JsonIgnore]
+        public string LocalProvider
+        {
+            get { return localProvider; }
+            set { localProvider = value; }
+        }
+
+        [BsonIgnore]
+        [JsonIgnore]
+        public string LocalProviderType
+        {
+            get { return localProviderType; }
+            set { localProviderType = value; }
         }
 
         [BsonIgnore]

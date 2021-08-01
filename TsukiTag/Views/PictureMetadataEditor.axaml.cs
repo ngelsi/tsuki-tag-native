@@ -21,7 +21,9 @@ namespace TsukiTag.Views
 
             DataContext = new PictureMetadataEditorViewModel(
                 picture,
-                Ioc.SimpleIoc.PictureControl
+                Ioc.SimpleIoc.PictureControl,
+                Ioc.SimpleIoc.ProviderFilterControl,
+                Ioc.SimpleIoc.NavigationControl
             );
         }
 
@@ -31,6 +33,33 @@ namespace TsukiTag.Views
             if (!string.IsNullOrEmpty(tag))
             {
                 (this.DataContext as TsukiTag.ViewModels.PictureMetadataEditorViewModel)?.OnTagRemoved(tag);
+            }
+        }
+
+        private void TagPlusGotPress(object sender, PointerPressedEventArgs e)
+        {
+            var tag = ((sender as TextBlock)?.DataContext as string);
+            if (!string.IsNullOrEmpty(tag))
+            {
+                (this.DataContext as TsukiTag.ViewModels.PictureMetadataEditorViewModel)?.OnFilterTagAdded(tag);
+            }
+        }
+
+        private void TagLabelGotPress(object sender, PointerPressedEventArgs e)
+        {
+            var tag = (sender as TextBlock)?.Text?.ToString();
+            if (!string.IsNullOrEmpty(tag))
+            {
+                (this.DataContext as TsukiTag.ViewModels.PictureMetadataEditorViewModel)?.OnFilterTagClicked(tag);
+            }
+        }
+
+        private void TagMinusGotPress(object sender, PointerPressedEventArgs e)
+        {
+            var tag = ((sender as TextBlock)?.DataContext as string);
+            if (!string.IsNullOrEmpty(tag))
+            {
+                (this.DataContext as TsukiTag.ViewModels.PictureMetadataEditorViewModel)?.OnFilterTagRemoved(tag);
             }
         }
 

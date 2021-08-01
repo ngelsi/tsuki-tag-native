@@ -182,6 +182,7 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToSpecificOnlineListBrowsing -= OnSwitchedToSpecificOnlineListBrowsing;
             this.navigationControl.SwitchedToAllWorkspaceBrowsing -= OnSwitchedToAllWorkspaceBrowsing;
             this.navigationControl.SwitchedToSpecificWorkspaceBrowsing -= OnSwitchedToSpecificWorkspaceBrowsing;
+            this.navigationControl.SwitchedToBrowsingTab -= OnSwitchedToBrowsingTab;
         }
 
         public async void OnTabPictureClosed(Picture picture)
@@ -277,6 +278,19 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToSpecificOnlineListBrowsing += OnSwitchedToSpecificOnlineListBrowsing;
             this.navigationControl.SwitchedToAllWorkspaceBrowsing += OnSwitchedToAllWorkspaceBrowsing;
             this.navigationControl.SwitchedToSpecificWorkspaceBrowsing += OnSwitchedToSpecificWorkspaceBrowsing;
+            this.navigationControl.SwitchedToBrowsingTab += OnSwitchedToBrowsingTab;
+        }
+
+        private void OnSwitchedToBrowsingTab(object? sender, EventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                if (this.tabs != null && this.tabs.Count > 0)
+                {
+                    this.SelectedTabIndex = 0;
+                    this.RaisePropertyChanged(nameof(Tabs));
+                }
+            });
         }
 
         private void OnSwitchedToSpecificWorkspaceBrowsing(object? sender, Guid e)
@@ -394,10 +408,10 @@ namespace TsukiTag.ViewModels
                 else
                 {
                     var count = await this.pictureControl.GetSelectedPictureCount();
-                    if(count > 0)
+                    if (count > 0)
                     {
                         OnSwitchedToMetadataOverview(this, e);
-                    }                    
+                    }
                     else
                     {
                         EnforceMetadataOverview = false;
