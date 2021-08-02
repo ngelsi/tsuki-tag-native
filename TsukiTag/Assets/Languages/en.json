@@ -46,8 +46,13 @@
   "ListTagsNew": "Add new tag",
   "ListTagsRemove": "Remove tag",
   "TemplateDescription": "Template variables available (surround with #, e.g. #rating#):\r\n\r\n",
+  "AppSettingsInterface": "Interface settings",
+  "AppSettingsCloseTabsOnContextSwitch": "Close all opened tabs when switching browsing sessions",
+  "AppSettingsDeselectPicturesOnContextSwitch": "De-select all selected pictures when switching browsing sessions",
+  "AppSettingsJumpToBrowserTabOnClose": "Jump back to the browser tab instead of the previous tab on closing an opened tab",
   "SettingsCancel": "Cancel",
   "SettingsSave": "Save",
+  "SettingsGeneral": "General",
 
   "SettingsListNoName": "Please specify a name for all online lists before saving.",
   "SettingsListNotUnique": "Please specify a unique name for the online lists.",
@@ -115,7 +120,7 @@
   "AddTag": "Add tag",
   "SearchTags": "Search tags",
   "ExcludeTags": "Exclude tags",
-  "ExcludeTagsDescription":  "Excluding pictures based on these tags happen locally and not on provider side. If no or very few pictures are being displayed, the excluded tags are too strict for the current search.",
+  "ExcludeTagsDescription": "Excluding pictures based on these tags happen locally and not on provider side. If no or very few pictures are being displayed, the excluded tags are too strict for the current search.",
 
   "ToastProviderEnd": "No more results from provider {0}.",
   "ToastOnlineListsEnd": "No more results from online lists.",

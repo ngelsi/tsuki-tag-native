@@ -55,6 +55,7 @@ namespace TsukiTag.ViewModels
         {
             OnlineLists = new ObservableCollection<OnlineList>(this.dbRepository.OnlineList.GetAll());
             Workspaces = new ObservableCollection<Workspace>(this.dbRepository.Workspace.GetAll());
+            ApplicationSettings = this.dbRepository.ApplicationSettings.Get();
         }
 
         public async void OnSettingsCancelled()
@@ -122,6 +123,7 @@ namespace TsukiTag.ViewModels
 
                         this.dbRepository.OnlineList.AddOrUpdate(onlineLists.ToList());
                         this.dbRepository.Workspace.AddOrUpdate(workspaces.ToList());
+                        this.dbRepository.ApplicationSettings.Set(ApplicationSettings);
 
                         this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsSaved, "settingssaved"));
                         this.Initialize();

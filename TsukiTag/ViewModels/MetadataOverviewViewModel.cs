@@ -140,8 +140,11 @@ namespace TsukiTag.ViewModels
 
             this.pictureControl.PictureSelected += OnPictureSelected;
             this.pictureControl.PictureDeselected += OnPictureDeselected;
-            this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToOnlineListBrowsing;
-            this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing;
+            this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToBrowsingContext;
+            this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToBrowsingContext;
+            this.navigationControl.SwitchedToAllWorkspaceBrowsing += OnSwitchedToBrowsingContext;
+            this.navigationControl.SwitchedToSpecificOnlineListBrowsing += OnSwitchedToBrowsingContext;
+            this.navigationControl.SwitchedToSpecificWorkspaceBrowsing += OnSwitchedToBrowsingContext;
             this.dbRepository.OnlineList.OnlineListsChanged += OnResourceListChanged;
             this.dbRepository.Workspace.WorkspacesChanged += OnResourceListChanged;
 
@@ -327,7 +330,7 @@ namespace TsukiTag.ViewModels
                         picture.SourceImage.Dispose();
                         picture.SourceImage = null;
                     }
-                }                
+                }
 
                 GC.Collect();
             });
@@ -403,8 +406,11 @@ namespace TsukiTag.ViewModels
         {
             this.pictureControl.PictureSelected -= OnPictureSelected;
             this.pictureControl.PictureDeselected -= OnPictureDeselected;
-            this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToOnlineListBrowsing;
-            this.navigationControl.SwitchedToOnlineBrowsing -= OnSwitchedToOnlineBrowsing;
+            this.navigationControl.SwitchedToAllOnlineListBrowsing -= OnSwitchedToBrowsingContext;
+            this.navigationControl.SwitchedToOnlineBrowsing -= OnSwitchedToBrowsingContext;
+            this.navigationControl.SwitchedToAllWorkspaceBrowsing -= OnSwitchedToBrowsingContext;
+            this.navigationControl.SwitchedToSpecificOnlineListBrowsing -= OnSwitchedToBrowsingContext;
+            this.navigationControl.SwitchedToSpecificWorkspaceBrowsing -= OnSwitchedToBrowsingContext;
             this.dbRepository.OnlineList.OnlineListsChanged -= OnResourceListChanged;
             this.dbRepository.Workspace.WorkspacesChanged -= OnResourceListChanged;
         }
@@ -509,7 +515,7 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                for(var i = SelectedPictures.Count - 1; i >= 0; i--)
+                for (var i = SelectedPictures.Count - 1; i >= 0; i--)
                 {
                     var picture = SelectedPictures.ElementAtOrDefault(CurrentPictureIndex);
                     if (picture != null)
@@ -531,30 +537,20 @@ namespace TsukiTag.ViewModels
             });
         }
 
-        private void OnSwitchedToOnlineBrowsing(object? sender, EventArgs e)
+        private async void OnSwitchedToBrowsingContext(object? sender, Guid e)
         {
-            //OnPicturesReset(this, e);
-        }
-
-        private void OnSwitchedToOnlineListBrowsing(object? sender, EventArgs e)
-        {
-            //OnPicturesReset(this, e);
-        }
-
-        private void OnPicturesReset(object? sender, EventArgs e)
-        {
-            RxApp.MainThreadScheduler.Schedule(async () =>
+            if (this.dbRepository.ApplicationSettings.Get()?.DeselectPicturesOnContextSwitch == true)
             {
-                SelectedPictures = new ObservableCollection<Picture>();
+                OnDeselectAll();
+            }
+        }
 
-                this.RaisePropertyChanged(nameof(CurrentPicture));
-                this.RaisePropertyChanged(nameof(SelectedPictures));
-                this.RaisePropertyChanged(nameof(SelectedPictureCount));
-                this.RaisePropertyChanged(nameof(CurrentPictureIndex));
-                this.RaisePropertyChanged(nameof(HasSelectedPicture));
-                this.RaisePropertyChanged(nameof(HasMultipleSelectedPicture));
-                this.RaisePropertyChanged(nameof(CurrentPictureIndexDisplay));
-            });
+        private async void OnSwitchedToBrowsingContext(object? sender, EventArgs e)
+        {
+            if (this.dbRepository.ApplicationSettings.Get()?.DeselectPicturesOnContextSwitch == true)
+            {
+                OnDeselectAll();
+            }
         }
 
         private void OnPictureDeselected(object? sender, Picture e)

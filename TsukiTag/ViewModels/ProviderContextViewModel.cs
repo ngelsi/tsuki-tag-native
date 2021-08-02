@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TsukiTag.Dependencies;
 using TsukiTag.Models;
+using TsukiTag.Models.Repository;
 using TsukiTag.Views;
 
 namespace TsukiTag.ViewModels
@@ -19,8 +20,11 @@ namespace TsukiTag.ViewModels
         private readonly IPictureProviderContext pictureProviderContext;
         private readonly IPictureControl pictureControl;
         private readonly INavigationControl navigationControl;
+        private readonly IDbRepository dbRepository;
 
-        private ObservableCollection<ProviderTabModel> tabs;
+        private ApplicationSettings applicationSettings => this.dbRepository.ApplicationSettings.Get();
+
+        private ObservableCollection<ProviderTabModel> tabs;        
         private int selectedTabIndex;
         private ContentControl pictureContextContent;
         private int selectedPictureCount;
@@ -158,12 +162,15 @@ namespace TsukiTag.ViewModels
         public ProviderContextViewModel(
             IPictureProviderContext pictureProviderContext,
             IPictureControl pictureControl,
-            INavigationControl navigationControl
+            INavigationControl navigationControl,
+            IDbRepository dbRepository
         )
         {
             this.navigationControl = navigationControl;
             this.pictureProviderContext = pictureProviderContext;
             this.pictureControl = pictureControl;
+
+            this.dbRepository = dbRepository;
         }
 
         ~ProviderContextViewModel()
@@ -205,9 +212,16 @@ namespace TsukiTag.ViewModels
                 {
                     var index = this.tabs.IndexOf(tab);
 
-                    if (selectedTabIndex >= index)
+                    if (applicationSettings?.JumpToBrowserTabOnClose == true)
                     {
-                        selectedTabIndex -= 1;
+                        selectedTabIndex = 0;
+                    }
+                    else
+                    {
+                        if (selectedTabIndex >= index)
+                        {
+                            selectedTabIndex -= 1;
+                        }
                     }
 
                     var oldIndex = selectedTabIndex;
@@ -297,14 +311,17 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                //*
-                this.tabs.Remove(this.tabs.ElementAt(0));
-                this.tabs.Insert(0, ProviderTabModel.AllWorkspacesTab);
-                this.SelectedTabIndex = 0;
-                /*/
-                this.tabs = new ObservableCollection<ProviderTabModel>();
-                this.tabs.Add(ProviderTabModel.AllWorkspacesTab);
-                //*/
+                if (applicationSettings?.CloseTabsOnContextSwitch == true)
+                {
+                    this.tabs = new ObservableCollection<ProviderTabModel>();
+                    this.tabs.Add(ProviderTabModel.AllWorkspacesTab);
+                }
+                else
+                {
+                    this.tabs.Remove(this.tabs.ElementAt(0));
+                    this.tabs.Insert(0, ProviderTabModel.AllWorkspacesTab);
+                    this.SelectedTabIndex = 0;
+                }
 
                 this.RaisePropertyChanged(nameof(Tabs));
 
@@ -316,14 +333,17 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                //*
-                this.tabs.Remove(this.tabs.ElementAt(0));
-                this.tabs.Insert(0, ProviderTabModel.AllWorkspacesTab);
-                this.SelectedTabIndex = 0;
-                /*/
-                this.tabs = new ObservableCollection<ProviderTabModel>();
-                this.tabs.Add(ProviderTabModel.AllWorkspacesTab);
-                //*/
+                if (applicationSettings?.CloseTabsOnContextSwitch == true)
+                {
+                    this.tabs = new ObservableCollection<ProviderTabModel>();
+                    this.tabs.Add(ProviderTabModel.AllWorkspacesTab);
+                }
+                else
+                {
+                    this.tabs.Remove(this.tabs.ElementAt(0));
+                    this.tabs.Insert(0, ProviderTabModel.AllWorkspacesTab);
+                    this.SelectedTabIndex = 0;
+                }
 
                 this.RaisePropertyChanged(nameof(Tabs));
 
@@ -335,14 +355,17 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                //*
-                this.tabs.Remove(this.tabs.ElementAt(0));
-                this.tabs.Insert(0, ProviderTabModel.AllOnlineListsTab);
-                this.SelectedTabIndex = 0;
-                /*/
-                this.tabs = new ObservableCollection<ProviderTabModel>();
-                this.tabs.Add(ProviderTabModel.AllOnlineListsTab);
-                //*/
+                if (applicationSettings?.CloseTabsOnContextSwitch == true)
+                {
+                    this.tabs = new ObservableCollection<ProviderTabModel>();
+                    this.tabs.Add(ProviderTabModel.AllOnlineListsTab);
+                }
+                else
+                {
+                    this.tabs.Remove(this.tabs.ElementAt(0));
+                    this.tabs.Insert(0, ProviderTabModel.AllOnlineListsTab);
+                    this.SelectedTabIndex = 0;
+                }
 
                 this.RaisePropertyChanged(nameof(Tabs));
 
@@ -354,14 +377,17 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                //*
-                this.tabs.Remove(this.tabs.ElementAt(0));
-                this.tabs.Insert(0, ProviderTabModel.AllOnlineListsTab);
-                this.SelectedTabIndex = 0;
-                /*/
-                this.tabs = new ObservableCollection<ProviderTabModel>();
-                this.tabs.Add(ProviderTabModel.AllOnlineListsTab);
-                //*/
+                if (applicationSettings?.CloseTabsOnContextSwitch == true)
+                {
+                    this.tabs = new ObservableCollection<ProviderTabModel>();
+                    this.tabs.Add(ProviderTabModel.AllOnlineListsTab);
+                }
+                else
+                {
+                    this.tabs.Remove(this.tabs.ElementAt(0));
+                    this.tabs.Insert(0, ProviderTabModel.AllOnlineListsTab);
+                    this.SelectedTabIndex = 0;
+                }
 
                 this.RaisePropertyChanged(nameof(Tabs));
 
@@ -373,14 +399,17 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                //*
-                this.tabs.Remove(this.tabs.ElementAt(0));
-                this.tabs.Insert(0, ProviderTabModel.OnlineBrowserTab);
-                this.SelectedTabIndex = 0;
-                /*/
-                this.tabs = new ObservableCollection<ProviderTabModel>();
-                this.tabs.Add(ProviderTabModel.OnlineBrowserTab);
-                //*/
+                if (applicationSettings?.CloseTabsOnContextSwitch == true)
+                {
+                    this.tabs = new ObservableCollection<ProviderTabModel>();
+                    this.tabs.Add(ProviderTabModel.OnlineBrowserTab);
+                }
+                else
+                {
+                    this.tabs.Remove(this.tabs.ElementAt(0));
+                    this.tabs.Insert(0, ProviderTabModel.OnlineBrowserTab);
+                    this.SelectedTabIndex = 0;
+                }
 
                 this.RaisePropertyChanged(nameof(Tabs));
 

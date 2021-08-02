@@ -26,6 +26,8 @@ namespace TsukiTag.Dependencies
         IWorkspacePictureDb WorkspacePicture { get; }
 
         IWorkspaceHistoryDb WorkspaceHistory { get; }
+
+        IApplicationSettingsDb ApplicationSettings { get; }
     }
 
     public partial class DbRepository : IDbRepository
@@ -52,6 +54,7 @@ namespace TsukiTag.Dependencies
             Workspace = new WorkspaceDb();
             WorkspacePicture = new WorkspacePictureDb(this);
             WorkspaceHistory = new WorkspaceHistoryDb();
+            ApplicationSettings = new ApplicationSettingsDb(this);
         }
 
         private void EnsureRepositoryPath()

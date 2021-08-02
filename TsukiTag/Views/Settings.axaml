@@ -22,6 +22,9 @@
     <Style Selector="TextBox">
       <Setter Property="Padding" Value="5"></Setter>
     </Style>
+    <Style Selector="TextBlock">
+      <Setter Property="TextWrapping" Value="Wrap"></Setter>
+    </Style>
     <Style Selector="TextBlock.primary">
       <Setter Property="FontSize" Value="13"></Setter>
       <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
@@ -47,6 +50,35 @@
       </Button>
     </StackPanel>
     <TabControl DockPanel.Dock="Top">
+      
+      <!-- GENERAL -->
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock Text="{Binding Language.SettingsGeneral}"></TextBlock>
+        </TabItem.Header>
+        <StackPanel>
+          <StackPanel DockPanel.Dock="Top">
+            <Label Margin="-5 5 0 0" Content="{Binding Language.AppSettingsInterface}"></Label>
+          </StackPanel>
+          <Border BorderBrush="DarkGray" BorderThickness="1" Padding="15 20 15 20" Margin="0 25 0 20">
+            <StackPanel Orientation="Vertical">
+              <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+                <ToggleSwitch IsChecked="{Binding ApplicationSettings.DeselectPicturesOnContextSwitch}"></ToggleSwitch>
+                <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsDeselectPicturesOnContextSwitch}"></TextBlock>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                <ToggleSwitch IsChecked="{Binding ApplicationSettings.CloseTabsOnContextSwitch}"></ToggleSwitch>
+                <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsCloseTabsOnContextSwitch}"></TextBlock>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                <ToggleSwitch IsChecked="{Binding ApplicationSettings.JumpToBrowserTabOnClose}"></ToggleSwitch>
+                <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsJumpToBrowserTabOnClose}"></TextBlock>
+              </StackPanel>
+            </StackPanel>            
+          </Border>
+        </StackPanel>
+      </TabItem>
+      <!-- /GENERAL -->
       
       <!-- ONLINE LISTS -->
       <TabItem>
