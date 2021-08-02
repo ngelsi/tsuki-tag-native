@@ -53,6 +53,7 @@
   "SettingsCancel": "Cancel",
   "SettingsSave": "Save",
   "SettingsGeneral": "General",
+  "WildcardDescription": "Wildcard and regular expression support is available for this feature.\r\n\r\nExamples for a tag 'hair_between_eyes':\r\n* - matches EVERYTHING (single asterisk, all-eligible)\r\nhair_between_eyes - exact match\r\nhair_between - exact match, will not match for example tag\r\nhair* - any tag which starts with 'hair'\r\n*eyes - any tag which ends with 'eyes'\r\n*between* - any tag which contains 'between' (converted into /.*between.*/ regular expression)\r\n/.*between.*/ - regular expression, any tag which contains 'between'\r\n/^hair.*/ - regular expression, any tag which starts with 'hair'",
 
   "SettingsListNoName": "Please specify a name for all online lists before saving.",
   "SettingsListNotUnique": "Please specify a unique name for the online lists.",

@@ -133,8 +133,8 @@ namespace TsukiTag.Models.Repository
 
         public bool IsEligible(Picture picture)
         {
-            return optionalConditionTags?.Any(t => picture.TagList.Contains(t)) == true ||
-                   mandatoryConditionTags?.All(t => picture.TagList.Contains(t)) == true;
+            return optionalConditionTags?.Any(t => picture.TagList.Any(tt => tt.WildcardMatches(t))) == true ||
+                   mandatoryConditionTags?.All(t => picture.TagList.Any(tt => tt.WildcardMatches(t))) == true;
         }
 
         public Picture ProcessPicture(Picture picture)

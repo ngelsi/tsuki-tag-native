@@ -85,6 +85,8 @@ namespace TsukiTag.Models
         public static string SettingsSave => Localizer.Get(nameof(SettingsSave));
         public static string SettingsCancel => Localizer.Get(nameof(SettingsCancel));
         public static string SettingsGeneral => Localizer.Get(nameof(SettingsGeneral));
+        public static string WildcardDescription => Localizer.Get(nameof(WildcardDescription));
+        public static string ExcludeTagsDescriptionWildcard => $"{Localizer.Get(nameof(ExcludeTagsDescription))}\r\n\r\n{localizer.Get(nameof(WildcardDescription))}";
 
         public static string Workspaces => Localizer.Get(nameof(Workspaces));
         public static string Workspace => Localizer.Get(nameof(Workspace));

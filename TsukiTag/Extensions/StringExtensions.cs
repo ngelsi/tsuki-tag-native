@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace TsukiTag.Extensions
@@ -43,6 +44,43 @@ namespace TsukiTag.Extensions
         public static string GetPropertyTemplateNameIteration(this Type type)
         {
             return string.Join(", ", type.GetPropertyTemplateNameList());
+        }
+
+        public static bool WildcardMatches(this string str, string template)
+        {
+            var hasAsterisk = template.IndexOf('*') != -1;
+            if (!hasAsterisk)
+            {
+                return str.Equals(template, StringComparison.OrdinalIgnoreCase);
+            }
+            else
+            {
+                if (template == "*")
+                {
+                    return true;
+                }
+                else if (template.StartsWith('*') && !template.EndsWith('*'))
+                {
+                    return str.EndsWith(template.Remove(0), StringComparison.OrdinalIgnoreCase);
+                }
+                else if (template.EndsWith('*') && !template.StartsWith('*'))
+                {
+                    return str.StartsWith(template.Remove(template.Length - 1, 1), StringComparison.OrdinalIgnoreCase);
+                }
+                else if (template.Count(x => x == '*') > 1 && !template.StartsWith('/') && !template.EndsWith('/'))
+                {
+                    string regexPattern = string.Concat("^", Regex.Escape(template).Replace("\\*", ".*"), "$");
+                    return Regex.IsMatch(str, regexPattern, RegexOptions.IgnoreCase);
+                }
+                else if (template.StartsWith('/') && template.EndsWith('/'))
+                {
+                    var regexPattern = template.Remove(0, 1).Remove(template.Length - 2, 1);
+                    return Regex.IsMatch(str, regexPattern, RegexOptions.IgnoreCase);
+                }
+
+                //Invalid input at this point
+                return false;
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TsukiTag.Dependencies.ProviderSpecific;
+using TsukiTag.Extensions;
 using TsukiTag.Models;
 
 
@@ -76,7 +77,7 @@ namespace TsukiTag.Dependencies
                             continue;
                         }
 
-                        if (filter.ExcludedTags.Any(e => picture.Picture.TagList.Contains(e)))
+                        if (filter.ExcludedTags.Any(e => picture.Picture.TagList.Any(ee => ee.WildcardMatches(e))))
                         {
                             continue;
                         }
