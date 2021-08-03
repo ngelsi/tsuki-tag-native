@@ -171,7 +171,7 @@ namespace TsukiTag.ViewModels
 
         public async void Initialized()
         {
-            this.navigationControl.SwitchToOnlineBrowsing();
+            //this.navigationControl.SwitchToOnlineBrowsing();
         }
 
         public async void Closing()
