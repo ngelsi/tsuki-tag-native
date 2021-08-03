@@ -20,12 +20,14 @@ namespace TsukiTag.Dependencies
 
         Workspace GetDefault();
 
+        void AddOrUpdate(Workspace workspace);
+
         void AddOrUpdate(List<Workspace> workspaces);
     }
 
     public partial class DbRepository
     {
-        public IWorkspaceDb Workspace{ get; protected set; }
+        public IWorkspaceDb Workspace { get; protected set; }
 
         private class WorkspaceDb : IWorkspaceDb
         {
@@ -43,6 +45,18 @@ namespace TsukiTag.Dependencies
             {
                 EnsureWorkspaceCache();
                 return workspaceCache.FirstOrDefault(w => w.IsDefault == true);
+            }
+
+            public void AddOrUpdate(Workspace workspace)
+            {
+                using (var db = new LiteDatabase(MetadataRepositoryPath))
+                {
+                    var coll = db.GetCollection<Workspace>();
+                    coll.Upsert(workspace);
+                }
+
+                EnsureWorkspaceCache(true);
+                WorkspacesChanged?.Invoke(this, EventArgs.Empty);
             }
 
             public void AddOrUpdate(List<Workspace> workspaces)
@@ -92,14 +106,14 @@ namespace TsukiTag.Dependencies
             }
 
             public List<Workspace> GetAll()
-            {                
+            {
                 EnsureWorkspaceCache();
                 return workspaceCache;
             }
 
             private void EnsureWorkspaceCache(bool reset = false)
             {
-                if(reset || workspaceCache == null)
+                if (reset || workspaceCache == null)
                 {
                     using (var db = new LiteDatabase(MetadataRepositoryPath))
                     {

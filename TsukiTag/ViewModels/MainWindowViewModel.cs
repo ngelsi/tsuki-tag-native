@@ -47,6 +47,8 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Guid, Unit> ImportFolderToSpecifcWorkspacesCommand { get; }
 
         public ReactiveCommand<Unit, Unit> ImportFolderToAllWorkspacesCommand { get; }
+        
+        public ReactiveCommand<Unit, Unit> ConvertFolderToLocalWorkspaceCommand { get; }
 
         public ObservableCollection<MenuItemViewModel> MainWindowMenus
         {
@@ -152,6 +154,11 @@ namespace TsukiTag.ViewModels
                 await this.OnImportFolderToAllWorkspaces();
             });
 
+            this.ConvertFolderToLocalWorkspaceCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await this.OnConvertFolderToWorkspace();
+            });
+
             CurrentContent = ProviderContext;
             MainWindowMenus = GetMainMenus();
         }
@@ -171,7 +178,7 @@ namespace TsukiTag.ViewModels
 
         public async void Initialized()
         {
-            //this.navigationControl.SwitchToOnlineBrowsing();
+            this.navigationControl.SwitchToOnlineBrowsing();
         }
 
         public async void Closing()
@@ -235,6 +242,59 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        private async Task<bool> OnConvertFolderToWorkspace()
+        {
+            return await Task.Run<bool>(async () =>
+            {
+                var dialog = new OpenFolderDialog();
+                var folder = await dialog.ShowAsync(App.MainWindow);
+
+                if (!string.IsNullOrEmpty(folder))
+                {
+                    var allWorkspaces = this.dbRepository.Workspace.GetAll();
+                    if (allWorkspaces.Any(w => w.FolderPath == folder))
+                    {
+                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.SettingsWorkspaceSamePath), "workspace"));
+                        return false;
+                    }
+                    else
+                    {
+                        var newWorkspace = new Workspace()
+                        {
+                            Id = Guid.NewGuid(),
+                            FolderPath = folder,
+                            FileNameTemplate = $"#md5#_#provider#.#extension#",
+                            Name = new DirectoryInfo(folder).Name
+                        };
+
+                        this.dbRepository.Workspace.AddOrUpdate(newWorkspace);
+                        var imageFiles = Directory.GetFiles(folder, "*.jpg")
+                                        .Concat(Directory.GetFiles(folder, "*.jpeg"))
+                                        .Concat(Directory.GetFiles(folder, "*.png")).ToArray();
+
+                        if (imageFiles != null && imageFiles.Length > 0)
+                        {
+                            foreach (var image in imageFiles)
+                            {
+                                await this.notificationControl.SendToastMessage(ToastMessage.Uncloseable(string.Format(Language.ToastWorkspaceProcessingSingle, image, newWorkspace.Name), "workspace"));
+
+                                var picture = await this.pictureWorker.CreatePictureMetadataFromLocalImage(image);
+                                if (picture != null)
+                                {
+                                    this.dbRepository.WorkspacePicture.AddToWorkspace(newWorkspace.Id, picture, image);
+                                }
+                            }
+                        }
+
+                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastWorkspaceProcessed), "workspace"));                        
+                    }
+                }
+
+                GC.Collect();
+                return true;
+            });
+        }
+
         private async Task<bool> OnImportFolderToAllWorkspaces()
         {
             return await Task.Run<bool>(async () =>
@@ -272,7 +332,7 @@ namespace TsukiTag.ViewModels
                                     .Concat(Directory.GetFiles(folder, "*.jpeg"))
                                     .Concat(Directory.GetFiles(folder, "*.png")).ToArray();
 
-                    if(imageFiles != null && imageFiles.Length > 0)
+                    if (imageFiles != null && imageFiles.Length > 0)
                     {
                         await this.OnImportFilesToSpecificWorkspace(id, imageFiles);
                     }
@@ -331,7 +391,7 @@ namespace TsukiTag.ViewModels
         {
             return await Task.Run<bool>(async () =>
             {
-                if(files == null)
+                if (files == null)
                 {
                     var dialog = new OpenFileDialog();
                     dialog.AllowMultiple = true;
@@ -434,6 +494,13 @@ namespace TsukiTag.ViewModels
                         Items = new List<MenuItemViewModel>(
                             new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = ImportFolderToAllWorkspacesCommand } }, { new MenuItemViewModel() { Header = "-" } } }
                             .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = ImportFolderToSpecifcWorkspacesCommand, CommandParameter = l.Id })))
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionCreateWorkspaceFromFolder,
+                        Command = ConvertFolderToLocalWorkspaceCommand
                     }
                 },
                 {
