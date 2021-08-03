@@ -61,7 +61,7 @@ namespace TsukiTag.Extensions
                 }
                 else if (template.StartsWith('*') && !template.EndsWith('*'))
                 {
-                    return str.EndsWith(template.Remove(0), StringComparison.OrdinalIgnoreCase);
+                    return str.EndsWith(template.Remove(0, 1), StringComparison.OrdinalIgnoreCase);
                 }
                 else if (template.EndsWith('*') && !template.StartsWith('*'))
                 {

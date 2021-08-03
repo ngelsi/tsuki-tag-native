@@ -50,6 +50,8 @@
   "AppSettingsCloseTabsOnContextSwitch": "Close all opened tabs when switching browsing sessions",
   "AppSettingsDeselectPicturesOnContextSwitch": "De-select all selected pictures when switching browsing sessions",
   "AppSettingsJumpToBrowserTabOnClose": "Jump back to the browser tab instead of the previous tab on closing an opened tab",
+  "AppSettingsBlacklistTags": "Blacklist tags",
+  "AppSettingsBlacklistTagsDescription":  "These tags will be globally excluded from all online provider search sessions.",
   "SettingsCancel": "Cancel",
   "SettingsSave": "Save",
   "SettingsGeneral": "General",

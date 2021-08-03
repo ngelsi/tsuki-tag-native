@@ -293,5 +293,30 @@ namespace TsukiTag.Views
         }
 
         #endregion Workspaces
+
+        #region General
+        private void OnBlacklistTagToAddKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                (this.DataContext as SettingsViewModel)?.OnAddBlacklistTag();
+            }
+        }
+
+        private void OnRemoveBlacklistTagPressed(object sender, PointerPressedEventArgs e)
+        {
+            var icon = (sender as Projektanker.Icons.Avalonia.Icon);
+            var button = (icon?.Parent as Button);
+            var tag = (button?.DataContext as string);
+
+            if (tag != null)
+            {
+                RxApp.MainThreadScheduler.Schedule(async () =>
+                {
+                    (this.DataContext as SettingsViewModel)?.OnRemoveBlacklistTag(tag);
+                });
+            }
+        }
+        #endregion General
     }
 }

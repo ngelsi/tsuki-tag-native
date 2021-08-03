@@ -50,36 +50,76 @@
       </Button>
     </StackPanel>
     <TabControl DockPanel.Dock="Top">
-      
+
       <!-- GENERAL -->
       <TabItem>
         <TabItem.Header>
           <TextBlock Text="{Binding Language.SettingsGeneral}"></TextBlock>
         </TabItem.Header>
-        <StackPanel>
-          <StackPanel DockPanel.Dock="Top">
-            <Label Margin="-5 5 0 0" Content="{Binding Language.AppSettingsInterface}"></Label>
+        <ScrollViewer>
+          <StackPanel>
+            <StackPanel DockPanel.Dock="Top">
+              <Label Margin="-5 5 0 0" Content="{Binding Language.AppSettingsInterface}"></Label>
+            </StackPanel>
+            <Border BorderBrush="DarkGray" BorderThickness="1" Padding="15 20 15 20" Margin="0 5 0 20">
+              <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+                  <ToggleSwitch IsChecked="{Binding ApplicationSettings.DeselectPicturesOnContextSwitch}"></ToggleSwitch>
+                  <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsDeselectPicturesOnContextSwitch}"></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                  <ToggleSwitch IsChecked="{Binding ApplicationSettings.CloseTabsOnContextSwitch}"></ToggleSwitch>
+                  <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsCloseTabsOnContextSwitch}"></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                  <ToggleSwitch IsChecked="{Binding ApplicationSettings.JumpToBrowserTabOnClose}"></ToggleSwitch>
+                  <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsJumpToBrowserTabOnClose}"></TextBlock>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+            <StackPanel>
+              <StackPanel DockPanel.Dock="Top">
+                <Label Margin="-5 5 0 0" Content="{Binding Language.AppSettingsBlacklistTags}"></Label>
+              </StackPanel>
+            </StackPanel>
+            <Border BorderBrush="DarkGray" BorderThickness="1" Padding="15 20 15 20" Margin="0 5 0 20">
+              <DockPanel Grid.Row="1" Grid.Column="0" Margin="0 0 0 0">
+                <DockPanel DockPanel.Dock="Top">
+                  <TextBox KeyDown="OnBlacklistTagToAddKeyDown" Width="200" DockPanel.Dock="Left" HorizontalAlignment="Left" Text="{Binding ApplicationSettings.CurrentBlacklistTag}" Watermark="{x:Static model:Language.AddTag}"></TextBox>
+                  <Button Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.AppSettingsBlacklistTagsDescription}" ToolTip.ShowDelay="0" ToolTip.Placement="Bottom" Classes="actionbutton">
+                    <i:Icon FontSize="14" Value="fa-question-circle"></i:Icon>
+                  </Button>
+                  <Button Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.WildcardDescription}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                    <i:Icon FontSize="14" Value="fa-code"></i:Icon>
+                  </Button>
+                  <Button Command="{Binding AddBlacklistTagCommand}"  Margin="5 0 0 0" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip.Tip="{x:Static model:Language.ListTagsNew}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                    <i:Icon FontSize="14" Value="fa-plus"></i:Icon>
+                  </Button>
+                </DockPanel>
+                <ItemsControl Items="{Binding ApplicationSettings.BlacklistTags}" Margin="0 15 0 0">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <WrapPanel Orientation="Horizontal"></WrapPanel>
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <StackPanel Orientation="Horizontal" Margin="0 0 15 10">
+                        <TextBlock Classes="primary" Text="{Binding}"></TextBlock>
+                        <Button Margin="5 0 0 0" HorizontalAlignment="Right" ToolTip.Tip="{x:Static model:Language.ListTagsRemove}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Classes="actionbutton">
+                          <i:Icon PointerPressed="OnRemoveBlacklistTagPressed" FontSize="12" Value="fa-trash"></i:Icon>
+                        </Button>
+                      </StackPanel>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </DockPanel>
+            </Border>
           </StackPanel>
-          <Border BorderBrush="DarkGray" BorderThickness="1" Padding="15 20 15 20" Margin="0 25 0 20">
-            <StackPanel Orientation="Vertical">
-              <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
-                <ToggleSwitch IsChecked="{Binding ApplicationSettings.DeselectPicturesOnContextSwitch}"></ToggleSwitch>
-                <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsDeselectPicturesOnContextSwitch}"></TextBlock>
-              </StackPanel>
-              <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
-                <ToggleSwitch IsChecked="{Binding ApplicationSettings.CloseTabsOnContextSwitch}"></ToggleSwitch>
-                <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsCloseTabsOnContextSwitch}"></TextBlock>
-              </StackPanel>
-              <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
-                <ToggleSwitch IsChecked="{Binding ApplicationSettings.JumpToBrowserTabOnClose}"></ToggleSwitch>
-                <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsJumpToBrowserTabOnClose}"></TextBlock>
-              </StackPanel>
-            </StackPanel>            
-          </Border>
-        </StackPanel>
+        </ScrollViewer>
       </TabItem>
       <!-- /GENERAL -->
-      
+
       <!-- ONLINE LISTS -->
       <TabItem>
         <TabItem.Header>
@@ -247,7 +287,7 @@
         </DockPanel>
       </TabItem>
       <!-- /ONLINE LISTS -->
-      
+
       <!-- WORKSPACES -->
       <TabItem>
         <TabItem.Header>
@@ -460,7 +500,7 @@
         </DockPanel>
       </TabItem>
       <!-- /WORKSPACES -->
-      
+
     </TabControl>
   </DockPanel>
 </UserControl>

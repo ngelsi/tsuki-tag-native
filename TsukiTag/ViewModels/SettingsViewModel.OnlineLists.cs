@@ -74,7 +74,7 @@ namespace TsukiTag.ViewModels
                 var list = OnlineLists.FirstOrDefault(l => l.Id == id);
                 if (list != null && !string.IsNullOrEmpty(list.CurrentTagToAdd))
                 {
-                    list.TagsToAdd = list.TagsToAdd == null ? new string[] { list.CurrentTagToAdd } : list.TagsToAdd.Append(list.CurrentTagToAdd).ToArray();
+                    list.TagsToAdd = list.TagsToAdd == null ? new string[] { list.CurrentTagToAdd } : list.TagsToAdd.Append(list.CurrentTagToAdd).Distinct().ToArray();
                     list.CurrentTagToAdd = string.Empty;
                 }
             });
@@ -87,7 +87,7 @@ namespace TsukiTag.ViewModels
                 var list = OnlineLists.FirstOrDefault(l => l.Id == id);
                 if (list != null && !string.IsNullOrEmpty(list.CurrentOptionalConditionTag))
                 {
-                    list.OptionalConditionTags = list.OptionalConditionTags == null ? new string[] { list.CurrentOptionalConditionTag } : list.OptionalConditionTags.Append(list.CurrentOptionalConditionTag).ToArray();
+                    list.OptionalConditionTags = list.OptionalConditionTags == null ? new string[] { list.CurrentOptionalConditionTag } : list.OptionalConditionTags.Append(list.CurrentOptionalConditionTag).Distinct().ToArray();
                     list.CurrentOptionalConditionTag = string.Empty;
                 }
             });
@@ -100,7 +100,7 @@ namespace TsukiTag.ViewModels
                 var list = OnlineLists.FirstOrDefault(l => l.Id == id);
                 if (list != null && !string.IsNullOrEmpty(list.CurrentMandatoryConditionTag))
                 {
-                    list.MandatoryConditionTags = list.MandatoryConditionTags == null ? new string[] { list.CurrentMandatoryConditionTag } : list.MandatoryConditionTags.Append(list.CurrentMandatoryConditionTag).ToArray();
+                    list.MandatoryConditionTags = list.MandatoryConditionTags == null ? new string[] { list.CurrentMandatoryConditionTag } : list.MandatoryConditionTags.Append(list.CurrentMandatoryConditionTag).Distinct().ToArray();
                     list.CurrentMandatoryConditionTag = string.Empty;
                 }
             });
@@ -113,7 +113,7 @@ namespace TsukiTag.ViewModels
                 var list = OnlineLists.FirstOrDefault(l => l.Id == id);
                 if (list != null && !string.IsNullOrEmpty(list.CurrentTagToRemove))
                 {
-                    list.TagsToRemove = list.TagsToRemove == null ? new string[] { list.CurrentTagToRemove } : list.TagsToRemove.Append(list.CurrentTagToRemove).ToArray();
+                    list.TagsToRemove = list.TagsToRemove == null ? new string[] { list.CurrentTagToRemove } : list.TagsToRemove.Append(list.CurrentTagToRemove).Distinct().ToArray();
                     list.CurrentTagToRemove = string.Empty;
                 }
             });

@@ -47,6 +47,8 @@ namespace TsukiTag.ViewModels
             this.AddWorkspaceMandatoryConditionTagCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnWorkspaceAddMandatoryConditionTag(id); });
             this.BrowseWorkspaceFolderCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnWorkspaceBrowseFolder(id); });
 
+            this.AddBlacklistTagCommand = ReactiveCommand.CreateFromTask(async () => { OnAddBlacklistTag(); });
+
             this.SettingsCancelledCommand = ReactiveCommand.CreateFromTask(async () => { OnSettingsCancelled(); });
             this.SettingsSavedCommand = ReactiveCommand.CreateFromTask(async () => { OnSettingsSaved(); });
         }

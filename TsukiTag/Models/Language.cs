@@ -82,12 +82,15 @@ namespace TsukiTag.Models
         public static string AppSettingsDeselectPicturesOnContextSwitch => Localizer.Get(nameof(AppSettingsDeselectPicturesOnContextSwitch));
         public static string AppSettingsCloseTabsOnContextSwitch => Localizer.Get(nameof(AppSettingsCloseTabsOnContextSwitch));
         public static string AppSettingsJumpToBrowserTabOnClose => Localizer.Get(nameof(AppSettingsJumpToBrowserTabOnClose));
+        public static string AppSettingsBlacklistTags => Localizer.Get(nameof(AppSettingsBlacklistTags));
+        public static string AppSettingsBlacklistTagsDescription => Localizer.Get(nameof(AppSettingsBlacklistTagsDescription));
         public static string SettingsSave => Localizer.Get(nameof(SettingsSave));
         public static string SettingsCancel => Localizer.Get(nameof(SettingsCancel));
         public static string SettingsGeneral => Localizer.Get(nameof(SettingsGeneral));
         public static string WildcardDescription => Localizer.Get(nameof(WildcardDescription));
         public static string ProviderTagsDescription => Localizer.Get(nameof(ProviderTagsDescription));
         public static string ExcludeTagsDescriptionWildcard => $"{Localizer.Get(nameof(ExcludeTagsDescription))}\r\n\r\n{localizer.Get(nameof(WildcardDescription))}";
+        public static string BlacklistTagsDescriptionWildcard => $"{Localizer.Get(nameof(AppSettingsBlacklistTagsDescription))}\r\n\r\n{localizer.Get(nameof(WildcardDescription))}";
 
         public static string Workspaces => Localizer.Get(nameof(Workspaces));
         public static string Workspace => Localizer.Get(nameof(Workspace));

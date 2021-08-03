@@ -11,7 +11,7 @@ using TsukiTag.Models;
 namespace TsukiTag.Dependencies
 {
     public interface IOnlinePictureProvider : IPictureProvider
-    {        
+    {
     }
 
     public class OnlinePictureProvider : IOnlinePictureProvider
@@ -26,6 +26,7 @@ namespace TsukiTag.Dependencies
         private readonly IProviderFilterControl providerFilterControl;
         private readonly INotificationControl notificationControl;
         private readonly ILocalizer localizer;
+        private readonly IDbRepository dbRepository;
 
         private List<string> finishedProviders;
 
@@ -36,6 +37,7 @@ namespace TsukiTag.Dependencies
             IDanbooruPictureProvider danbooruPictureProvider,
             IYanderePictureProvider yanderePictureProvider,
 
+            IDbRepository dbRepository,
             IProviderFilterControl providerFilterControl,
             IPictureControl pictureControl,
             INotificationControl notificationControl,
@@ -52,6 +54,7 @@ namespace TsukiTag.Dependencies
             this.notificationControl = notificationControl;
             this.pictureControl = pictureControl;
             this.localizer = localizer;
+            this.dbRepository = dbRepository;
 
             this.finishedProviders = new List<string>();
         }
@@ -90,6 +93,7 @@ namespace TsukiTag.Dependencies
         public async Task GetPictures()
         {
             var filter = await this.providerFilterControl.GetCurrentFilter();
+            var settings = this.dbRepository.ApplicationSettings.Get();
             var providers = allProviders;
 
             Parallel.ForEach(providers, async (provider) =>
@@ -104,7 +108,7 @@ namespace TsukiTag.Dependencies
                         {
                             finishedProviders.Add(provider.Provider);
                         }
-                        
+
                         notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(localizer.Get(result.ErrorCode), provider.Provider)));
                     }
                     else if (result.ProviderEnd)
@@ -128,7 +132,12 @@ namespace TsukiTag.Dependencies
                                     continue;
                                 }
 
-                                if(picture.IsMedia)
+                                if (settings.BlacklistTags?.Any(t => picture.TagList.Any(tt => tt.WildcardMatches(t))) == true)
+                                {
+                                    continue;
+                                }
+
+                                if (picture.IsMedia)
                                 {
                                     continue;
                                 }
