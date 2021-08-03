@@ -236,6 +236,33 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        protected async Task<bool> OnImportToSpecificWorkspace(Guid id, string filePath, bool notify = true, bool reinitialize = true)
+        {
+            return await Task.Run<bool>(async () =>
+            {
+                var workspace = this.dbRepository.Workspace.Get(id);
+
+                if (notify)
+                {
+                    await this.notificationControl.SendToastMessage(ToastMessage.Uncloseable(string.Format(Language.ToastWorkspaceProcessingSingle, filePath, workspace.Name), "workspace"));
+                }
+
+                var picture = await this.pictureWorker.CreatePictureMetadataFromLocalImage(filePath);
+
+                if(picture != null)
+                {
+                    return await OnAddToSpecificWorkspace(id, picture, notify, reinitialize);
+                }
+
+                if (notify)
+                {
+                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError, "workspace"));
+                }
+
+                return false;
+            });
+        }
+
         protected async Task<bool> OnAddToSpecificWorkspace(Guid id, Picture picture, bool notify = true, bool reinitialize = true)
         {
             return await Task.Run<bool>(async () =>

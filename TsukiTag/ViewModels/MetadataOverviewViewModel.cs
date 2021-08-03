@@ -582,7 +582,7 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                var picture = SelectedPictures.FirstOrDefault(p => p.Md5 == e.Md5);
+                var picture = SelectedPictures.FirstOrDefault(p => p.Equals(e));
                 if (picture != null)
                 {
                     CurrentPictureIndex = SelectedPictures.IndexOf(picture);

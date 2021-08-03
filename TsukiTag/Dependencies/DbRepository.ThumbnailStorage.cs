@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TsukiTag.Dependencies
@@ -12,6 +13,8 @@ namespace TsukiTag.Dependencies
     public interface IThumbnailStorage
     {
         void AddOrUpdateThumbnail(string md5, Bitmap bitmap);
+
+        void CloseConnection();
 
         Bitmap? FindThumbnail(string md5);
     }
@@ -23,6 +26,7 @@ namespace TsukiTag.Dependencies
         private class ThumbnailStorageDb : IThumbnailStorage
         {
             private LiteDatabase currentConnection;
+            private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
             private LiteDatabase GetConnection()
             {
@@ -35,6 +39,11 @@ namespace TsukiTag.Dependencies
             }
 
             ~ThumbnailStorageDb()
+            {
+                currentConnection?.Dispose();
+            }
+
+            public void CloseConnection()
             {
                 currentConnection?.Dispose();
             }
@@ -62,26 +71,32 @@ namespace TsukiTag.Dependencies
             {
                 try
                 {
+                    semaphoreSlim.Wait();
+
                     using (var ms = new MemoryStream())
                     {
                         bitmap.Save(ms);
                         ms.Position = 0;
 
                         var storage = GetConnection().FileStorage;
-                        var existing = storage.FindById(md5);
+                        var existing = storage.Find(f => f.Filename == md5 || f.Id == md5).ToList();                                               
 
-                        if (existing != null)
+                        if (existing != null && existing.Count > 0)
                         {
-                            storage.Delete(md5);
+                            return;
                         }
 
                         storage.Upload(md5, md5, ms);
                     }
                 }
-                catch(Exception)
+                catch (Exception)
                 {
 
-                }                
+                }
+                finally
+                {
+                    semaphoreSlim.Release();
+                }
             }
         }
     }

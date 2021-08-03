@@ -7,6 +7,7 @@
   "All": "All",
   "Refresh": "Refresh",
   "Filter": "Filter",
+  "ImageFiles": "Image files",
 
   "Rating": "Rating",
   "Provider": "Provider",
@@ -21,6 +22,7 @@
   "Safe": "Safe",
   "Questionable": "Questionable",
   "Explicit": "Explicit",
+  "Unknown": "Unknown",
 
   "NextPage": "Next page",
   "PreviousPage": "Previous page",
@@ -111,6 +113,9 @@
   "ActionSelection": "Selection",
   "ActionSelectionActionSuccess": "Processing completed. Check history for more information.",
   "ActionOpenInDefaultApplication": "Open in default application",
+  "ActionImportImagesToWorkspaces": "Import images to workspace ..",
+  "ActionImportFolderToWorkspace": "Import folder to workspace ..",
+  "ActionCreateWorkspaceFromFolder": "Create workspace from folder",
 
   "PreviousPicture": "Previous selected picture",
   "NextPicture": "Next selected picture",

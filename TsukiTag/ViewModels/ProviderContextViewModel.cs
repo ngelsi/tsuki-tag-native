@@ -207,7 +207,7 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                var tab = this.tabs.FirstOrDefault(t => (t.Context is Picture picture) && picture.Md5 == e.Md5);
+                var tab = this.tabs.FirstOrDefault(t => (t.Context is Picture picture) && picture.Equals(e));
                 if (tab != null)
                 {
                     var index = this.tabs.IndexOf(tab);
@@ -241,7 +241,7 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                if (!this.Tabs.Any(t => t.Identifier == e.Md5))
+                if (!this.Tabs.Any(t => (t.Context is Picture picture) && picture.Equals(e)))
                 {
                     this.Tabs.Add(new ProviderTabModel()
                     {
@@ -257,7 +257,7 @@ namespace TsukiTag.ViewModels
                 }
                 else
                 {
-                    var tab = this.Tabs.FirstOrDefault(t => t.Identifier == e.Md5);
+                    var tab = this.Tabs.FirstOrDefault(t => (t.Context is Picture picture) && picture.Equals(e));
                     if (tab != null)
                     {
                         this.SelectedTabIndex = this.Tabs.IndexOf(tab);
@@ -494,7 +494,7 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                if (!this.Tabs.Any(t => t.Identifier == e.Md5))
+                if (!this.Tabs.Any(t => (t.Context is Picture picture) && picture.Equals(e)))
                 {
                     this.Tabs.Add(new ProviderTabModel()
                     {

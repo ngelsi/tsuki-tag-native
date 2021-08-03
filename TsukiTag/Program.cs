@@ -18,7 +18,7 @@ namespace TsukiTag
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
-                .AfterSetup(AfterSetupCallback)
+                .AfterSetup(AfterSetupCallback)                
                 .UsePlatformDetect()
                 .LogToTrace()
                 .UseReactiveUI();

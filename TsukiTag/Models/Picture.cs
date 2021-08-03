@@ -46,6 +46,7 @@ namespace TsukiTag.Models
         private string localProvider;
         private string localProviderType;
         private Guid? localProviderId;
+        private bool isLocallyImported;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -163,12 +164,6 @@ namespace TsukiTag.Models
             set { hasChildren = value; }
         }
 
-        public bool Favorite
-        {
-            get { return favorite; }
-            set { favorite = value; }
-        }
-
         public bool Selected
         {
             get { return selected; }
@@ -227,8 +222,13 @@ namespace TsukiTag.Models
             }
         }
 
+        public bool IsLocallyImported
+        {
+            get { return isLocallyImported; }
+            set { isLocallyImported = value; }
+        }
+
         [BsonIgnore]
-        [JsonIgnore]
         public string FileUrl
         {
             get { return fileUrl; }
@@ -236,7 +236,6 @@ namespace TsukiTag.Models
         }
 
         [BsonIgnore]
-        [JsonIgnore]
         public bool IsLocal
         {
             get { return isLocal; }
@@ -244,7 +243,6 @@ namespace TsukiTag.Models
         }
 
         [BsonIgnore]
-        [JsonIgnore]
         public string LocalProvider
         {
             get { return localProvider; }
@@ -252,7 +250,6 @@ namespace TsukiTag.Models
         }
 
         [BsonIgnore]
-        [JsonIgnore]
         public Guid? LocalProviderId
         {
             get { return localProviderId; }
@@ -260,7 +257,6 @@ namespace TsukiTag.Models
         }
 
         [BsonIgnore]
-        [JsonIgnore]
         public string LocalProviderType
         {
             get { return localProviderType; }
@@ -297,8 +293,10 @@ namespace TsukiTag.Models
             {
                 if (string.IsNullOrEmpty(extension))
                 {
-                    var index = this.downloadUrl.LastIndexOf('.');
-                    extension = this.downloadUrl.Substring(index + 1, this.downloadUrl.Length - index - 1).ToLower();
+                    var url = (this.downloadUrl ?? this.fileUrl);
+                    var index = url.LastIndexOf('.');
+
+                    extension = url.Substring(index + 1, url.Length - index - 1).ToLower();
                 }
 
                 return extension;
@@ -327,9 +325,10 @@ namespace TsukiTag.Models
                     case "s": return Models.Rating.Safe.DisplayName;
                     case "e": return Models.Rating.Explicit.DisplayName;
                     case "q": return Models.Rating.Questionable.DisplayName;
+                    case "u": return Models.Rating.Unknown.DisplayName;
                 }
 
-                return string.Empty;
+                return Models.Rating.Unknown.DisplayName;
             }
         }
 
@@ -405,7 +404,12 @@ namespace TsukiTag.Models
 
         public override bool Equals(object? obj)
         {
-            return (obj as Picture)?.Md5 == Md5;
+            if(obj is Picture picture)
+            {
+                return picture.Md5 == Md5 && picture.Id == Id && picture.LocalProviderId == LocalProviderId;
+            }
+
+            return false;
         }
     }
 }

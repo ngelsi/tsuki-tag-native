@@ -13,7 +13,7 @@ namespace TsukiTag.Extensions
         {
             foreach (var property in obj.GetType().GetProperties().Where(t => t.PropertyType == typeof(string) || t.PropertyType == typeof(int) || t.PropertyType == typeof(bool)))
             {
-                str = str.Replace($"#{property.Name?.ToLower()}#", property.GetValue(obj)?.ToString()?.ToLower(), StringComparison.OrdinalIgnoreCase);
+                str = str.Replace($"#{property.Name?.ToLower()}#", property.GetValue(obj)?.ToString()?.ToLower() ?? string.Empty, StringComparison.OrdinalIgnoreCase);
             }
 
             str = str.Replace($"#guid#", Guid.NewGuid().ToString("N"));

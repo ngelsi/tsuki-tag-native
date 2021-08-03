@@ -36,6 +36,7 @@ namespace TsukiTag.Models
         public static string Session => Localizer.Get(nameof(Session));
         public static string Refresh => Localizer.Get(nameof(Refresh));
         public static string Filter => Localizer.Get(nameof(Filter));
+        public static string ImageFiles => Localizer.Get(nameof(ImageFiles));
 
 
         public static string Rating => Localizer.Get(nameof(Rating));
@@ -52,6 +53,7 @@ namespace TsukiTag.Models
         public static string Safe => Localizer.Get(nameof(Safe));
         public static string Questionable => Localizer.Get(nameof(Questionable));
         public static string Explicit => Localizer.Get(nameof(Explicit));
+        public static string Unknown => Localizer.Get(nameof(Unknown));
 
         public static string NextPage => Localizer.Get(nameof(NextPage));
         public static string PreviousPage => Localizer.Get(nameof(PreviousPage));
@@ -146,6 +148,9 @@ namespace TsukiTag.Models
         public static string ActionSelection => Localizer.Get(nameof(ActionSelection));
         public static string ActionSelectionActionSuccess => Localizer.Get(nameof(ActionSelectionActionSuccess));
         public static string ActionOpenInDefaultApplication => Localizer.Get(nameof(ActionOpenInDefaultApplication));
+        public static string ActionImportFolderToWorkspace => Localizer.Get(nameof(ActionImportFolderToWorkspace));
+        public static string ActionImportImagesToWorkspaces => Localizer.Get(nameof(ActionImportImagesToWorkspaces));
+        public static string ActionCreateWorkspaceFromFolder => Localizer.Get(nameof(ActionCreateWorkspaceFromFolder));
 
 
         public static string PreviousPicture => Localizer.Get(nameof(PreviousPicture));

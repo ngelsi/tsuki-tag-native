@@ -105,7 +105,7 @@ namespace TsukiTag.Dependencies
             await semaphoreSlim.WaitAsync();
             try
             {
-                if (!selectedPictures.Any(p => p.Md5 == picture.Md5))
+                if (!selectedPictures.Any(p => p.Equals(picture)))
                 {
                     picture.Selected = true;
                     selectedPictures.Add(picture);
@@ -189,13 +189,21 @@ namespace TsukiTag.Dependencies
                     picture.SampleImage = await pictureDownloadControl.DownloadLocalBitmap(picture.FileUrl);
                 }
 
+                if(picture.SampleImage == null && !string.IsNullOrEmpty(picture.Source) && picture.IsLocallyImported)
+                {
+                    picture.SampleImage = await pictureDownloadControl.DownloadLocalBitmap(picture.Source);
+                }
+
                 if (picture.SampleImage == null && !string.IsNullOrEmpty(picture.Url))
                 {
                     picture.SampleImage = await pictureDownloadControl.DownloadBitmap(picture.Url);
                 }
 
-                openedPictures.Add(picture);
-                PictureOpened?.Invoke(this, picture);
+                if(picture.SampleImage != null)
+                {
+                    openedPictures.Add(picture);
+                    PictureOpened?.Invoke(this, picture);
+                }
             }
             catch { }
             finally
@@ -209,13 +217,26 @@ namespace TsukiTag.Dependencies
             await semaphoreSlim.WaitAsync();
             try
             {
+                if (!string.IsNullOrEmpty(picture.FileUrl))
+                {
+                    picture.SampleImage = await pictureDownloadControl.DownloadLocalBitmap(picture.FileUrl);
+                }
+
+                if (picture.SampleImage == null && !string.IsNullOrEmpty(picture.Source) && picture.IsLocallyImported)
+                {
+                    picture.SampleImage = await pictureDownloadControl.DownloadLocalBitmap(picture.Source);
+                }
+
                 if (picture.SampleImage == null && !string.IsNullOrEmpty(picture.Url))
                 {
                     picture.SampleImage = await pictureDownloadControl.DownloadBitmap(picture.Url);
                 }
 
-                openedPictures.Add(picture);
-                PictureOpenedInBackground?.Invoke(this, picture);
+                if(picture.SampleImage != null)
+                {
+                    openedPictures.Add(picture);
+                    PictureOpenedInBackground?.Invoke(this, picture);
+                }
             }
             catch { }
             finally
@@ -233,6 +254,10 @@ namespace TsukiTag.Dependencies
                     if (picture.PreviewImage == null && !string.IsNullOrEmpty(picture.PreviewUrl))
                     {
                         picture.PreviewImage = await pictureDownloadControl.DownloadBitmap(picture.PreviewUrl, picture.IsLocal ? picture.Md5 : null);
+                    }
+                    else if (picture.PreviewUrl == null && (picture.IsLocal || picture.IsLocallyImported))
+                    {
+                        picture.PreviewImage = await pictureDownloadControl.DownloadBitmap(null, picture.Md5);
                     }
 
                     var added = false;

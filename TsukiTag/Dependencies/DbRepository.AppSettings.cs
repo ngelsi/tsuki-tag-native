@@ -72,6 +72,7 @@ namespace TsukiTag.Dependencies
                         {
                             settings = new ApplicationSettings();
                             settings.Id = AppSettingsKey;
+                            settings.AllowDuplicateImages = true;
                         }
 
                         settingsCache = settings;

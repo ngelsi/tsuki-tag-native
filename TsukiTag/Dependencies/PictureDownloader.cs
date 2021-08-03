@@ -63,7 +63,7 @@ namespace TsukiTag.Dependencies
 
         public async Task<Bitmap> DownloadLocalBitmap(string filePath)
         {
-            if(File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 return await Task.FromResult(new Bitmap(filePath));
             }
@@ -96,7 +96,11 @@ namespace TsukiTag.Dependencies
                 return bitmap;
             }
 
-            bitmap = await DownloadBitmap(url);
+            if (!string.IsNullOrEmpty(url))
+            {
+                bitmap = await DownloadBitmap(url);
+            }
+
             return bitmap;
         }
     }

@@ -85,7 +85,7 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                var picture = Pictures.FirstOrDefault(p => p.Md5 == e.Md5);
+                var picture = Pictures.FirstOrDefault(p => p.Equals(e));
                 if (picture != null)
                 {
                     this.pictureControl.SelectPicture(picture);
@@ -100,7 +100,7 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                var picture = Pictures.FirstOrDefault(p => p.Md5 == e.Md5);
+                var picture = Pictures.FirstOrDefault(p => p.Equals(e));
                 if (picture != null)
                 {
                     this.pictureControl.DeselectPicture(picture);
@@ -115,7 +115,7 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                var picture = Pictures.FirstOrDefault(p => p.Md5 == e.Md5);
+                var picture = Pictures.FirstOrDefault(p => p.Equals(e));
                 if (picture != null)
                 {
                     picture.Selected = false;
@@ -130,7 +130,7 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                var picture = Pictures.FirstOrDefault(p => p.Md5 == e.Md5);
+                var picture = Pictures.FirstOrDefault(p => p.Equals(e));
                 if (picture != null)
                 {
                     picture.Selected = true;

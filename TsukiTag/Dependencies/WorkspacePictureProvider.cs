@@ -71,7 +71,7 @@ namespace TsukiTag.Dependencies
                 {
                     if (picture?.Picture != null)
                     {
-                        if (!filter.Ratings.Contains(picture.Picture.Rating))
+                        if (picture.Picture.Rating != Rating.Unknown.Name && !filter.Ratings.Contains(picture.Picture.Rating))
                         {
                             continue;
                         }

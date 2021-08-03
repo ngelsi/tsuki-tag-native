@@ -16,7 +16,7 @@ namespace TsukiTag
 
         public override void Initialize()
         {
-            AvaloniaXamlLoader.Load(this);
+            AvaloniaXamlLoader.Load(this);          
         }
 
         public override void OnFrameworkInitializationCompleted()
@@ -25,7 +25,9 @@ namespace TsukiTag
             {
                 desktop.MainWindow = new MainWindow(new MainWindowViewModel(
                         Ioc.SimpleIoc.NavigationControl,
-                        Ioc.SimpleIoc.DbRepository
+                        Ioc.SimpleIoc.DbRepository,
+                        Ioc.SimpleIoc.PictureWorker,
+                        Ioc.SimpleIoc.NotificationControl
                 ));
 
                 MainWindow = desktop.MainWindow;

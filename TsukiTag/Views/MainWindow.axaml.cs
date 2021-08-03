@@ -10,7 +10,8 @@ namespace TsukiTag.Views
     {
         public MainWindow()
         {
-
+            Closing += OnMainWindowClosing;
+            Closed += OnMainWindowClosed;
         }
 
         public MainWindow(MainWindowViewModel vm)
@@ -22,6 +23,22 @@ namespace TsukiTag.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
+        }
+
+        private void OnMainWindowClosing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.DataContext is MainWindowViewModel vm)
+            {
+                vm.Closing();
+            }
+        }
+
+        private void OnMainWindowClosed(object? sender, System.EventArgs e)
+        {
+            if (this.DataContext is MainWindowViewModel vm)
+            {
+                vm.Closing();
+            }
         }
 
         private void OnInitialized(object? sender, System.EventArgs e)

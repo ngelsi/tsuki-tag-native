@@ -8,9 +8,10 @@ namespace TsukiTag.Models
 {
     public class Rating
     {
-        public static Rating Safe = new Rating() { Name = "s", DisplayName = "Safe" };
-        public static Rating Questionable = new Rating() { Name = "q", DisplayName = "Questionable" };
-        public static Rating Explicit = new Rating() { Name = "e", DisplayName = "Explicit" };
+        public static Rating Safe = new Rating() { Name = "s", DisplayName = Language.Safe };
+        public static Rating Questionable = new Rating() { Name = "q", DisplayName = Language.Questionable };
+        public static Rating Explicit = new Rating() { Name = "e", DisplayName = Language.Explicit };
+        public static Rating Unknown = new Rating() { Name = "u", DisplayName = Language.Unknown };
 
         public string Name { get; set; }
 

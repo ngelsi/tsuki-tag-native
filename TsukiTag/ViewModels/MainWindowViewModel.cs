@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using ReactiveUI;
 using System;
@@ -18,6 +19,8 @@ namespace TsukiTag.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         private readonly INavigationControl navigationControl;
+        private readonly INotificationControl notificationControl;
+        private readonly IPictureWorker pictureWorker;
         private readonly IDbRepository dbRepository;
 
         private ProviderContext providerContext;
@@ -35,6 +38,10 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Unit, Unit> SwitchToAllWorkspaceBrowsingCommand { get; }
 
         public ReactiveCommand<Guid, Unit> SwitchToSpefificWorkspaceBrowsingCommand { get; }
+
+        public ReactiveCommand<Guid, Unit> ImportFilesToSpecifcWorkspacesCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> ImportFilesToAllWorkspacesCommand { get; }
 
         public ObservableCollection<MenuItemViewModel> MainWindowMenus
         {
@@ -71,11 +78,15 @@ namespace TsukiTag.ViewModels
 
         public MainWindowViewModel(
             INavigationControl navigationControl,
-            IDbRepository dbRepository
+            IDbRepository dbRepository,
+            IPictureWorker pictureWorker,
+            INotificationControl notificationControl
         )
         {
             this.dbRepository = dbRepository;
+            this.pictureWorker = pictureWorker;
             this.navigationControl = navigationControl;
+            this.notificationControl = notificationControl;
             this.navigationControl.SwitchedToOnlineBrowsing += OnSwitchedToOnlineBrowsing;
             this.navigationControl.SwitchedToSettings += OnSwitchedToSettings;
             this.navigationControl.SwitchedToAllOnlineListBrowsing += OnSwitchedToAllOnlineListBrowsing;
@@ -116,6 +127,16 @@ namespace TsukiTag.ViewModels
                 await this.navigationControl.SwitchToSpecificWorkspaceBrowsing(id);
             });
 
+            this.ImportFilesToSpecifcWorkspacesCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                await this.OnImportFilesToSpecificWorkspace(id);
+            });
+
+            this.ImportFilesToAllWorkspacesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await this.OnImportFilestoAllWorkspacesCommand();
+            });
+
             CurrentContent = ProviderContext;
             MainWindowMenus = GetMainMenus();
         }
@@ -128,7 +149,7 @@ namespace TsukiTag.ViewModels
             this.navigationControl.SwitchedToSpecificOnlineListBrowsing -= OnSwitchedToSpecificOnlineListBrowsing;
             this.navigationControl.SwitchedToAllWorkspaceBrowsing -= OnSwitchedToAllWorkspaceBrowsing;
             this.navigationControl.SwitchedToSpecificWorkspaceBrowsing -= OnSwitchedToSpecificWorkspaceBrowsing;
-            
+
             this.dbRepository.OnlineList.OnlineListsChanged -= OnResourceListsChanged;
             this.dbRepository.Workspace.WorkspacesChanged -= OnResourceListsChanged;
         }
@@ -136,6 +157,11 @@ namespace TsukiTag.ViewModels
         public async void Initialized()
         {
             this.navigationControl.SwitchToOnlineBrowsing();
+        }
+
+        public async void Closing()
+        {
+            this.dbRepository.ThumbnailStorage.CloseConnection();
         }
 
         private async void OnResourceListsChanged(object? sender, EventArgs e)
@@ -194,6 +220,78 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        private async Task<bool> OnImportFilesToSpecificWorkspace(Guid id, string[] files = null)
+        {
+            return await Task.Run<bool>(async () =>
+            {
+                var workspace = this.dbRepository.Workspace.Get(id);
+
+                if (files == null)
+                {
+                    var dialog = new OpenFileDialog();
+                    dialog.AllowMultiple = true;
+                    dialog.Filters = new List<FileDialogFilter>() { new FileDialogFilter() { Name = Language.ImageFiles, Extensions = { "jpg", "jpeg", "png" } } };
+
+                    files = await dialog.ShowAsync(App.MainWindow);
+                }
+
+                if (files != null && files.Length > 0)
+                {
+                    foreach (var filePath in files)
+                    {
+                        await this.notificationControl.SendToastMessage(ToastMessage.Uncloseable(string.Format(Language.ToastWorkspaceProcessingSingle, filePath, workspace.Name), "workspace"));
+                        var picture = await this.pictureWorker.CreatePictureMetadataFromLocalImage(filePath);
+
+                        if (picture != null)
+                        {
+                            var result = await this.pictureWorker.SaveWorkspacePicture(picture, workspace);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                await Task.Run(() => this.dbRepository.WorkspacePicture.AddToWorkspace(id, picture, result));
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    }
+
+                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastWorkspaceProcessed), "workspace"));
+                    return true;
+                }
+
+                return true;
+            });
+        }
+
+        private async Task<bool> OnImportFilestoAllWorkspacesCommand()
+        {
+            return await Task.Run<bool>(async () =>
+            {
+                var dialog = new OpenFileDialog();
+                dialog.AllowMultiple = true;
+                dialog.Filters = new List<FileDialogFilter>() { new FileDialogFilter() {Name = Language.ImageFiles, Extensions = { "jpg", "jpeg", "png" } } };
+
+                var files = await dialog.ShowAsync(App.MainWindow);
+                if (files != null && files.Length > 0)
+                {
+                    foreach (var workspace in this.dbRepository.Workspace.GetAll())
+                    {
+                        var result = await OnImportFilesToSpecificWorkspace(workspace.Id, files);
+                        if (!result)
+                        {
+                            await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionGenericError), "workspace"));
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+
+                GC.Collect();
+                return true;
+            });
+        }
 
         private ObservableCollection<MenuItemViewModel> GetMainMenus()
         {
@@ -243,6 +341,22 @@ namespace TsukiTag.ViewModels
                         Items = new List<MenuItemViewModel>(
                             new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = SwitchToAllWorkspaceBrowsingCommand } }, { new MenuItemViewModel() { Header = "-" } } }
                             .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = SwitchToSpefificWorkspaceBrowsingCommand, CommandParameter = l.Id })))
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = "-"
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionImportImagesToWorkspaces,
+                        IsEnabled = allWorkspaces.Count > 0,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = ImportFilesToAllWorkspacesCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = ImportFilesToSpecifcWorkspacesCommand, CommandParameter = l.Id })))
                     }
                 },
                 {

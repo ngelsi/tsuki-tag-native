@@ -13,6 +13,7 @@ namespace TsukiTag.Models
         public static Provider Konachan = new Provider() { Name = "Konachan" };
         public static Provider Danbooru = new Provider() { Name = "Danbooru" };
         public static Provider Yandere = new Provider() { Name = "Yande.re" };
+        public static Provider Local = new Provider() { Name = "OS" };
 
         public string Name { get; set; }
     }

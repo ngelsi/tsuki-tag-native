@@ -3,6 +3,7 @@ using ExifLibrary;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,8 @@ namespace TsukiTag.Dependencies
 
         Task<string> SaveWorkspacePicture(Picture picture, Workspace workspace);
 
+        Task<Picture?> CreatePictureMetadataFromLocalImage(string imagePath);
+
         Task DeletePicture(WorkspacePicture picture, Workspace workspace);
     }
 
@@ -33,6 +36,84 @@ namespace TsukiTag.Dependencies
         )
         {
             this.pictureDownloader = pictureDownloader;
+        }
+
+        public async Task<Picture?> CreatePictureMetadataFromLocalImage(string imagePath)
+        {
+            try
+            {
+                return await Task.Run<Picture?>(async () =>
+                {
+                    try
+                    {
+                        var imageBytes = File.ReadAllBytes(imagePath);
+
+                        var picture = new Picture();
+                        picture.Provider = Provider.Local.Name;
+                        picture.Id = Guid.NewGuid().ToString("N");
+                        picture.Md5 = GetMD5HashFromFile(imageBytes);
+                        picture.Tags = string.Empty;
+                        picture.OverrideExtension(Path.GetExtension(imagePath).Remove(0, 1));
+                        picture.IsLocallyImported = true;
+                        picture.IsLocal = true;
+                        picture.FileUrl = imagePath;
+                        picture.Rating = Rating.Unknown.Name;
+                        picture.Source = imagePath;
+
+                        using (var ms = new MemoryStream(imageBytes.ToArray()))
+                        {
+                            var systemBitmap = new System.Drawing.Bitmap(ms);
+
+                            picture.Width = systemBitmap.Width;
+                            picture.Height = systemBitmap.Height;
+
+                            var heightRatio = 150.0 / picture.Height;
+                            var widthRatio = 150.0 / picture.Width;
+                            var lowerRatio = heightRatio < widthRatio ? heightRatio : widthRatio;
+
+                            picture.PreviewHeight = (int)(picture.Height * lowerRatio);
+                            picture.PreviewWidth = (int)(picture.Width * lowerRatio);
+
+                            if (picture.IsJpg)
+                            {
+                                try
+                                {
+                                    ms.Position = 0;
+                                    var pictureMetadata = ImageFile.FromStream(ms);
+
+                                    var tagProperty = pictureMetadata.Properties.Get(ExifTag.WindowsKeywords);
+                                    if (tagProperty != null && tagProperty.Value != null)
+                                    {
+                                        picture.Tags = string.Join(" ", tagProperty.Value.ToString()?.Split(';').Select(s => s.Trim()));
+                                    }
+                                }
+                                catch { }
+                            }
+
+                            using (var ms2 = new MemoryStream(ResizeImage(systemBitmap, picture.PreviewWidth, picture.PreviewHeight)))
+                            {                                
+                                ms2.Position = 0;
+                                picture.PreviewImage = new Bitmap(ms2);
+                            }
+
+                            ms.Position = 0;
+                            picture.SampleImage = new Bitmap(ms);
+                            picture.SourceImage = picture.SampleImage;
+
+                            systemBitmap.Dispose();
+                            return picture;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        return null;
+                    }
+                });
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public async void OpenPictureInDefaultApplication(Picture picture, Workspace? workspace = null)
@@ -190,6 +271,52 @@ namespace TsukiTag.Dependencies
             {
                 return null;
             }
+        }
+
+        public byte[] ResizeImage(System.Drawing.Image image, int width, int height)
+        {
+            var destRect = new System.Drawing.Rectangle(0, 0, width, height);
+            var destImage = new System.Drawing.Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = System.Drawing.Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, System.Drawing.GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            using(var ms = new MemoryStream())
+            {
+                destImage.Save(ms, ImageFormat.Jpeg);
+                ms.Position = 0;
+
+                destImage.Dispose();
+                return ms.ToArray();
+            }
+        }
+
+        private string GetMD5HashFromFile(byte[] data)
+        {
+            var md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            var retVal = md5.ComputeHash(data);
+            var sb = new StringBuilder();
+
+            for (int i = 0; i < retVal.Length; i++)
+            {
+                sb.Append(retVal[i].ToString("x2"));
+            }
+
+            return sb.ToString();
         }
     }
 }
