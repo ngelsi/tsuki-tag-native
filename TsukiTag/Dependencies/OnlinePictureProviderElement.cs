@@ -26,6 +26,8 @@ namespace TsukiTag.Dependencies
 
         public abstract Task<List<Picture>> TransformRawData(ProviderFilterElement filter, string responseData);
 
+        public virtual string TagSortKeyword => "order";
+
         public virtual async Task<ProviderResult> GetPictures(ProviderFilterElement filter)
         {
             var result = new ProviderResult()
@@ -76,6 +78,11 @@ namespace TsukiTag.Dependencies
         protected virtual void OnNonOkResultReceived(IRestResponse response, ProviderFilterElement filter, ProviderResult result)
         {
 
+        }
+
+        protected virtual string HarmonizeTagString(string tagString)
+        {
+            return tagString?.Replace("sort:", TagSortKeyword + ":").Replace("order:", TagSortKeyword + ":");
         }
     }
 }

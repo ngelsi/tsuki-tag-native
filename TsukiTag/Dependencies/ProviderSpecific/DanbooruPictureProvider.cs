@@ -33,7 +33,7 @@ namespace TsukiTag.Dependencies.ProviderSpecific
 
             if (filter.Tags != null && filter.Tags.Count > 0)
             {
-                url += $"&tags={HttpUtility.UrlEncode(filter.TagString)}";
+                url += $"&tags={HttpUtility.UrlEncode(HarmonizeTagString(filter.TagString))}";
             }
 
             if (filter.Limit > 0)

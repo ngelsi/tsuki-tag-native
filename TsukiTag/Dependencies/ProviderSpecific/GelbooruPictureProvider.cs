@@ -23,6 +23,9 @@ namespace TsukiTag.Dependencies.ProviderSpecific
 
         public override string Provider => TsukiTag.Models.Provider.Gelbooru.Name;
 
+        public override string TagSortKeyword => "sort";
+
+
         public override bool IsXml => true;
 
         public override string ConstructUrl(ProviderFilterElement filter)
@@ -31,7 +34,7 @@ namespace TsukiTag.Dependencies.ProviderSpecific
 
             if (filter.Tags != null && filter.Tags.Count > 0)
             {
-                url += $"&tags={HttpUtility.UrlEncode(filter.TagString)}";
+                url += $"&tags={HttpUtility.UrlEncode(HarmonizeTagString(filter.TagString))}";
             }
 
             if (filter.Page > 0)
