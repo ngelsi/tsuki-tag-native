@@ -66,6 +66,7 @@ namespace TsukiTag.Dependencies
                             item.Picture.FileUrl = item.FilePath;
                             item.Picture.IsLocal = true;
                             item.Picture.LocalProviderType = Language.Workspace;
+                            item.Picture.LocalProviderId = item.ResourceListId;
                             item.Picture.LocalProvider = parent.Workspace.Get(item.ResourceListId)?.Name;
                         });
 
@@ -92,6 +93,7 @@ namespace TsukiTag.Dependencies
                             item.Picture.FileUrl = item.FilePath;
                             item.Picture.IsLocal = true;
                             item.Picture.LocalProviderType = Language.Workspace;
+                            item.Picture.LocalProviderId = item.ResourceListId;
                             item.Picture.LocalProvider = parent.Workspace.Get(item.ResourceListId)?.Name;
                         });
 

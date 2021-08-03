@@ -45,6 +45,7 @@ namespace TsukiTag.Models
         private string fileUrl;
         private string localProvider;
         private string localProviderType;
+        private Guid? localProviderId;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -248,6 +249,14 @@ namespace TsukiTag.Models
         {
             get { return localProvider; }
             set { localProvider = value; }
+        }
+
+        [BsonIgnore]
+        [JsonIgnore]
+        public Guid? LocalProviderId
+        {
+            get { return localProviderId; }
+            set { localProviderId = value; }
         }
 
         [BsonIgnore]

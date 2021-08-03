@@ -185,6 +185,11 @@ namespace TsukiTag.ViewModels
                 this.OnSelectAll();
             });
 
+            this.OpenInDefaultApplicationCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                this.OnOpenInDefaultApplication(CurrentPicture);
+            });
+
             #region Online List This Image
 
             this.AddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -724,6 +729,13 @@ namespace TsukiTag.ViewModels
                     {
                         Header = Language.OpenPicture,
                         Command = OpenPictureCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionOpenInDefaultApplication,
+                        Command = OpenInDefaultApplicationCommand
                     }
                 }
             };

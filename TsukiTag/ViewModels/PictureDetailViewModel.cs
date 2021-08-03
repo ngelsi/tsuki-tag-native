@@ -84,6 +84,11 @@ namespace TsukiTag.ViewModels
                 this.OnSwitchDisplay();
             });
 
+            this.OpenInDefaultApplicationCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                this.OnOpenInDefaultApplication(Picture);
+            });
+
             this.AddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 OnAddToDefaulList(Picture);
@@ -208,6 +213,18 @@ namespace TsukiTag.ViewModels
 
         private ObservableCollection<MenuItemViewModel> GetMenus()
         {
+            var imageMenus = new MenuItemViewModel();
+            imageMenus.Header = Language.ActionImage;
+            imageMenus.Items = new List<MenuItemViewModel>() {
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionOpenInDefaultApplication,
+                        Command = OpenInDefaultApplicationCommand
+                    }
+                }
+            };
+
             var onlineListMenus = new MenuItemViewModel();
             var allLists = this.dbRepository.OnlineList.GetAll();
             var eligibleLists = allLists.Where(l => l.IsEligible(Picture)).ToList();
@@ -331,7 +348,7 @@ namespace TsukiTag.ViewModels
                 }
             };
 
-            return new ObservableCollection<MenuItemViewModel>() { onlineListMenus, workspaceMenus };
+            return new ObservableCollection<MenuItemViewModel>() { imageMenus, onlineListMenus, workspaceMenus };
         }
 
         public override void Reinitialize()

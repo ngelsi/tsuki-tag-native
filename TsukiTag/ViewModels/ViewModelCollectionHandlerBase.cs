@@ -32,6 +32,7 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Unit, Unit> AddToAllWorkspacesCommand { get; protected set; }
         public ReactiveCommand<Guid, Unit> RemoveFromSpecificWorkspaceCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> RemoveFromAllWorkspaceCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> OpenInDefaultApplicationCommand { get; protected set; }
 
         public ViewModelCollectionHandlerBase(
             IDbRepository dbRepository,
@@ -47,6 +48,14 @@ namespace TsukiTag.ViewModels
         public virtual void Reinitialize()
         {
 
+        }
+
+        protected async Task OnOpenInDefaultApplication(Picture picture)
+        {
+            await Task.Run(async () =>
+            {
+                this.pictureWorker.OpenPictureInDefaultApplication(picture, picture.LocalProviderId != null ? this.dbRepository.Workspace.Get(picture.LocalProviderId.Value) : null);
+            });
         }
 
         protected async Task OnRemoveFromAllWorkspaces(Picture picture, bool notify = true)

@@ -93,6 +93,7 @@
   "SettingsWorkspaceNoPath": "Please select a folder path for all workspaces.",
   "SettingsWorkspaceSamePath": "Please select a unique folder path for all workspaces.",
 
+  "ActionImage": "Image",
   "ActionOnlineLists": "Online lists",
   "ActionWorkspaces": "Workspaces",
   "ActionAddToDefault": "Add to default",
@@ -109,6 +110,7 @@
   "ActionThisImage": "This image",
   "ActionSelection": "Selection",
   "ActionSelectionActionSuccess": "Processing completed. Check history for more information.",
+  "ActionOpenInDefaultApplication": "Open in default application",
 
   "PreviousPicture": "Previous selected picture",
   "NextPicture": "Next selected picture",

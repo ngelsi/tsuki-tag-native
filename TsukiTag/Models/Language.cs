@@ -128,6 +128,7 @@ namespace TsukiTag.Models
         public static string SettingsSaved => Localizer.Get(nameof(SettingsSaved));
         public static string SettingsSaveError => Localizer.Get(nameof(SettingsSaveError));
 
+        public static string ActionImage => Localizer.Get(nameof(ActionImage));
         public static string ActionOnlineLists => Localizer.Get(nameof(ActionOnlineLists));
         public static string ActionWorkspaces => Localizer.Get(nameof(ActionWorkspaces));
         public static string ActionAddToDefault => Localizer.Get(nameof(ActionAddToDefault));
@@ -144,6 +145,7 @@ namespace TsukiTag.Models
         public static string ActionThisImage => Localizer.Get(nameof(ActionThisImage));
         public static string ActionSelection => Localizer.Get(nameof(ActionSelection));
         public static string ActionSelectionActionSuccess => Localizer.Get(nameof(ActionSelectionActionSuccess));
+        public static string ActionOpenInDefaultApplication => Localizer.Get(nameof(ActionOpenInDefaultApplication));
 
 
         public static string PreviousPicture => Localizer.Get(nameof(PreviousPicture));

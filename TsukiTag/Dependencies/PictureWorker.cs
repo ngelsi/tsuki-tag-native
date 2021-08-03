@@ -2,6 +2,7 @@
 using ExifLibrary;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace TsukiTag.Dependencies
 {
     public interface IPictureWorker
     {
+        void OpenPictureInDefaultApplication(Picture picture, Workspace? workspace = null);
+
         Task<string> SaveWorkspacePicture(Picture picture, Workspace workspace);
 
         Task DeletePicture(WorkspacePicture picture, Workspace workspace);
@@ -30,6 +33,61 @@ namespace TsukiTag.Dependencies
         )
         {
             this.pictureDownloader = pictureDownloader;
+        }
+
+        public async void OpenPictureInDefaultApplication(Picture picture, Workspace? workspace = null)
+        {
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    try
+                    {
+                        string filePath = null;
+                        if (!string.IsNullOrEmpty(picture.FileUrl) && File.Exists(picture.FileUrl))
+                        {
+                            filePath = picture.FileUrl;
+                        }
+                        else
+                        {
+                            if (workspace?.DownloadSourcePictures == true && picture.SourceImage == null)
+                            {
+                                picture.SourceImage = await this.pictureDownloader.DownloadBitmap(picture.DownloadUrl);
+                            }
+                            else if (picture.SampleImage == null)
+                            {
+                                picture.SampleImage = await this.pictureDownloader.DownloadBitmap(picture.Url);
+                            }
+
+                            var selectedImage = (picture.SourceImage ?? picture.SampleImage);
+                            if (selectedImage != null)
+                            {
+                                var temporaryFile = Path.Combine(Path.GetTempPath(), $"{picture.Md5}.{picture.Extension}");
+                                selectedImage.Save(temporaryFile);
+
+                                filePath = temporaryFile;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(filePath))
+                        {
+                            System.Diagnostics.Process.Start(new ProcessStartInfo()
+                            {
+                                FileName = filePath,
+                                UseShellExecute = true
+                            });
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                });
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public async Task DeletePicture(WorkspacePicture picture, Workspace workspace)
@@ -80,7 +138,7 @@ namespace TsukiTag.Dependencies
 
                                     var drawingImage = new System.Drawing.Bitmap(sourceStream);
                                     var notJpg = !picture.IsJpg;
-                                    
+
                                     var imageFormat = notJpg && workspace.ConvertToJpg ? ImageFormat.Jpeg : notJpg ? ImageFormat.Png : ImageFormat.Jpeg;
                                     picture.OverrideExtension(imageFormat == ImageFormat.Jpeg ? "jpg" : "png");
 
