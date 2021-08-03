@@ -4,6 +4,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
@@ -42,6 +43,10 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Guid, Unit> ImportFilesToSpecifcWorkspacesCommand { get; }
 
         public ReactiveCommand<Unit, Unit> ImportFilesToAllWorkspacesCommand { get; }
+
+        public ReactiveCommand<Guid, Unit> ImportFolderToSpecifcWorkspacesCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> ImportFolderToAllWorkspacesCommand { get; }
 
         public ObservableCollection<MenuItemViewModel> MainWindowMenus
         {
@@ -134,7 +139,17 @@ namespace TsukiTag.ViewModels
 
             this.ImportFilesToAllWorkspacesCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                await this.OnImportFilestoAllWorkspacesCommand();
+                await this.OnImportFilesToAllWorkspaces();
+            });
+
+            this.ImportFolderToSpecifcWorkspacesCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                await this.OnImportFolderToSpecificWorkspace(id);
+            });
+
+            this.ImportFolderToAllWorkspacesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await this.OnImportFolderToAllWorkspaces();
             });
 
             CurrentContent = ProviderContext;
@@ -220,6 +235,54 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        private async Task<bool> OnImportFolderToAllWorkspaces()
+        {
+            return await Task.Run<bool>(async () =>
+            {
+                var dialog = new OpenFolderDialog();
+                var folder = await dialog.ShowAsync(App.MainWindow);
+
+                if (!string.IsNullOrEmpty(folder))
+                {
+                    var imageFiles = Directory.GetFiles(folder, "*.jpg")
+                                    .Concat(Directory.GetFiles(folder, "*.jpeg"))
+                                    .Concat(Directory.GetFiles(folder, "*.png")).ToArray();
+
+                    if (imageFiles != null && imageFiles.Length > 0)
+                    {
+                        await this.OnImportFilesToAllWorkspaces(imageFiles);
+                    }
+                }
+
+                GC.Collect();
+                return true;
+            });
+        }
+
+        private async Task<bool> OnImportFolderToSpecificWorkspace(Guid id)
+        {
+            return await Task.Run<bool>(async () =>
+            {
+                var dialog = new OpenFolderDialog();
+                var folder = await dialog.ShowAsync(App.MainWindow);
+
+                if (!string.IsNullOrEmpty(folder))
+                {
+                    var imageFiles = Directory.GetFiles(folder, "*.jpg")
+                                    .Concat(Directory.GetFiles(folder, "*.jpeg"))
+                                    .Concat(Directory.GetFiles(folder, "*.png")).ToArray();
+
+                    if(imageFiles != null && imageFiles.Length > 0)
+                    {
+                        await this.OnImportFilesToSpecificWorkspace(id, imageFiles);
+                    }
+                }
+
+                GC.Collect();
+                return true;
+            });
+        }
+
         private async Task<bool> OnImportFilesToSpecificWorkspace(Guid id, string[] files = null)
         {
             return await Task.Run<bool>(async () =>
@@ -264,15 +327,19 @@ namespace TsukiTag.ViewModels
             });
         }
 
-        private async Task<bool> OnImportFilestoAllWorkspacesCommand()
+        private async Task<bool> OnImportFilesToAllWorkspaces(string[] files = null)
         {
             return await Task.Run<bool>(async () =>
             {
-                var dialog = new OpenFileDialog();
-                dialog.AllowMultiple = true;
-                dialog.Filters = new List<FileDialogFilter>() { new FileDialogFilter() {Name = Language.ImageFiles, Extensions = { "jpg", "jpeg", "png" } } };
+                if(files == null)
+                {
+                    var dialog = new OpenFileDialog();
+                    dialog.AllowMultiple = true;
+                    dialog.Filters = new List<FileDialogFilter>() { new FileDialogFilter() { Name = Language.ImageFiles, Extensions = { "jpg", "jpeg", "png" } } };
 
-                var files = await dialog.ShowAsync(App.MainWindow);
+                    files = await dialog.ShowAsync(App.MainWindow);
+                }
+
                 if (files != null && files.Length > 0)
                 {
                     foreach (var workspace in this.dbRepository.Workspace.GetAll())
@@ -357,6 +424,16 @@ namespace TsukiTag.ViewModels
                         Items = new List<MenuItemViewModel>(
                             new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = ImportFilesToAllWorkspacesCommand } }, { new MenuItemViewModel() { Header = "-" } } }
                             .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = ImportFilesToSpecifcWorkspacesCommand, CommandParameter = l.Id })))
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionImportFolderToWorkspace,
+                        IsEnabled = allWorkspaces.Count > 0,
+                        Items = new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = ImportFolderToAllWorkspacesCommand } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = ImportFolderToSpecifcWorkspacesCommand, CommandParameter = l.Id })))
                     }
                 },
                 {
