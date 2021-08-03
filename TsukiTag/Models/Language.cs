@@ -79,9 +79,11 @@ namespace TsukiTag.Models
         public static string TemplateDescription => Localizer.Get(nameof(TemplateDescription));
         public static string PictureTemplateHelp => $"{Localizer.Get(nameof(TemplateDescription))}{typeof(Picture).GetPropertyTemplateNameIteration()}";
         public static string AppSettingsInterface => Localizer.Get(nameof(AppSettingsInterface));
+        public static string AppSettingsBehavior => Localizer.Get(nameof(AppSettingsBehavior));
         public static string AppSettingsDeselectPicturesOnContextSwitch => Localizer.Get(nameof(AppSettingsDeselectPicturesOnContextSwitch));
         public static string AppSettingsCloseTabsOnContextSwitch => Localizer.Get(nameof(AppSettingsCloseTabsOnContextSwitch));
         public static string AppSettingsJumpToBrowserTabOnClose => Localizer.Get(nameof(AppSettingsJumpToBrowserTabOnClose));
+        public static string AppSettingsAllowDuplicateImages => Localizer.Get(nameof(AppSettingsAllowDuplicateImages));
         public static string AppSettingsBlacklistTags => Localizer.Get(nameof(AppSettingsBlacklistTags));
         public static string AppSettingsBlacklistTagsDescription => Localizer.Get(nameof(AppSettingsBlacklistTagsDescription));
         public static string SettingsSave => Localizer.Get(nameof(SettingsSave));

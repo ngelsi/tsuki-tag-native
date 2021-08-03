@@ -17,6 +17,7 @@ namespace TsukiTag.Models.Repository
         private bool deselectPicturesOnContextSwitch;
         private string[] blacklistTags;
         private string currentBlacklistTag;
+        private bool allowDuplicateImages;
 
         public string Id { get; set; }
 
@@ -58,6 +59,16 @@ namespace TsukiTag.Models.Repository
             {
                 jumpToBrowserTabOnClose = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JumpToBrowserTabOnClose)));
+            }
+        }
+
+        public bool AllowDuplicateImages
+        {
+            get { return allowDuplicateImages; }
+            set
+            {
+                allowDuplicateImages = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AllowDuplicateImages)));
             }
         }
 

@@ -68,6 +68,7 @@ namespace TsukiTag.Dependencies
         private HashSet<string> seenPictures;
 
         private readonly IPictureDownloader pictureDownloadControl;
+        private readonly IDbRepository dbRepository;
 
         public event EventHandler<Picture> PictureSelected;
 
@@ -86,10 +87,12 @@ namespace TsukiTag.Dependencies
         public event EventHandler PicturesReset;
 
         public PictureControl(
-            IPictureDownloader pictureDownloadControl
+            IPictureDownloader pictureDownloadControl,
+            IDbRepository dbRepository
         )
         {
             this.pictureDownloadControl = pictureDownloadControl;
+            this.dbRepository = dbRepository;
 
             currentPictureSet = new List<Picture>();
             selectedPictures = new List<Picture>();
@@ -138,7 +141,10 @@ namespace TsukiTag.Dependencies
             await semaphoreSlim.WaitAsync();
             try
             {
-                return await Task.FromResult(seenPictures.Contains(md5) || currentPictureSet.Any(p => p.Md5 == md5));
+                return await Task.FromResult(
+                    this.dbRepository.ApplicationSettings.Get().AllowDuplicateImages ? false :
+                    seenPictures.Contains(md5) || currentPictureSet.Any(p => p.Md5 == md5)
+                );
             }
             catch { }
             finally
