@@ -79,7 +79,7 @@ namespace TsukiTag.Dependencies
                                 try
                                 {
                                     ms.Position = 0;
-                                    var pictureMetadata = ImageFile.FromStream(ms);
+                                    var pictureMetadata = ImageFile.FromStream(ms);                                    
 
                                     var tagProperty = pictureMetadata.Properties.Get(ExifTag.WindowsKeywords);
                                     if (tagProperty != null && tagProperty.Value != null)

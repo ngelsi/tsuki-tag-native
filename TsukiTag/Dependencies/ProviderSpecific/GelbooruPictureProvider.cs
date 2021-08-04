@@ -89,7 +89,7 @@ namespace TsukiTag.Dependencies.ProviderSpecific
                     picture.PreviewUrl = post.preview_url;
                     picture.DownloadUrl = post.file_url;
                     picture.CreatedAt = post.created_at;
-                    picture.CreatedBy = post.creator_id;
+                    picture.Author = post.creator_id;
 
                     if (int.TryParse(post.height, out int h))
                     {

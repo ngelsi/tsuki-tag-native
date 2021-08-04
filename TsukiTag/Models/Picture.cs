@@ -22,7 +22,7 @@ namespace TsukiTag.Models
         private string rating;
         private string md5;
         private string createdAt;
-        private string createdBy;
+        private string author;
         private int width;
         private int height;
         private int previewWidth;
@@ -34,7 +34,6 @@ namespace TsukiTag.Models
         private string tags;
         private string userTags;
         private bool hasChildren;
-        private bool favorite;
         private bool selected;
         private string extension;
         private string source;
@@ -47,6 +46,13 @@ namespace TsukiTag.Models
         private string localProviderType;
         private Guid? localProviderId;
         private bool isLocallyImported;
+        private string title;
+        private string description;
+        private string copyright;
+        private string notes;
+        private bool isWorkspace;
+        private bool isOnline;
+        private bool isMetadataClone;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -90,12 +96,6 @@ namespace TsukiTag.Models
         {
             get { return createdAt; }
             set { createdAt = value; }
-        }
-
-        public string CreatedBy
-        {
-            get { return createdBy; }
-            set { createdBy = value; }
         }
 
         public int Width
@@ -152,12 +152,6 @@ namespace TsukiTag.Models
             set { tags = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Tags))); PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TagList))); }
         }
 
-        public string UserTags
-        {
-            get { return userTags; }
-            set { userTags = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UserTags))); }
-        }
-
         public bool HasChildren
         {
             get { return hasChildren; }
@@ -174,6 +168,36 @@ namespace TsukiTag.Models
         {
             get { return source; }
             set { source = value; }
+        }
+
+        public string Author
+        {
+            get { return author; }
+            set { author = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Author))); }
+        }
+
+        public string Title
+        {
+            get { return title; }
+            set { title = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Title))); }
+        }
+
+        public string Description
+        {
+            get { return description; }
+            set { description = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description))); }
+        }
+
+        public string Copyright
+        {
+            get { return copyright; }
+            set { copyright = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Copyright))); }
+        }
+
+        public string Notes
+        {
+            get { return notes; }
+            set { notes = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Notes))); }
         }
 
         public List<string> TagList
@@ -240,6 +264,27 @@ namespace TsukiTag.Models
         {
             get { return isLocal; }
             set { isLocal = value; }
+        }
+
+        [BsonIgnore]
+        public bool IsWorkspace
+        {
+            get { return isWorkspace; }
+            set { isWorkspace = value; }
+        }
+
+        [BsonIgnore]
+        public bool IsOnline
+        {
+            get { return isOnline; }
+            set { isOnline = value; }
+        }
+
+        [BsonIgnore]
+        public bool IsMetadataClone
+        {
+            get { return isMetadataClone; }
+            set { isMetadataClone = value; }
         }
 
         [BsonIgnore]
@@ -355,17 +400,6 @@ namespace TsukiTag.Models
             this.extension = extension;
         }
 
-        public void AddUserTag(string tag)
-        {
-            if (!string.IsNullOrEmpty(tag))
-            {
-                var list = UserTagList;
-                list.Add(tag);
-
-                UserTags = string.Join(' ', list.Distinct());
-            }
-        }
-
         public void AddTag(string tag)
         {
             if (!string.IsNullOrEmpty(tag))
@@ -374,14 +408,6 @@ namespace TsukiTag.Models
                 list.Add(tag);
 
                 Tags = string.Join(' ', list.Distinct().OrderBy(s => s));
-            }
-        }
-
-        public void RemoveUserTag(string tag)
-        {
-            if (!string.IsNullOrEmpty(tag))
-            {
-                UserTags = string.Join(' ', UserTagList.Where(t => t != tag).Distinct());
             }
         }
 
@@ -395,7 +421,10 @@ namespace TsukiTag.Models
 
         public Picture MetadatawiseClone()
         {
-            return JsonConvert.DeserializeObject<Picture>(JsonConvert.SerializeObject(this));
+            var picture = JsonConvert.DeserializeObject<Picture>(JsonConvert.SerializeObject(this));
+            picture.IsMetadataClone = true;
+
+            return picture;
         }
 
         public Picture()
@@ -404,11 +433,14 @@ namespace TsukiTag.Models
 
         ~Picture()
         {
-            RemovePictureBitmaps(true);
-
-            if(PropertyChanged != null)
+            if (!IsMetadataClone)
             {
-                foreach(var p in PropertyChanged.GetInvocationList())
+                RemovePictureBitmaps(true);
+            }
+
+            if (PropertyChanged != null)
+            {
+                foreach (var p in PropertyChanged.GetInvocationList())
                 {
                     PropertyChanged -= (p as PropertyChangedEventHandler);
                 }
@@ -423,7 +455,7 @@ namespace TsukiTag.Models
             SampleImage?.Dispose();
             SampleImage = null;
 
-            if(includePreviewImage)
+            if (includePreviewImage)
             {
                 PreviewImage?.Dispose();
                 PreviewImage = null;
@@ -432,7 +464,7 @@ namespace TsukiTag.Models
 
         public override bool Equals(object? obj)
         {
-            if(obj is Picture picture)
+            if (obj is Picture picture)
             {
                 return picture.Md5 == Md5 && picture.Id == Id && picture.LocalProviderId == LocalProviderId;
             }

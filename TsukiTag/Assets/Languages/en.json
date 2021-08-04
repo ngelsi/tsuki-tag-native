@@ -18,6 +18,11 @@
   "Url": "URL",
   "Source": "Source",
   "Tags": "Tags",
+  "Author": "Author",
+  "Title": "Title",
+  "Description": "Description",
+  "Copyright": "Copyright",
+  "Notes":  "Notes",
 
   "Safe": "Safe",
   "Questionable": "Questionable",

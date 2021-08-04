@@ -48,6 +48,11 @@ namespace TsukiTag.Models
         public static string Url => Localizer.Get(nameof(Url));
         public static string Source => Localizer.Get(nameof(Source));
         public static string Tags => Localizer.Get(nameof(Tags));
+        public static string Author => Localizer.Get(nameof(Author));
+        public static string Title => Localizer.Get(nameof(Title));
+        public static string Description => Localizer.Get(nameof(Description));
+        public static string Copyright => Localizer.Get(nameof(Copyright));
+        public static string Notes => Localizer.Get(nameof(Notes));
 
 
         public static string Safe => Localizer.Get(nameof(Safe));
