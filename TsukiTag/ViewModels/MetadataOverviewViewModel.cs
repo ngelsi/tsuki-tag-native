@@ -8,6 +8,7 @@ using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading.Tasks;
 using TsukiTag.Dependencies;
+using TsukiTag.Extensions;
 using TsukiTag.Models;
 namespace TsukiTag.ViewModels
 {
@@ -70,7 +71,7 @@ namespace TsukiTag.ViewModels
                 if (!string.IsNullOrEmpty(FilterString))
                 {
                     var filterParts = FilterString.Split(' ').Where(s => !string.IsNullOrEmpty(s));
-                    return CurrentPicture?.TagList.Where(s => filterParts.Any(fs => s.IndexOf(fs) > -1)).ToList() ?? new List<string>();
+                    return CurrentPicture?.TagList.Where(s => filterParts.Any(fs => s.WildcardMatchesEx(fs))).ToList() ?? new List<string>();
                 }
 
                 return CurrentPicture?.TagList ?? new List<string>();

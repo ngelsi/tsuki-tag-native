@@ -46,6 +46,11 @@ namespace TsukiTag.Extensions
             return string.Join(", ", type.GetPropertyTemplateNameList());
         }
 
+        public static bool WildcardMatchesEx(this string str, string template)
+        {
+            return str.IndexOf(template) > -1 || str?.WildcardMatches(template) == true;
+        }
+
         public static bool WildcardMatches(this string str, string template)
         {
             var hasAsterisk = template.IndexOf('*') != -1;

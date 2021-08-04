@@ -34,7 +34,7 @@
           <Button Margin="0 -2 0 0" DockPanel.Dock="Right" ToolTip.Tip="{Binding Language.ProviderTagsDescription}" ToolTip.ShowDelay="0" ToolTip.Placement="Left" Classes="actionbutton">
             <i:Icon Margin="0 0 0 0" FontSize="20" Value="fa-info-circle"></i:Icon>
           </Button>          
-          <AutoCompleteBox DockPanel.Dock="Top" Items="{Binding TagSuggestions}" KeyDown="TagBoxGotKeyDown" Text="{Binding TagString}" Watermark="{Binding Language.SearchTags}" Margin="0 0 10 0"></AutoCompleteBox>
+          <AutoCompleteBox ItemFilter="{Binding ItemFilter}" DockPanel.Dock="Top" Items="{Binding TagSuggestions}" KeyDown="TagBoxGotKeyDown" Text="{Binding TagString}" Watermark="{Binding Language.SearchTags}" Margin="0 0 10 0"></AutoCompleteBox>
         </DockPanel>
         <DockPanel DockPanel.Dock="Top">
           <ItemsControl Items="{Binding CurrentTags}" DockPanel.Dock="Top">
@@ -56,7 +56,7 @@
           <Button Margin="0 -2 0 0" DockPanel.Dock="Right" ToolTip.Tip="{Binding Language.ExcludeTagsDescriptionWildcard}" ToolTip.ShowDelay="0" ToolTip.Placement="Left" Classes="actionbutton">
             <i:Icon Margin="0 0 0 0" FontSize="20" Value="fa-info-circle"></i:Icon>
           </Button>
-          <AutoCompleteBox DockPanel.Dock="Right" Items="{Binding TagSuggestions}" KeyDown="ExcludeTagBoxGotKeyDown" Text="{Binding ExcludedTagString}" Watermark="{Binding Language.ExcludeTags}" Margin="5 0 10 0"></AutoCompleteBox>
+          <AutoCompleteBox ItemFilter="{Binding ItemFilter}" DockPanel.Dock="Right" Items="{Binding TagSuggestions}" KeyDown="ExcludeTagBoxGotKeyDown" Text="{Binding ExcludedTagString}" Watermark="{Binding Language.ExcludeTags}" Margin="5 0 10 0"></AutoCompleteBox>
         </DockPanel>
         <DockPanel DockPanel.Dock="Top">
           <ItemsControl Items="{Binding CurrentExcludedTags}" DockPanel.Dock="Top">

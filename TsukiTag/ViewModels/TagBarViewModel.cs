@@ -1,4 +1,5 @@
-﻿using DynamicData;
+﻿using Avalonia.Controls;
+using DynamicData;
 using ReactiveUI;
 using System;
 using System.Collections.Concurrent;
@@ -9,6 +10,7 @@ using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading.Tasks;
 using TsukiTag.Dependencies;
+using TsukiTag.Extensions;
 using TsukiTag.Models;
 
 namespace TsukiTag.ViewModels
@@ -19,7 +21,7 @@ namespace TsukiTag.ViewModels
         private readonly IPictureControl pictureControl;
 
         private string tagString;
-        private ConcurrentDictionary<string, byte> seenTags;       
+        private ConcurrentDictionary<string, byte> seenTags;
         private ObservableCollection<string> currentTags;
         private ObservableCollection<string> tagSuggestions;
         private ObservableCollection<string> currentExcludedTags;
@@ -58,6 +60,8 @@ namespace TsukiTag.ViewModels
             set { excludedTagString = value; this.RaisePropertyChanged(nameof(ExcludedTagString)); }
         }
 
+        public AutoCompleteFilterPredicate<object> ItemFilter { get; set; }
+
         public TagBarViewModel(
             IProviderFilterControl providerFilterControl,
             IPictureControl pictureControl
@@ -71,6 +75,11 @@ namespace TsukiTag.ViewModels
 
             this.pictureControl = pictureControl;
             this.pictureControl.PictureAdded += OnPictureAdded;
+
+            this.ItemFilter = new AutoCompleteFilterPredicate<object>((str, obj) =>
+            {
+                return obj?.ToString()?.WildcardMatchesEx(str) == true;
+            });
         }
 
         ~TagBarViewModel()
@@ -146,7 +155,7 @@ namespace TsukiTag.ViewModels
                     var tags = await this.pictureControl.GetTags();
                     foreach (var tag in tags.Tags)
                     {
-                        if(!seenTags.ContainsKey(tag.Tag))
+                        if (!seenTags.ContainsKey(tag.Tag))
                         {
                             seenTags.TryAdd(tag.Tag, 1);
                         }
