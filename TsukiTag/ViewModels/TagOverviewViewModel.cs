@@ -43,7 +43,7 @@ namespace TsukiTag.ViewModels
         public TagCollection Tags
         {
             get { return tags; }
-            set { tags = value; this.RaisePropertyChanged(nameof(Tags)); this.RaisePropertyChanged(nameof(FilteredTags)); }
+            set { tags = value; this.RaisePropertyChanged(nameof(Tags)); this.RaisePropertyChanged(nameof(FilteredTags)); this.RaisePropertyChanged(nameof(FilteredTags.Tags)); this.RaisePropertyChanged(nameof(FilteredTags.TagCount)); }
         }
 
         public TagCollection FilteredTags

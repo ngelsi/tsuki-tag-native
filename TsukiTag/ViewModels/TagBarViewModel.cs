@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using ReactiveUI;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace TsukiTag.ViewModels
         private readonly IPictureControl pictureControl;
 
         private string tagString;
-        private TagCollection tagCollection;
+        private ConcurrentDictionary<string, byte> seenTags;       
         private ObservableCollection<string> currentTags;
         private ObservableCollection<string> tagSuggestions;
         private ObservableCollection<string> currentExcludedTags;
@@ -47,7 +48,7 @@ namespace TsukiTag.ViewModels
             get { return tagString; }
             set
             {
-                tagString = value; this.RaisePropertyChanged((nameof(TagString)));                
+                tagString = value; this.RaisePropertyChanged((nameof(TagString)));
             }
         }
 
@@ -62,6 +63,7 @@ namespace TsukiTag.ViewModels
             IPictureControl pictureControl
         )
         {
+            this.seenTags = new ConcurrentDictionary<string, byte>();
             this.tagSuggestions = new ObservableCollection<string>();
 
             this.providerFilterControl = providerFilterControl;
@@ -122,7 +124,7 @@ namespace TsukiTag.ViewModels
         public async void OnAutoCompleteInitiated(string filter)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
-            {               
+            {
                 TagString = tagSuggestions.Select(t => new { index = t.IndexOf(filter, StringComparison.OrdinalIgnoreCase), value = t }).Where(t => t.index > -1).OrderBy(t => t.index).FirstOrDefault()?.value ?? filter;
             });
         }
@@ -142,10 +144,15 @@ namespace TsukiTag.ViewModels
                 try
                 {
                     var tags = await this.pictureControl.GetTags();
-                    var tagStrings = tags.Tags.Select(s => s.Tag);
-                    var newList = tagStrings.Concat(TagSuggestions).Distinct().ToList();
+                    foreach (var tag in tags.Tags)
+                    {
+                        if(!seenTags.ContainsKey(tag.Tag))
+                        {
+                            seenTags.TryAdd(tag.Tag, 1);
+                        }
+                    }
 
-                    TagSuggestions = new ObservableCollection<string>(newList);
+                    TagSuggestions = new ObservableCollection<string>(seenTags.Keys);
                 }
                 catch { }
             });

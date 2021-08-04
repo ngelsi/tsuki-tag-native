@@ -59,7 +59,7 @@ namespace TsukiTag.Dependencies
                 ApplicationSettingsChanged?.Invoke(this, EventArgs.Empty);
             }
 
-            private void EnsureApplicationSettingsCache(bool reset = true)
+            private void EnsureApplicationSettingsCache(bool reset = false)
             {
                 if(reset || settingsCache == null)
                 {

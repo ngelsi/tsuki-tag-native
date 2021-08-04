@@ -402,6 +402,34 @@ namespace TsukiTag.Models
         {
         }
 
+        ~Picture()
+        {
+            RemovePictureBitmaps(true);
+
+            if(PropertyChanged != null)
+            {
+                foreach(var p in PropertyChanged.GetInvocationList())
+                {
+                    PropertyChanged -= (p as PropertyChangedEventHandler);
+                }
+            }
+        }
+
+        public void RemovePictureBitmaps(bool includePreviewImage = false)
+        {
+            SourceImage?.Dispose();
+            SourceImage = null;
+
+            SampleImage?.Dispose();
+            SampleImage = null;
+
+            if(includePreviewImage)
+            {
+                PreviewImage?.Dispose();
+                PreviewImage = null;
+            }
+        }
+
         public override bool Equals(object? obj)
         {
             if(obj is Picture picture)

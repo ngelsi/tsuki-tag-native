@@ -34,7 +34,7 @@ namespace TsukiTag.Dependencies
 
         void RemovePicture(Picture picture);
 
-        void ResetPictures();
+        Task ResetPictures();
 
         void SelectPicture(Picture picture);
 
@@ -61,11 +61,13 @@ namespace TsukiTag.Dependencies
 
         private List<Picture> currentPictureSet;
 
+        private TagCollection currentTagCollection;
+
         private List<Picture> selectedPictures;
 
         private List<Picture> openedPictures;
 
-        private HashSet<string> seenPictures;
+        private HashSet<string> seenPictures;        
 
         private readonly IPictureDownloader pictureDownloadControl;
         private readonly IDbRepository dbRepository;
@@ -94,6 +96,7 @@ namespace TsukiTag.Dependencies
             this.pictureDownloadControl = pictureDownloadControl;
             this.dbRepository = dbRepository;
 
+            currentTagCollection = new TagCollection();
             currentPictureSet = new List<Picture>();
             selectedPictures = new List<Picture>();
             openedPictures = new List<Picture>();
@@ -161,13 +164,8 @@ namespace TsukiTag.Dependencies
 
             try
             {
-                if (picture.SourceImage != null)
-                {
-                    picture.SourceImage.Dispose();
-                    picture.SourceImage = null;
-                }
-
                 picture.Selected = false;
+
                 selectedPictures.Remove(picture);
 
                 PictureDeselected?.Invoke(this, picture);
@@ -270,6 +268,7 @@ namespace TsukiTag.Dependencies
                             picture.Selected = selectedPictures.Contains(picture);
 
                             currentPictureSet.Add(picture);
+                            currentTagCollection.AddPictureTags(picture);
                             seenPictures.Add(picture.Md5);
 
                             added = true;
@@ -298,11 +297,7 @@ namespace TsukiTag.Dependencies
         {
             await Task.Run(() =>
             {
-                if (picture.SourceImage != null)
-                {
-                    picture.SourceImage.Dispose();
-                    picture.SourceImage = null;
-                }
+                picture.RemovePictureBitmaps();
 
                 openedPictures.Remove(picture);
                 PictureClosed?.Invoke(this, picture);
@@ -318,15 +313,28 @@ namespace TsukiTag.Dependencies
             });
         }
 
-        public async void ResetPictures()
+        public async Task ResetPictures()
         {
-            await Task.Run(() =>
+            await semaphoreSlim.WaitAsync();
+            try
             {
-                currentPictureSet = new List<Picture>();
-                seenPictures = new HashSet<string>();
+                foreach(var picture in currentPictureSet)
+                {
+                    picture.RemovePictureBitmaps();
+                }
+            }
+            catch(Exception)
+            {}
+            finally
+            {
+                semaphoreSlim.Release();
+            }
 
-                PicturesReset?.Invoke(this, EventArgs.Empty);
-            });
+            currentTagCollection = new TagCollection();
+            currentPictureSet = new List<Picture>();
+            seenPictures = new HashSet<string>();
+
+            PicturesReset?.Invoke(this, EventArgs.Empty);
         }
 
         public async Task<TagCollection> GetTags()
@@ -334,10 +342,7 @@ namespace TsukiTag.Dependencies
             await semaphoreSlim.WaitAsync();
             try
             {
-                return await Task.FromResult(
-                    TagCollection.GetTags(
-                        this.currentPictureSet.ToList()
-                ));
+                return await Task.FromResult(currentTagCollection);
             }
             catch { }
             finally
