@@ -318,10 +318,9 @@ namespace TsukiTag.Dependencies
             await semaphoreSlim.WaitAsync();
             try
             {
-                foreach(var picture in currentPictureSet)
-                {
-                    picture.RemovePictureBitmaps();
-                }
+                currentTagCollection = new TagCollection();
+                currentPictureSet = new List<Picture>();
+                seenPictures = new HashSet<string>();
             }
             catch(Exception)
             {}
@@ -329,10 +328,6 @@ namespace TsukiTag.Dependencies
             {
                 semaphoreSlim.Release();
             }
-
-            currentTagCollection = new TagCollection();
-            currentPictureSet = new List<Picture>();
-            seenPictures = new HashSet<string>();
 
             PicturesReset?.Invoke(this, EventArgs.Empty);
         }

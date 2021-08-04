@@ -158,7 +158,7 @@ namespace TsukiTag.ViewModels
             this.dbRepository.OnlineList.OnlineListsChanged += OnResourceListsChanged;
             this.dbRepository.Workspace.WorkspacesChanged += OnResourceListsChanged;
 
-            this.picture.PropertyChanged += OnPicturePropertiesChanged;
+            this.picture.PropertyChanged += OnPicturePropertiesChanged;            
         }
 
         ~PictureDetailViewModel()
