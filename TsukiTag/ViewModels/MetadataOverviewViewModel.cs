@@ -795,7 +795,7 @@ namespace TsukiTag.ViewModels
                {
                     new MenuItemViewModel()
                     {
-                        Header = CurrentPicture.IsLocal ? string.Format(Language.ActionSaveChanges, CurrentPicture.LocalProviderType?.ToLower()) : Language.ActionSaveChangesGeneral,
+                        Header = CurrentPicture?.IsLocal == true ? string.Format(Language.ActionSaveChanges, CurrentPicture?.LocalProviderType?.ToLower()) : Language.ActionSaveChangesGeneral,
                         Command = SavePictureChangesCommand
                     }
                 },

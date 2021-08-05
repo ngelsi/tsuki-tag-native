@@ -239,11 +239,25 @@ namespace TsukiTag.Dependencies
                     {
                         if (workspace.DownloadSourcePictures && picture.SourceImage == null)
                         {
-                            picture.SourceImage = await this.pictureDownloader.DownloadBitmap(picture.DownloadUrl);
+                            if(!string.IsNullOrEmpty(picture.FileUrl))
+                            {
+                                picture.SourceImage = await this.pictureDownloader.DownloadLocalBitmap(picture.FileUrl);
+                            }
+                            else
+                            {
+                                picture.SourceImage = await this.pictureDownloader.DownloadBitmap(picture.DownloadUrl);
+                            }
                         }
                         else if (picture.SampleImage == null)
                         {
-                            picture.SampleImage = await this.pictureDownloader.DownloadBitmap(picture.Url);
+                            if(!string.IsNullOrEmpty(picture.FileUrl))
+                            {
+                                picture.SampleImage = await this.pictureDownloader.DownloadLocalBitmap(picture.FileUrl);
+                            }
+                            else
+                            {
+                                picture.SampleImage = await this.pictureDownloader.DownloadBitmap(picture.Url);
+                            }
                         }
 
                         Bitmap imageBitmap = workspace.DownloadSourcePictures ? picture.SourceImage : picture.SampleImage;
