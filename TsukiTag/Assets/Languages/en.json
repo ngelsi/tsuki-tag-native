@@ -145,6 +145,7 @@
   "ActionSaveChanges": "Save changes (re-add to {0})",
   "ActionSaveChangesGeneral": "Save changes (re-add)",
   "ActionOpenPictureWebsite": "Open image website",
+  "ActionRedownload": "Re-download from provider",
 
   "PreviousPicture": "Previous selected picture",
   "NextPicture": "Next selected picture",
@@ -179,6 +180,10 @@
   "ToastMetadataGroupApplied": "Metadata group applied to images. Re-add or save images to persist the changes.",
   "ToastMetadataGroupApplyError": "Something went wrong during metadata group data application.",
   "ToastNotLocal": "Selected image or images are not yet in a local context.",
+  "ToastRedownloading": "Searching for image {0} at {1}.",
+  "ToastRedownloadedSingle": "Image {0} has been re-downloaded from {1}. Re-add or save images to persist the changes",
+  "ToastRedownloaded": "Images have been re-downloaded from their providers. Re-add or save images to persist the changes.",
+  "ToastRedownloadCouldNotFind": "Could not find image {0} at provider {1}",
 
   "NavigationOnline": "Browse online",
   "NavigationAllOnlineLists": "Browse all online lists",

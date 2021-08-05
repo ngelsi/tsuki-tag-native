@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TsukiTag.Models;
 using TsukiTag.Models.Repository;
 
 namespace TsukiTag.Dependencies
 {
     public interface IPictureProvider
     {
+        Task<Picture> RedownloadPicture(Picture picture);
+
         Task GetPictures();
 
         Task HookToFilter();
@@ -51,8 +54,13 @@ namespace TsukiTag.Dependencies
             this.providerFilterControl = providerFilterControl;
             this.pictureControl = pictureControl;
             this.onlineListPictureProvider = onlineListPictureProvider;
-            this.onlinePictureProvider = onlinePictureProvider;        
+            this.onlinePictureProvider = onlinePictureProvider;
             this.workspacePictureProvider = workspacePictureProvider;
+        }
+
+        public async Task<Picture> RedownloadPicture(Picture picture)
+        {
+            return await onlinePictureProvider.RedownloadPicture(picture);
         }
 
         public Task GetPictures()
@@ -62,11 +70,11 @@ namespace TsukiTag.Dependencies
 
         public async Task SetContextToOnline()
         {
-            if(this.currentProvider != null)
+            if (this.currentProvider != null)
             {
                 await this.currentProvider.UnhookFromFilter();
             }
-            
+
             this.currentProvider = this.onlinePictureProvider;
 
             await this.pictureControl.SwitchPictureContext();
@@ -137,7 +145,7 @@ namespace TsukiTag.Dependencies
 
         public Task HookToFilter()
         {
-            return  this.currentProvider.HookToFilter();
+            return this.currentProvider.HookToFilter();
         }
     }
 }

@@ -62,97 +62,97 @@ namespace TsukiTag.Models
         public string Id
         {
             get { return id; }
-            set { id = value; }
+            set { id = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Id))); }
         }
 
         public string Provider
         {
             get { return provider; }
-            set { provider = value; }
+            set { provider = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Provider))); }
         }
 
         public string ParentId
         {
             get { return parentId; }
-            set { parentId = value; }
+            set { parentId = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ParentId))); }
         }
 
         public int Score
         {
             get { return score; }
-            set { score = value; }
+            set { score = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Score))); }
         }
 
         public string Rating
         {
             get { return rating; }
-            set { rating = value; }
+            set { rating = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Rating))); }
         }
 
         public string Md5
         {
             get { return md5; }
-            set { md5 = value; }
+            set { md5 = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Md5))); }
         }
 
         public string CreatedBy
         {
             get { return createdBy; }
-            set { createdBy = value; }
+            set { createdBy = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CreatedBy))); }
         }
 
         public string CreatedAt
         {
             get { return createdAt; }
-            set { createdAt = value; }
+            set { createdAt = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CreatedAt))); }
         }
 
         public int Width
         {
             get { return width; }
-            set { width = value; }
+            set { width = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Width))); }
         }
 
         public int Height
         {
             get { return height; }
-            set { height = value; }
+            set { height = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Height))); }
         }
 
         public int PreviewWidth
         {
             get { return previewWidth; }
-            set { previewWidth = value; }
+            set { previewWidth = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PreviewWidth))); }
         }
 
         public int PreviewHeight
         {
             get { return previewHeight; }
-            set { previewHeight = value; }
+            set { previewHeight = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PreviewHeight))); }
         }
 
         public string PreviewUrl
         {
             get { return previewUrl; }
-            set { previewUrl = value; }
+            set { previewUrl = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PreviewUrl))); }
         }
 
         public string Url
         {
             get { return url; }
-            set { url = value; }
+            set { url = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Url))); }
         }
 
         public string DownloadUrl
         {
             get { return downloadUrl; }
-            set { downloadUrl = value; }
+            set { downloadUrl = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DownloadUrl))); }
         }
 
         public string Status
         {
             get { return status; }
-            set { status = value; }
+            set { status = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Status))); }
         }
 
         public string Tags
@@ -164,7 +164,7 @@ namespace TsukiTag.Models
         public bool HasChildren
         {
             get { return hasChildren; }
-            set { hasChildren = value; }
+            set { hasChildren = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasChildren))); }
         }
 
         public bool Selected
@@ -176,7 +176,7 @@ namespace TsukiTag.Models
         public string Source
         {
             get { return source; }
-            set { source = value; }
+            set { source = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Source))); }
         }
 
         public string Author
@@ -408,6 +408,24 @@ namespace TsukiTag.Models
             picture.IsMetadataClone = true;
 
             return picture;
+        }
+
+        public void UpdateGenericMetadata(Picture picture)
+        {
+            Id = picture.Id;
+            ParentId = picture.ParentId;
+            Rating = picture.Rating;
+            Tags = string.Join(' ', picture.TagList.Concat(TagList).Distinct().OrderBy(s => s));
+            Md5 = picture.Md5;
+            Score = picture.Score;
+            Source = picture.Source;            
+            Status = picture.Status;
+            Url = picture.Url;
+            PreviewUrl = picture.PreviewUrl;
+            DownloadUrl = picture.DownloadUrl;
+            CreatedAt = picture.CreatedAt;
+            CreatedBy = picture.CreatedBy;
+            Author = picture.CreatedBy;
         }
 
         public Picture()

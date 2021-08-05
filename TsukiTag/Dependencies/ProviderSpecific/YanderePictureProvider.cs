@@ -23,6 +23,11 @@ namespace TsukiTag.Dependencies.ProviderSpecific
 
         public override bool IsXml => false;
 
+        public override string ConstructIdentifiedUrl(string id)
+        {
+            return $"{BaseUrl}?tags=id:{id}";
+        }
+
         public override string ConstructUrl(ProviderFilterElement filter)
         {
             var url = BaseUrl;
@@ -42,7 +47,7 @@ namespace TsukiTag.Dependencies.ProviderSpecific
             return url;
         }
 
-        public override Task<List<Picture>> TransformRawData(ProviderFilterElement filter, string responseData)
+        public override Task<List<Picture>> TransformRawData(ProviderFilterElement? filter, string responseData)
         {
             var pictures = new List<Picture>();
 
@@ -59,6 +64,7 @@ namespace TsukiTag.Dependencies.ProviderSpecific
                     picture.Rating = pobj.GetValue("rating")?.ToString();
                     picture.Tags = pobj.GetValue("tags")?.ToString();
                     picture.Md5 = pobj.GetValue("md5")?.ToString();
+                    picture.Score = int.Parse(pobj.GetValue("score")?.ToString() ?? "0");
                     picture.Source = pobj.GetValue("source")?.ToString();
                     picture.Status = pobj.GetValue("status")?.ToString();
                     picture.Url = pobj.GetValue("sample_url")?.ToString();

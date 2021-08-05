@@ -90,6 +90,25 @@ namespace TsukiTag.Dependencies
             });
         }
 
+        public async Task<Picture> RedownloadPicture(Picture picture)
+        {
+            var provider = new IPictureProviderElement[]
+            {
+                safebooruPictureProvider,
+                gelbooruPictureProvider,
+                konachanPictureProvider,
+                danbooruPictureProvider,
+                yanderePictureProvider
+            }.FirstOrDefault(p => p.Provider == picture.Provider);
+
+            if (provider != null && !string.IsNullOrEmpty(picture.Id))
+            {
+                return await provider.GetPicture(picture.Id);
+            }
+
+            return null;
+        }
+
         public async Task GetPictures()
         {
             var filter = await this.providerFilterControl.GetCurrentFilter();

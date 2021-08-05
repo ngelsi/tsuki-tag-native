@@ -71,8 +71,9 @@ namespace TsukiTag.ViewModels
             IPictureControl pictureControl,
             IDbRepository dbRepository,
             INotificationControl notificationControl,
-            IPictureWorker pictureWorker
-        ) : base(dbRepository, pictureWorker, notificationControl)
+            IPictureWorker pictureWorker,
+            IPictureProviderContext providerContext
+        ) : base(dbRepository, pictureWorker, notificationControl, providerContext)
         {
             this.ClosePictureCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -162,6 +163,11 @@ namespace TsukiTag.ViewModels
             this.OpenPictureWebsiteCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 OnOpenPictureWebsite(Picture);
+            });
+
+            this.RedownloadPictureCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnRedownloadPicture(Picture);
             });
 
             this.fillView = true;
@@ -271,6 +277,13 @@ namespace TsukiTag.ViewModels
                     {
                         Header = Language.ActionOpenPictureWebsite,
                         Command = OpenPictureWebsiteCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRedownload,
+                        Command = RedownloadPictureCommand
                     }
                 }
             };

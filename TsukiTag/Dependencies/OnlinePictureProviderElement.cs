@@ -14,6 +14,8 @@ namespace TsukiTag.Dependencies
         string Provider { get; }
 
         Task<ProviderResult> GetPictures(ProviderFilterElement filter);
+
+        Task<Picture> GetPicture(string id);
     }
 
     public abstract class OnlinePictureProviderElement : IPictureProviderElement
@@ -24,9 +26,32 @@ namespace TsukiTag.Dependencies
 
         public abstract string ConstructUrl(ProviderFilterElement filter);
 
-        public abstract Task<List<Picture>> TransformRawData(ProviderFilterElement filter, string responseData);
+        public abstract string ConstructIdentifiedUrl(string id);
+
+        public abstract Task<List<Picture>> TransformRawData(ProviderFilterElement? filter, string responseData);
 
         public virtual string TagSortKeyword => "order";
+
+        public virtual async Task<Picture> GetPicture(string id)
+        {
+            try
+            {
+                var url = ConstructIdentifiedUrl(id);
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET) { RequestFormat = IsXml ? DataFormat.Xml : DataFormat.Json };
+                var response = await client.ExecuteAsync(request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
+                {
+                    var pictures = await TransformRawData(null, response.Content);
+                    return pictures?.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            { }
+
+            return null;
+        }
 
         public virtual async Task<ProviderResult> GetPictures(ProviderFilterElement filter)
         {

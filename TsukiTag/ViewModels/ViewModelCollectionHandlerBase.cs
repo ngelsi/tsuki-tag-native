@@ -18,6 +18,7 @@ namespace TsukiTag.ViewModels
         protected readonly IDbRepository dbRepository;
         protected readonly INotificationControl notificationControl;
         protected readonly IPictureWorker pictureWorker;
+        protected readonly IPictureProviderContext providerContext;
 
         public ReactiveCommand<Unit, Unit> AddToDefaultListCommand { get; protected set; }
         public ReactiveCommand<Guid, Unit> AddToSpecificListCommand { get; protected set; }
@@ -36,22 +37,25 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Guid, Unit> ApplyMetadataGroupCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> SavePictureChangesCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> OpenPictureWebsiteCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> RedownloadPictureCommand { get; protected set; }
 
         public ViewModelCollectionHandlerBase(
             IDbRepository dbRepository,
             IPictureWorker pictureWorker,
-            INotificationControl notificationControl
+            INotificationControl notificationControl,
+            IPictureProviderContext providerContext
         )
         {
             this.dbRepository = dbRepository;
             this.notificationControl = notificationControl;
             this.pictureWorker = pictureWorker;
+            this.providerContext = providerContext;
         }
 
         public virtual void Reinitialize()
         {
 
-        }
+        }        
 
         protected async Task OnOpenInDefaultApplication(Picture picture)
         {
@@ -329,7 +333,7 @@ namespace TsukiTag.ViewModels
                     {
                         if (notify)
                         {
-                            await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionAddToSuccess, Language.OnlineList.ToLower(), list.Name)));
+                            await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionAddToSuccess, Language.OnlineList.ToLower(), list.Name), "onlinelist"));
                         }
 
                         Reinitialize();
@@ -376,7 +380,7 @@ namespace TsukiTag.ViewModels
                    {
                        if (notify)
                        {
-                           await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionAddToSuccess, Language.OnlineList.ToLower(), list.Name)));
+                           await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionAddToSuccess, Language.OnlineList.ToLower(), list.Name), "onlinelist"));
                        }
 
                        Reinitialize();
@@ -466,6 +470,64 @@ namespace TsukiTag.ViewModels
                 {
                     return false;
                 }
+            });
+        }
+
+        protected async Task<bool> OnRedownloadPicture(Picture picture, bool notify = true)
+        {
+            return await Task.Run<bool>(async () =>
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(picture.Id) && !string.IsNullOrEmpty(picture.Provider))
+                    {
+                        if(notify)
+                        {
+                            await this.notificationControl.SendToastMessage(ToastMessage.Uncloseable(string.Format(Language.ToastRedownloading, picture.Id, picture.Provider), "redownload"));
+                        }
+
+                        var newPicture = await this.providerContext.RedownloadPicture(picture);
+                        if(newPicture != null)
+                        {
+                            picture.UpdateGenericMetadata(newPicture);
+
+                            if(notify)
+                            {
+                                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastRedownloadedSingle, picture.Id, picture.Provider), "redownload"));
+                            }
+
+                            return true;
+                        }
+                        else
+                        {
+                            if(notify)
+                            {
+                                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastRedownloadCouldNotFind, picture.Id, picture.Provider), "redownload"));
+                            }                            
+
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (notify)
+                        {
+                            await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastRedownloadCouldNotFind, picture.Id, picture.Provider), "redownload"));
+                        }
+
+                        return false;
+                    }
+                }
+                catch (Exception)
+                {
+                }
+
+                if (notify)
+                {
+                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastRedownloadCouldNotFind, picture.Id, picture.Provider), "redownload"));
+                }
+
+                return false;
             });
         }
 

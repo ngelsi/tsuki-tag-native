@@ -89,6 +89,11 @@ namespace TsukiTag.Dependencies
             }
         }
 
+        public async Task<Picture> RedownloadPicture(Picture picture)
+        {
+            return null;
+        }
+
         private async void OnFilterChanged(object? sender, EventArgs e)
         {
             await Task.Run(async () =>

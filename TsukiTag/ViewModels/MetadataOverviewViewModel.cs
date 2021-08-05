@@ -124,6 +124,7 @@ namespace TsukiTag.ViewModels
 
         public ReactiveCommand<Guid, Unit> SelectionApplyMetadataGroupCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> SelectionSavePictureChangesCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SelectionRedownloadPicturesCommand { get; protected set; }
 
 
         public MetadataOverviewViewModel(
@@ -132,8 +133,9 @@ namespace TsukiTag.ViewModels
             INavigationControl navigationControl,
             INotificationControl notificationControl,
             IDbRepository dbRepository,
-            IPictureWorker pictureWorker
-        ) : base(dbRepository, pictureWorker, notificationControl)
+            IPictureWorker pictureWorker,
+            IPictureProviderContext providerContext
+        ) : base(dbRepository, pictureWorker, notificationControl, providerContext)
         {
             this.SelectedPictures = new ObservableCollection<Picture>();
 
@@ -207,6 +209,11 @@ namespace TsukiTag.ViewModels
             this.ApplyMetadataGroupCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
             {
                 OnApplyMetadataGroup(id, CurrentPicture);
+            });
+
+            this.RedownloadPictureCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnRedownloadPicture(CurrentPicture);
             });
 
             #region Online List This Image
@@ -438,6 +445,12 @@ namespace TsukiTag.ViewModels
                 GC.Collect();
             });
 
+            this.SelectionRedownloadPicturesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await OnSelectionRedownload();
+                GC.Collect();
+            });
+
             #endregion SelectionSelection
         }
 
@@ -622,6 +635,17 @@ namespace TsukiTag.ViewModels
                     await this.OnSaveChanges(picture);
                 }
             }
+        }
+
+        private async Task OnSelectionRedownload()
+        {
+            foreach (var picture in SelectedPictures.ToList())
+            {
+                await this.notificationControl.SendToastMessage(ToastMessage.Uncloseable(string.Format(Language.ToastRedownloading, picture.Id, picture.Provider), "redownload"));
+                await this.OnRedownloadPicture(picture, false);
+            }
+
+            await this.notificationControl.SendToastMessage(ToastMessage.Uncloseable(string.Format(Language.ToastRedownloaded), "redownload"));
         }
 
         private void OnPictureDeselected(object? sender, Picture e)
@@ -836,6 +860,13 @@ namespace TsukiTag.ViewModels
                         Header = Language.ActionOpenPictureWebsite,
                         Command = OpenPictureWebsiteCommand
                     }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRedownload,
+                        Command = RedownloadPictureCommand
+                    }
                 }
             };
 
@@ -985,6 +1016,13 @@ namespace TsukiTag.ViewModels
                             .Concat(metadataGroups.Select(l => new MenuItemViewModel() { Header = l.Name, Command = SelectionApplyMetadataGroupCommand, CommandParameter = l.Id }))
                         ) : null,
                         IsEnabled = metadataGroups.Count > 0
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionRedownload,
+                        Command = SelectionRedownloadPicturesCommand
                     }
                 },
                 {

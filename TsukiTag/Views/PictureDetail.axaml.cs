@@ -31,7 +31,8 @@ namespace TsukiTag.Views
                 Ioc.SimpleIoc.PictureControl,
                 Ioc.SimpleIoc.DbRepository,
                 Ioc.SimpleIoc.NotificationControl,
-                Ioc.SimpleIoc.PictureWorker
+                Ioc.SimpleIoc.PictureWorker,
+                Ioc.SimpleIoc.PictureProviderContext
             );
 
         }

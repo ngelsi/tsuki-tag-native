@@ -85,6 +85,11 @@ namespace TsukiTag.ViewModels
             this.navigationControl = navigationControl;
             this.providerFilterControl = providerFilterControl;
 
+            if (this.picture != null)
+            {
+                this.picture.PropertyChanged += OnPicturePropertiesChanged;
+            }
+
             this.AddTagCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 this.OnTagAdded();
@@ -93,7 +98,10 @@ namespace TsukiTag.ViewModels
 
         ~PictureMetadataEditorViewModel()
         {
-
+            if(this.picture != null)
+            {
+                this.picture.PropertyChanged -= OnPicturePropertiesChanged;
+            }            
         }
 
         public async void OnTagRemoved(string tag)
@@ -153,6 +161,18 @@ namespace TsukiTag.ViewModels
                 }
 
                 CurrentTag = string.Empty;
+            });
+        }
+
+        private async void OnPicturePropertiesChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                this.RaisePropertyChanged(nameof(Picture));
+                this.RaisePropertyChanged(nameof(Picture.TagList));
+                this.RaisePropertyChanged(nameof(Picture.Tags));
+                this.RaisePropertyChanged(nameof(FilteredTags));
+                this.RaisePropertyChanged(nameof(TagCount));
             });
         }
     }
