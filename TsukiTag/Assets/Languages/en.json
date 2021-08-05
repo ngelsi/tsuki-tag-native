@@ -144,6 +144,7 @@
   "ActionApplyMetadataGroup": "Apply metadata group ..",
   "ActionSaveChanges": "Save changes (re-add to {0})",
   "ActionSaveChangesDisabled": "Save changes (re-add)",
+  "ActionOpenPictureWebsite":  "Open image website",
 
   "PreviousPicture": "Previous selected picture",
   "NextPicture": "Next selected picture",

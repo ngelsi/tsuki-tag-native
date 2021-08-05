@@ -159,6 +159,11 @@ namespace TsukiTag.ViewModels
                 OnSaveChanges(Picture);
             });
 
+            this.OpenPictureWebsiteCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnOpenPictureWebsite(Picture);
+            });
+
             this.fillView = true;
 
             this.pictureControl = pictureControl;
@@ -259,6 +264,13 @@ namespace TsukiTag.ViewModels
                     {
                         Header = Language.ActionOpenInDefaultApplication,
                         Command = OpenInDefaultApplicationCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionOpenPictureWebsite,
+                        Command = OpenPictureWebsiteCommand
                     }
                 }
             };

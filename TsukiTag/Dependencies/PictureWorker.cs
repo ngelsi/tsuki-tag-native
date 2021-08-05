@@ -19,6 +19,8 @@ namespace TsukiTag.Dependencies
     {
         void OpenPictureInDefaultApplication(Picture picture, Workspace? workspace = null);
 
+        void OpenPictureWebsite(Picture picture);
+
         Task<string> SaveWorkspacePicture(Picture picture, Workspace workspace);
 
         Task<Picture?> CreatePictureMetadataFromLocalImage(string imagePath);
@@ -79,7 +81,7 @@ namespace TsukiTag.Dependencies
                                 try
                                 {
                                     ms.Position = 0;
-                                    var pictureMetadata = ImageFile.FromStream(ms);                                    
+                                    var pictureMetadata = ImageFile.FromStream(ms);
 
                                     var tagProperty = pictureMetadata.Properties.Get(ExifTag.WindowsKeywords);
                                     if (tagProperty != null && tagProperty.Value != null)
@@ -91,7 +93,7 @@ namespace TsukiTag.Dependencies
                             }
 
                             using (var ms2 = new MemoryStream(ResizeImage(systemBitmap, picture.PreviewWidth, picture.PreviewHeight)))
-                            {                                
+                            {
                                 ms2.Position = 0;
                                 picture.PreviewImage = new Bitmap(ms2);
                             }
@@ -155,6 +157,47 @@ namespace TsukiTag.Dependencies
                             System.Diagnostics.Process.Start(new ProcessStartInfo()
                             {
                                 FileName = filePath,
+                                UseShellExecute = true
+                            });
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                });
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        public async void OpenPictureWebsite(Picture picture)
+        {
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    try
+                    {
+                        string url = null;
+                        var provider = Provider.Get(picture.Provider);
+                        if (provider != null)
+                        {
+                            url = string.Format(provider.ImageUrl, picture.Id);
+                        }
+
+                        if (string.IsNullOrEmpty(url) && !string.IsNullOrEmpty(picture.FileUrl))
+                        {
+                            url = $"file:///{picture.FileUrl.Replace("\\", "/")}";
+                        }
+
+                        if (!string.IsNullOrEmpty(url))
+                        {
+                            System.Diagnostics.Process.Start(new ProcessStartInfo()
+                            {
+                                FileName = url,
                                 UseShellExecute = true
                             });
                         }
@@ -243,11 +286,11 @@ namespace TsukiTag.Dependencies
                                         {
                                             exif.Properties.Set(ExifTag.WindowsAuthor, picture.Author ?? string.Empty);
                                             exif.Properties.Set(ExifTag.PNGAuthor, picture.Author ?? string.Empty);
-                                            exif.Properties.Set(ExifTag.WindowsTitle, picture.Title ?? string.Empty);                                            
+                                            exif.Properties.Set(ExifTag.WindowsTitle, picture.Title ?? string.Empty);
                                             exif.Properties.Set(ExifTag.ImageDescription, picture.Title ?? string.Empty);
                                             exif.Properties.Set(ExifTag.WindowsSubject, picture.Description ?? string.Empty);
                                             exif.Properties.Set(ExifTag.Copyright, picture.Copyright ?? string.Empty);
-                                            exif.Properties.Set(ExifTag.WindowsComment, picture.Notes ?? string.Empty);                                            
+                                            exif.Properties.Set(ExifTag.WindowsComment, picture.Notes ?? string.Empty);
                                         }
 
                                         if (workspace.InjectTags)
@@ -301,7 +344,7 @@ namespace TsukiTag.Dependencies
                 }
             }
 
-            using(var ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 destImage.Save(ms, ImageFormat.Jpeg);
                 ms.Position = 0;

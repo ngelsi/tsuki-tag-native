@@ -179,6 +179,7 @@ namespace TsukiTag.Models
         public static string ActionApplyMetadataGroup => Localizer.Get(nameof(ActionApplyMetadataGroup));
         public static string ActionSaveChanges => Localizer.Get(nameof(ActionSaveChanges));
         public static string ActionSaveChangesDisabled => Localizer.Get(nameof(ActionSaveChangesDisabled));
+        public static string ActionOpenPictureWebsite => Localizer.Get(nameof(ActionOpenPictureWebsite));
 
 
         public static string PreviousPicture => Localizer.Get(nameof(PreviousPicture));

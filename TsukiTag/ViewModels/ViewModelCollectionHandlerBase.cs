@@ -35,7 +35,7 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Unit, Unit> OpenInDefaultApplicationCommand { get; protected set; }
         public ReactiveCommand<Guid, Unit> ApplyMetadataGroupCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> SavePictureChangesCommand{ get; protected set; }
-
+        public ReactiveCommand<Unit, Unit> OpenPictureWebsiteCommand { get; protected set; }
 
         public ViewModelCollectionHandlerBase(
             IDbRepository dbRepository,
@@ -58,6 +58,14 @@ namespace TsukiTag.ViewModels
             await Task.Run(async () =>
             {
                 this.pictureWorker.OpenPictureInDefaultApplication(picture, picture.LocalProviderId != null ? this.dbRepository.Workspace.Get(picture.LocalProviderId.Value) : null);
+            });
+        }
+
+        protected async Task OnOpenPictureWebsite(Picture picture)
+        {
+            await Task.Run(async () =>
+            {
+                this.pictureWorker.OpenPictureWebsite(picture);
             });
         }
 
