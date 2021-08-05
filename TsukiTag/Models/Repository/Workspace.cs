@@ -19,6 +19,9 @@ namespace TsukiTag.Models.Repository
         private string folderPath;
         private string fileNameTemplate;
         private bool deleteFileOnRemove;
+        private bool autoApplyMetadataGroup;
+        private Guid? metadataGroupId;
+        private MetadataGroup metadataGroup;
 
         public string FolderPath
         {
@@ -58,7 +61,7 @@ namespace TsukiTag.Models.Repository
                 convertToJpg = value;
                 NotifyPropertyChanged(nameof(ConvertToJpg));
 
-                if(value == false)
+                if (value == false)
                 {
                     InjectTags = false;
                     InjectMetadata = false;
@@ -98,6 +101,26 @@ namespace TsukiTag.Models.Repository
             }
         }
 
+        public bool AutoApplyMetadataGroup
+        {
+            get { return autoApplyMetadataGroup; }
+            set
+            {
+                autoApplyMetadataGroup = value;
+                NotifyPropertyChanged(nameof(AutoApplyMetadataGroup));
+            }
+        }
+
+        public Guid? MetadataGroupId
+        {
+            get { return metadataGroupId; }
+            set
+            {
+                metadataGroupId = value;
+                NotifyPropertyChanged(nameof(MetadataGroupId));
+            }
+        }
+
         public bool DeleteFileOnRemove
         {
             get { return deleteFileOnRemove; }
@@ -106,6 +129,39 @@ namespace TsukiTag.Models.Repository
                 deleteFileOnRemove = value;
                 NotifyPropertyChanged(nameof(DeleteFileOnRemove));
             }
+        }
+
+        [BsonIgnore]
+        public MetadataGroup MetadataGroup
+        {
+            get { return metadataGroup; }
+            set
+            {
+                metadataGroup = value;
+
+                if (value != null)
+                {
+                    metadataGroupId = value?.Id;
+                }
+
+                NotifyPropertyChanged(nameof(MetadataGroupId));
+                NotifyPropertyChanged(nameof(AutoApplyMetadataGroup));
+                NotifyPropertyChanged(nameof(MetadataGroup));
+            }
+        }
+
+        public override Picture ProcessPicture(Picture picture)
+        {
+            if(MetadataGroup != null && AutoApplyMetadataGroup)
+            {
+                picture.Author = metadataGroup?.Author != null ? metadataGroup.Author?.ReplaceProperties(picture) : picture.Author;
+                picture.Title = metadataGroup.Title?.ReplaceProperties(picture);
+                picture.Description = metadataGroup.Description?.ReplaceProperties(picture);
+                picture.Copyright = metadataGroup.Copyright?.ReplaceProperties(picture);
+                picture.Notes = metadataGroup.Notes?.ReplaceProperties(picture);
+            }
+
+            return base.ProcessPicture(picture);
         }
     }
 }

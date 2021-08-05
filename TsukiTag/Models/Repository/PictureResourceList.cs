@@ -137,7 +137,7 @@ namespace TsukiTag.Models.Repository
                    mandatoryConditionTags?.All(t => picture.TagList.Any(tt => tt.WildcardMatches(t))) == true;
         }
 
-        public Picture ProcessPicture(Picture picture)
+        public virtual Picture ProcessPicture(Picture picture)
         {
             if (TagsToAdd != null && TagsToAdd?.Any() == true)
             {

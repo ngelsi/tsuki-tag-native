@@ -149,6 +149,16 @@ namespace TsukiTag.ViewModels
                 OnRemoveFromAllWorkspaces(Picture);
             });
 
+            this.ApplyMetadataGroupCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                OnApplyMetadataGroup(id, Picture);
+            });
+
+            this.SavePictureChangesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnSaveChanges(Picture);
+            });
+
             this.fillView = true;
 
             this.pictureControl = pictureControl;
@@ -158,7 +168,7 @@ namespace TsukiTag.ViewModels
             this.dbRepository.OnlineList.OnlineListsChanged += OnResourceListsChanged;
             this.dbRepository.Workspace.WorkspacesChanged += OnResourceListsChanged;
 
-            this.picture.PropertyChanged += OnPicturePropertiesChanged;            
+            this.picture.PropertyChanged += OnPicturePropertiesChanged;
         }
 
         ~PictureDetailViewModel()
@@ -213,9 +223,37 @@ namespace TsukiTag.ViewModels
 
         private ObservableCollection<MenuItemViewModel> GetMenus()
         {
+            var metadataGroups = this.dbRepository.MetadataGroup.GetAll();
+            var defaultMetadataGroup = metadataGroups.FirstOrDefault(m => m.IsDefault);
+
             var imageMenus = new MenuItemViewModel();
             imageMenus.Header = Language.ActionImage;
-            imageMenus.Items = new List<MenuItemViewModel>() {
+            imageMenus.Items = new List<MenuItemViewModel>() {                
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Picture.IsLocal ? string.Format(Language.ActionSaveChanges, Picture.LocalProviderType?.ToLower()) : Language.ActionSaveChangesDisabled,
+                        IsEnabled = Picture.IsLocal,
+                        Command = SavePictureChangesCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = "-"
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionApplyMetadataGroup,
+                        Items = metadataGroups.Count > 0 ? new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = defaultMetadataGroup == null ? Language.Default : string.Format($"{Language.Default} ({defaultMetadataGroup.Name})"), Command = ApplyMetadataGroupCommand, CommandParameter = defaultMetadataGroup.Id, IsEnabled = defaultMetadataGroup != null } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(metadataGroups.Select(l => new MenuItemViewModel() { Header = l.Name, Command = ApplyMetadataGroupCommand, CommandParameter = l.Id }))
+                        ) : null,
+                        IsEnabled = metadataGroups.Count > 0 && Picture.IsLocal
+                    }
+                },                
                 {
                     new MenuItemViewModel()
                     {

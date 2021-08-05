@@ -237,16 +237,22 @@ namespace TsukiTag.Dependencies
                                     if (workspace.InjectMetadata || workspace.InjectTags)
                                     {
                                         var exif = await ImageFile.FromStreamAsync(destStream);
-                                        exif.Properties.Set(ExifTag.Software, "TsukiTag");
+                                        exif.Properties.Set(ExifTag.Software, "Tsuki-tag");
 
                                         if (workspace.InjectMetadata)
                                         {
-                                            exif.Properties.Set(ExifTag.WindowsKeywords, string.Join("; ", picture.TagList));
+                                            exif.Properties.Set(ExifTag.WindowsAuthor, picture.Author ?? string.Empty);
+                                            exif.Properties.Set(ExifTag.PNGAuthor, picture.Author ?? string.Empty);
+                                            exif.Properties.Set(ExifTag.WindowsTitle, picture.Title ?? string.Empty);                                            
+                                            exif.Properties.Set(ExifTag.ImageDescription, picture.Title ?? string.Empty);
+                                            exif.Properties.Set(ExifTag.WindowsSubject, picture.Description ?? string.Empty);
+                                            exif.Properties.Set(ExifTag.Copyright, picture.Copyright ?? string.Empty);
+                                            exif.Properties.Set(ExifTag.WindowsComment, picture.Notes ?? string.Empty);                                            
                                         }
 
                                         if (workspace.InjectTags)
                                         {
-                                            exif.Properties.Set(ExifTag.WindowsComment, string.Join(Environment.NewLine, picture.Metadata));
+                                            exif.Properties.Set(ExifTag.WindowsKeywords, string.Join("; ", picture.TagList));
                                         }
 
                                         exif.Save(filePath);

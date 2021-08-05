@@ -128,14 +128,36 @@
         <TextBox Classes="metadatavalue" Grid.Column="1" Grid.Row="6" Text="{Binding CurrentPicture.Id, Mode=OneWay}" Height="15"/>
       </Grid>
 
-      <StackPanel Margin="13 0 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-        <TextBlock Classes="metadatatitle" Text="{Binding Language.Url}"></TextBlock>
-        <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Url, Mode=OneWay}" Width="280"/>
+      <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding CurrentPicture.IsOnline}">
+        <StackPanel Margin="13 0 5 5" DockPanel.Dock="Top" Orientation="Vertical">
+          <TextBlock Classes="metadatatitle" Text="{Binding Language.Url}"></TextBlock>
+          <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Url, Mode=OneWay}" Width="280"/>
+        </StackPanel>
+        <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
+          <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
+          <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Source, Mode=OneWay}" Width="280"/>
+        </StackPanel>
       </StackPanel>
-      <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-        <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
-        <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Source, Mode=OneWay}" Width="280"/>
-      </StackPanel>
+
+      <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding CurrentPicture.IsLocal}">
+        <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
+          <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
+          <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Source, Mode=OneWay}" Width="280"/>
+        </StackPanel>
+        <StackPanel Margin="13 0 5 5" DockPanel.Dock="Top" Orientation="Vertical">
+          <TextBlock Classes="metadatatitle" Text="{Binding Language.Url}"></TextBlock>
+          <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Url, Mode=OneWay}" Width="280"/>
+        </StackPanel>
+        <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
+          <TextBlock Classes="metadatatitle" Text="{Binding Language.Author}"></TextBlock>
+          <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Author, Mode=OneWay}" Width="280"/>
+        </StackPanel>
+        <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
+          <TextBlock Classes="metadatatitle" Text="{Binding Language.Copyright}"></TextBlock>
+          <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Copyright, Mode=OneWay}" Width="280"/>
+        </StackPanel>
+      </StackPanel>      
+      
       <DockPanel DockPanel.Dock="Top">
         <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
           <Label DockPanel.Dock="Left" Content="{Binding Language.Tags}"></Label>

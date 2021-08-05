@@ -34,6 +34,12 @@ namespace TsukiTag.Dependencies
             public event EventHandler WorkspacesChanged;
 
             private List<Workspace> workspaceCache;
+            private IDbRepository parent;
+
+            public WorkspaceDb(IDbRepository parent)
+            {
+                this.parent = parent;
+            }
 
             public Workspace Get(Guid id)
             {
@@ -68,29 +74,7 @@ namespace TsukiTag.Dependencies
 
                     foreach (var workspace in workspaces)
                     {
-                        var dbWorkspace = coll.FindOne(l => l.Id == workspace.Id);
-                        if (dbWorkspace == null)
-                        {
-                            coll.Insert(workspace);
-                        }
-                        else
-                        {
-                            dbWorkspace.Name = workspace.Name;
-                            dbWorkspace.TagsToAdd = workspace.TagsToAdd;
-                            dbWorkspace.TagsToRemove = workspace.TagsToRemove;
-                            dbWorkspace.OptionalConditionTags = workspace.OptionalConditionTags;
-                            dbWorkspace.MandatoryConditionTags = workspace.MandatoryConditionTags;
-                            dbWorkspace.IsDefault = workspace.IsDefault;
-                            dbWorkspace.FolderPath = workspace.FolderPath;
-                            dbWorkspace.FileNameTemplate = workspace.FileNameTemplate;
-                            dbWorkspace.DownloadSourcePictures = workspace.DownloadSourcePictures;
-                            dbWorkspace.ConvertToJpg = workspace.ConvertToJpg;
-                            dbWorkspace.InjectMetadata = workspace.InjectMetadata;
-                            dbWorkspace.InjectTags = workspace.InjectTags;
-                            dbWorkspace.DeleteFileOnRemove = workspace.DeleteFileOnRemove;
-
-                            coll.Update(dbWorkspace);
-                        }
+                        coll.Upsert(workspace);
                     }
 
                     var deletedWorkspaces = allPreviousWorkspaces.Where(a => !workspaces.Any(l => l.Id == a.Id)).ToList();
@@ -115,13 +99,22 @@ namespace TsukiTag.Dependencies
             {
                 if (reset || workspaceCache == null)
                 {
+                    List<Workspace> workspaces = null;
                     using (var db = new LiteDatabase(MetadataRepositoryPath))
                     {
                         var coll = db.GetCollection<Workspace>();
-                        var workspaces = coll.Query().ToList();
-
-                        workspaceCache = workspaces.OrderBy(l => l.Name).ToList();
+                        workspaces = coll.Query().ToList();
                     }
+
+                    workspaces.ForEach(workspace =>
+                    {
+                        if (workspace.MetadataGroupId != null)
+                        {
+                            workspace.MetadataGroup = parent.MetadataGroup.Get(workspace.MetadataGroupId.Value);
+                        }
+                    });
+
+                    workspaceCache = workspaces.OrderBy(l => l.Name).ToList();
                 }
             }
         }

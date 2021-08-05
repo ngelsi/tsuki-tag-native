@@ -142,6 +142,7 @@ namespace TsukiTag.Dependencies
                                     continue;
                                 }
 
+                                picture.IsOnline = true;
                                 pictureControl.AddPicture(picture);
                             }
                         }

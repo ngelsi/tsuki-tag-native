@@ -37,6 +37,7 @@ namespace TsukiTag.Models
         public static string Refresh => Localizer.Get(nameof(Refresh));
         public static string Filter => Localizer.Get(nameof(Filter));
         public static string ImageFiles => Localizer.Get(nameof(ImageFiles));
+        public static string Default => Localizer.Get(nameof(Default));
 
 
         public static string Rating => Localizer.Get(nameof(Rating));
@@ -123,11 +124,29 @@ namespace TsukiTag.Models
         public static string WorkspaceInjectTags => Localizer.Get(nameof(WorkspaceInjectTags));
         public static string WorkspaceInjectMetadata => Localizer.Get(nameof(WorkspaceInjectMetadata));
         public static string WorkspaceDeleteFileOnRemove => Localizer.Get(nameof(WorkspaceDeleteFileOnRemove));
+        public static string WorkspaceAutoApplyMetadataGroup => Localizer.Get(nameof(WorkspaceAutoApplyMetadataGroup));
 
         public static string SettingsWorkspaceNoName => Localizer.Get(nameof(SettingsWorkspaceNoName));
         public static string SettingsWorkspaceNotUnique => Localizer.Get(nameof(SettingsWorkspaceNotUnique));
         public static string SettingsWorkspaceNoPath => Localizer.Get(nameof(SettingsWorkspaceNoPath));
         public static string SettingsWorkspaceSamePath => Localizer.Get(nameof(SettingsWorkspaceSamePath));
+
+        public static string MetadataGroup => Localizer.Get(nameof(MetadataGroup));
+        public static string MetadataGroups => Localizer.Get(nameof(MetadataGroups));
+        public static string MetadataGroupAdd => Localizer.Get(nameof(MetadataGroupAdd));
+        public static string MetadataGroupRemove => Localizer.Get(nameof(MetadataGroupRemove));
+        public static string MetadataGroupsDescription => Localizer.Get(nameof(MetadataGroupsDescription));
+        public static string MetadataGroupIsDefault => Localizer.Get(nameof(MetadataGroupIsDefault));
+        public static string MetadataGroupName => Localizer.Get(nameof(MetadataGroupName));
+        public static string MetadataGroupTitle => Localizer.Get(nameof(MetadataGroupTitle));
+        public static string MetadataGroupDescription => Localizer.Get(nameof(MetadataGroupDescription));
+        public static string MetadataGroupAuthor => Localizer.Get(nameof(MetadataGroupAuthor));
+        public static string MetadataGroupCopyright => Localizer.Get(nameof(MetadataGroupCopyright));
+        public static string MetadataGroupNotes => Localizer.Get(nameof(MetadataGroupNotes));
+        public static string MetadataGroupWorkspaceAutomatic => Localizer.Get(nameof(MetadataGroupWorkspaceAutomatic));
+
+        public static string SettingsMetadataGroupNoName => Localizer.Get(nameof(SettingsMetadataGroupNoName));
+        public static string SettingsMetadataGroupNotUnique => Localizer.Get(nameof(SettingsMetadataGroupNotUnique));
 
 
         public static string SettingsListNoName => Localizer.Get(nameof(SettingsListNoName));
@@ -156,6 +175,10 @@ namespace TsukiTag.Models
         public static string ActionImportFolderToWorkspace => Localizer.Get(nameof(ActionImportFolderToWorkspace));
         public static string ActionImportImagesToWorkspaces => Localizer.Get(nameof(ActionImportImagesToWorkspaces));
         public static string ActionCreateWorkspaceFromFolder => Localizer.Get(nameof(ActionCreateWorkspaceFromFolder));
+        public static string ActionMetadataGroups => Localizer.Get(nameof(ActionMetadataGroups));
+        public static string ActionApplyMetadataGroup => Localizer.Get(nameof(ActionApplyMetadataGroup));
+        public static string ActionSaveChanges => Localizer.Get(nameof(ActionSaveChanges));
+        public static string ActionSaveChangesDisabled => Localizer.Get(nameof(ActionSaveChangesDisabled));
 
 
         public static string PreviousPicture => Localizer.Get(nameof(PreviousPicture));
@@ -187,6 +210,9 @@ namespace TsukiTag.Models
         public static string ToastWorkspaceProcessing => Localizer.Get(nameof(ToastWorkspaceProcessing));
         public static string ToastWorkspaceProcessed => Localizer.Get(nameof(ToastWorkspaceProcessed));
         public static string ToastWorkspaceProcessError => Localizer.Get(nameof(ToastWorkspaceProcessError));
+        public static string ToastMetadataGroupAppliedSingle => Localizer.Get(nameof(ToastMetadataGroupAppliedSingle));
+        public static string ToastMetadataGroupApplied => Localizer.Get(nameof(ToastMetadataGroupApplied));
+        public static string ToastMetadataGroupApplyError => Localizer.Get(nameof(ToastMetadataGroupApplyError));
 
         public static string NavigationOnline => Localizer.Get(nameof(NavigationOnline));
         public static string NavigationSettings => Localizer.Get(nameof(NavigationSettings));

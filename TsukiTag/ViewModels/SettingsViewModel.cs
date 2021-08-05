@@ -30,6 +30,8 @@ namespace TsukiTag.ViewModels
             this.dbRepository = dbRepository;
             this.notificationControl = notificationControl;
 
+            this.metadataGroups = new ObservableCollection<MetadataGroup>();
+
             this.AddNewListCommand = ReactiveCommand.CreateFromTask(async () => { OnNewListAdded(); });
             this.SetToDefaultCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnSetToDefault(id); });
             this.RemoveListCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnRemoveList(id); });
@@ -49,6 +51,10 @@ namespace TsukiTag.ViewModels
 
             this.AddBlacklistTagCommand = ReactiveCommand.CreateFromTask(async () => { OnAddBlacklistTag(); });
 
+            this.AddNewMetadataGroupCommand = ReactiveCommand.CreateFromTask(async () => { OnNewMetadataGroupAdded(); });
+            this.SetMetadataGroupToDefaultCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnSetMetadataGroupToDefault(id); });
+            this.RemoveMetadataGroupCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) => { OnRemoveMetadataGroup(id); });
+
             this.SettingsCancelledCommand = ReactiveCommand.CreateFromTask(async () => { OnSettingsCancelled(); });
             this.SettingsSavedCommand = ReactiveCommand.CreateFromTask(async () => { OnSettingsSaved(); });
         }
@@ -58,6 +64,7 @@ namespace TsukiTag.ViewModels
             OnlineLists = new ObservableCollection<OnlineList>(this.dbRepository.OnlineList.GetAll());
             Workspaces = new ObservableCollection<Workspace>(this.dbRepository.Workspace.GetAll());
             ApplicationSettings = this.dbRepository.ApplicationSettings.Get();
+            MetadataGroups = new ObservableCollection<MetadataGroup>(this.dbRepository.MetadataGroup.GetAll());
         }
 
         public async void OnSettingsCancelled()
@@ -98,6 +105,14 @@ namespace TsukiTag.ViewModels
                     {
                         this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsWorkspaceSamePath, "settingsworkspacesamepath"));
                     }
+                    else if (metadataGroups.Any(w => string.IsNullOrEmpty(w.Name)))
+                    {
+                        this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsMetadataGroupNoName, "settingsmetadatagroupnoname"));
+                    }
+                    else if (metadataGroups.Any(l => metadataGroups.Any(ll => ll.Name == l.Name && ll.Id != l.Id)))
+                    {
+                        this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsMetadataGroupNotUnique, "settingsmetadatagroupnotunique"));
+                    }
                     else
                     {
                         foreach (var list in onlineLists)
@@ -126,6 +141,7 @@ namespace TsukiTag.ViewModels
                         this.dbRepository.OnlineList.AddOrUpdate(onlineLists.ToList());
                         this.dbRepository.Workspace.AddOrUpdate(workspaces.ToList());
                         this.dbRepository.ApplicationSettings.Set(ApplicationSettings);
+                        this.dbRepository.MetadataGroup.AddOrUpdate(MetadataGroups.ToList());
 
                         this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsSaved, "settingssaved"));
                         this.Initialize();

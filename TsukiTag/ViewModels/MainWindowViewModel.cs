@@ -426,7 +426,7 @@ namespace TsukiTag.ViewModels
             var allLists = this.dbRepository.OnlineList.GetAll();
             var allWorkspaces = this.dbRepository.Workspace.GetAll();
 
-            menus.Header = "TsukiTag";
+            menus.Header = "Tsuki-tag";
             menus.Items = new List<MenuItemViewModel>()
             {
                 {

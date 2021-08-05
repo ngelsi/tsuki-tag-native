@@ -33,6 +33,9 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Guid, Unit> RemoveFromSpecificWorkspaceCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> RemoveFromAllWorkspaceCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> OpenInDefaultApplicationCommand { get; protected set; }
+        public ReactiveCommand<Guid, Unit> ApplyMetadataGroupCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SavePictureChangesCommand{ get; protected set; }
+
 
         public ViewModelCollectionHandlerBase(
             IDbRepository dbRepository,
@@ -249,7 +252,7 @@ namespace TsukiTag.ViewModels
 
                 var picture = await this.pictureWorker.CreatePictureMetadataFromLocalImage(filePath);
 
-                if(picture != null)
+                if (picture != null)
                 {
                     return await OnAddToSpecificWorkspace(id, picture, notify, reinitialize);
                 }
@@ -288,10 +291,10 @@ namespace TsukiTag.ViewModels
                         await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ActionAddToSuccess, Language.Workspace.ToLower(), workspace.Name), "workspace"));
                     }
 
-                    if(reinitialize)
+                    if (reinitialize)
                     {
                         Reinitialize();
-                    }                    
+                    }
 
                     return true;
                 }
@@ -344,7 +347,7 @@ namespace TsukiTag.ViewModels
         protected async Task<bool> OnAddToDefaultWorkspace(Picture picture, bool notify = true)
         {
             var workspace = this.dbRepository.Workspace.GetDefault();
-            if(workspace != null)
+            if (workspace != null)
             {
                 return await OnAddToSpecificWorkspace(workspace.Id, picture, notify);
             }
@@ -419,6 +422,67 @@ namespace TsukiTag.ViewModels
 
                 Reinitialize();
                 return true;
+            });
+        }
+
+        protected async Task<bool> OnSaveChanges(Picture picture, bool notify = true)
+        {
+            return await Task.Run<bool>(async () =>
+            {
+
+                try
+                {
+                    if(picture.IsLocal && picture.LocalProviderId != null)
+                    {
+                        if(picture.IsWorkspace)
+                        {
+                            return await OnAddToSpecificWorkspace(picture.LocalProviderId.Value, picture, notify, true);
+                        }
+                        else
+                        {
+                            await OnAddToSpecificList(picture.LocalProviderId.Value, picture, notify);
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+                catch(Exception)
+                {
+                    return false;
+                }
+            });
+        }
+
+        protected async Task<bool> OnApplyMetadataGroup(Guid id, Picture picture, bool notify = true)
+        {
+            return await Task.Run<bool>(async () =>
+            {
+                try
+                {
+                    var metadataGroup = this.dbRepository.MetadataGroup.Get(id);
+                    if (metadataGroup != null)
+                    {
+                        picture = metadataGroup.ProcessPicture(picture);
+
+                        if (notify)
+                        {
+                            await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastMetadataGroupAppliedSingle, "metadatagroup"));
+                        }
+
+                        return true;
+                    }
+                }
+                catch (Exception)
+                {
+                }
+
+                if (notify)
+                {
+                    await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastMetadataGroupApplyError, "metadatagroup"));
+                }
+
+                return false;
             });
         }
     }

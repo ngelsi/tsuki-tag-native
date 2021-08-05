@@ -53,6 +53,7 @@ namespace TsukiTag.Models
         private bool isWorkspace;
         private bool isOnline;
         private bool isMetadataClone;
+        private string createdBy;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -90,6 +91,12 @@ namespace TsukiTag.Models
         {
             get { return md5; }
             set { md5 = value; }
+        }
+
+        public string CreatedBy
+        {
+            get { return createdBy; }
+            set { createdBy = value; }
         }
 
         public string CreatedAt
@@ -205,28 +212,6 @@ namespace TsukiTag.Models
             get
             {
                 return this.tags?.Trim().Split(' ').ToList() ?? new List<string>();
-            }
-        }
-
-        public List<string> UserTagList
-        {
-            get
-            {
-                return new string[]
-                {
-                    $"rating_{this.rating}",
-                    $"provider_{this.provider}"
-                }.Concat(
-                    this.userTags?.Trim().Split(' ').ToList() ?? new List<string>()
-                ).ToList();
-            }
-        }
-
-        public List<string> CompleteTagList
-        {
-            get
-            {
-                return TagList.Concat(UserTagList).ToList();
             }
         }
 
@@ -374,24 +359,6 @@ namespace TsukiTag.Models
                 }
 
                 return Models.Rating.Unknown.DisplayName;
-            }
-        }
-
-        public List<string> Metadata
-        {
-            get
-            {
-                return new string[]
-                {
-                    $"PROVIDER: {this.provider}",
-                    $"ID: {this.id}",
-                    $"MD5: {this.md5}",
-                    $"URL: {this.url}",
-                    $"SOURCE: {this.source}",
-                    $"DOWNLOADURL: {this.downloadUrl}",
-                    $"RATING: {this.rating}",
-                    $"SCORE: {this.score}"
-                }.ToList();
             }
         }
 

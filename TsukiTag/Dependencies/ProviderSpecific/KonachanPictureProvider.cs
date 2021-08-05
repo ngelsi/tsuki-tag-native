@@ -65,7 +65,8 @@ namespace TsukiTag.Dependencies.ProviderSpecific
                     picture.PreviewUrl = pobj.GetValue("preview_url")?.ToString();
                     picture.DownloadUrl = pobj.GetValue("file_url")?.ToString();
                     picture.CreatedAt = pobj.GetValue("created_at")?.ToString();
-                    picture.Author = pobj.GetValue("creator_id")?.ToString();
+                    picture.CreatedBy = pobj.GetValue("creator_id")?.ToString();
+                    picture.Author = picture.CreatedBy;
 
                     if (int.TryParse(pobj.GetValue("height")?.ToString(), out int h))
                     {

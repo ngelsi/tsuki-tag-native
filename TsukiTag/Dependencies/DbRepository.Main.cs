@@ -28,6 +28,8 @@ namespace TsukiTag.Dependencies
         IWorkspaceHistoryDb WorkspaceHistory { get; }
 
         IApplicationSettingsDb ApplicationSettings { get; }
+
+        IMetadataGroupDb MetadataGroup { get; }
     }
 
     public partial class DbRepository : IDbRepository
@@ -51,10 +53,11 @@ namespace TsukiTag.Dependencies
             OnlineListPicture = new OnlineListPictureDb(this);
             OnlineListHistory = new OnlineListHistoryDb();
             ThumbnailStorage = new ThumbnailStorageDb();
-            Workspace = new WorkspaceDb();
+            Workspace = new WorkspaceDb(this);
             WorkspacePicture = new WorkspacePictureDb(this);
             WorkspaceHistory = new WorkspaceHistoryDb();
             ApplicationSettings = new ApplicationSettingsDb(this);
+            MetadataGroup = new MetadataGroupDb();
         }
 
         private void EnsureRepositoryPath()
