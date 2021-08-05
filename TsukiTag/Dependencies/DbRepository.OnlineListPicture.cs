@@ -68,6 +68,7 @@ namespace TsukiTag.Dependencies
                         items.ForEach((item) =>
                         {
                             item.Picture.IsLocal = true;
+                            item.Picture.IsOnlineList = true;
                             item.Picture.LocalProviderType = Language.OnlineList;
                             item.Picture.LocalProviderId = item.ResourceListId;
                             item.Picture.LocalProvider = parent.OnlineList.Get(item.ResourceListId)?.Name;
@@ -94,6 +95,7 @@ namespace TsukiTag.Dependencies
                         items.ForEach((item) =>
                         {
                             item.Picture.IsLocal = true;
+                            item.Picture.IsOnlineList = true;
                             item.Picture.LocalProviderType = Language.OnlineList;
                             item.Picture.LocalProviderId = item.ResourceListId;
                             item.Picture.LocalProvider = parent.OnlineList.Get(item.ResourceListId)?.Name;

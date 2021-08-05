@@ -83,7 +83,7 @@
             <TextBox Classes="metadatavalue" Grid.Column="1" Grid.Row="6" Text="{Binding Picture.Id, Mode=OneWay}" Height="15"/>
           </Grid>
 
-          <StackPanel Orientation="Vertical" IsVisible="{Binding Picture.IsOnline}">
+          <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding Picture.IsOnline}">
             <StackPanel Margin="13 0 5 5" DockPanel.Dock="Top" Orientation="Vertical">
               <TextBlock Classes="metadatatitle" Text="{Binding Language.Url}"></TextBlock>
               <TextBox Classes="metadatavalue" Text="{Binding Picture.Url, Mode=OneWay}" Width="280"/>
@@ -93,12 +93,19 @@
               <TextBox Classes="metadatavalue" Text="{Binding Picture.Source, Mode=OneWay}" Width="280"/>
             </StackPanel>   
           </StackPanel>
-          
-          <StackPanel Orientation="Vertical" IsVisible="{Binding Picture.IsLocal}">
+
+          <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding Picture.IsOnlineList}">
             <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
               <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
               <TextBox Classes="metadatavalue" Text="{Binding Picture.Source, Mode=OneWay}" Width="280"/>
             </StackPanel>
+          </StackPanel>
+          
+          <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding Picture.IsLocal}">
+            <!--<StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
+              <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
+              <TextBox Classes="metadatavalue" Text="{Binding Picture.Source, Mode=OneWay}" Width="280"/>
+            </StackPanel>-->
             <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
               <TextBlock Classes="metadatatitle" Text="{Binding Language.Author}"></TextBlock>
               <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Author, Mode=TwoWay}" Width="280"/>

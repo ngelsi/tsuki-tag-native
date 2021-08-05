@@ -54,6 +54,7 @@ namespace TsukiTag.Models
         private bool isOnline;
         private bool isMetadataClone;
         private string createdBy;
+        private bool isOnlineList;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -256,6 +257,13 @@ namespace TsukiTag.Models
         {
             get { return isWorkspace; }
             set { isWorkspace = value; }
+        }
+
+        [BsonIgnore]
+        public bool IsOnlineList
+        {
+            get { return isOnlineList; }
+            set { isOnlineList = value; }
         }
 
         [BsonIgnore]

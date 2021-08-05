@@ -178,7 +178,7 @@ namespace TsukiTag.Models
         public static string ActionMetadataGroups => Localizer.Get(nameof(ActionMetadataGroups));
         public static string ActionApplyMetadataGroup => Localizer.Get(nameof(ActionApplyMetadataGroup));
         public static string ActionSaveChanges => Localizer.Get(nameof(ActionSaveChanges));
-        public static string ActionSaveChangesDisabled => Localizer.Get(nameof(ActionSaveChangesDisabled));
+        public static string ActionSaveChangesGeneral => Localizer.Get(nameof(ActionSaveChangesGeneral));
         public static string ActionOpenPictureWebsite => Localizer.Get(nameof(ActionOpenPictureWebsite));
 
 
@@ -214,6 +214,7 @@ namespace TsukiTag.Models
         public static string ToastMetadataGroupAppliedSingle => Localizer.Get(nameof(ToastMetadataGroupAppliedSingle));
         public static string ToastMetadataGroupApplied => Localizer.Get(nameof(ToastMetadataGroupApplied));
         public static string ToastMetadataGroupApplyError => Localizer.Get(nameof(ToastMetadataGroupApplyError));
+        public static string ToastNotLocal => Localizer.Get(nameof(ToastNotLocal));
 
         public static string NavigationOnline => Localizer.Get(nameof(NavigationOnline));
         public static string NavigationSettings => Localizer.Get(nameof(NavigationSettings));

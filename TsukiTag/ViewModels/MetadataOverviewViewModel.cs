@@ -122,6 +122,9 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Guid, Unit> SelectionRemoveFromSpecificWorkspaceCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> SelectionRemoveFromAllWorkspaceCommand { get; protected set; }
 
+        public ReactiveCommand<Guid, Unit> SelectionApplyMetadataGroupCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SelectionSavePictureChangesCommand { get; protected set; }
+
 
         public MetadataOverviewViewModel(
             IPictureControl pictureControl,
@@ -194,6 +197,16 @@ namespace TsukiTag.ViewModels
             this.OpenPictureWebsiteCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 this.OnOpenPictureWebsite(CurrentPicture);
+            });
+
+            this.SavePictureChangesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnSaveChanges(CurrentPicture);
+            });
+
+            this.ApplyMetadataGroupCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                OnApplyMetadataGroup(id, CurrentPicture);
             });
 
             #region Online List This Image
@@ -411,6 +424,21 @@ namespace TsukiTag.ViewModels
             });
 
             #endregion Workspace Selection
+
+            #region Selection Selection
+            this.SelectionApplyMetadataGroupCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                await OnSelectionApplyMetadataGroup(id);
+                GC.Collect();
+            });
+
+            this.SelectionSavePictureChangesCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await OnSelectionSaveChanges();
+                GC.Collect();
+            });
+
+            #endregion SelectionSelection
         }
 
         ~MetadataOverviewViewModel()
@@ -564,6 +592,38 @@ namespace TsukiTag.ViewModels
             }
         }
 
+        private async Task OnSelectionApplyMetadataGroup(Guid id)
+        {
+            if (SelectedPictures.All(p => !p.IsLocal))
+            {
+                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastNotLocal, "metadatagroup"));
+            }
+            else
+            {
+                foreach (var picture in SelectedPictures.Where(p => p.IsLocal).ToList())
+                {
+                    await this.OnApplyMetadataGroup(id, picture, false);
+                }
+
+                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastMetadataGroupApplied, "metadatagroup"));
+            }
+        }
+
+        private async Task OnSelectionSaveChanges()
+        {
+            if (SelectedPictures.All(p => !p.IsLocal))
+            {
+                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastNotLocal, "metadatagroup"));
+            }
+            else
+            {
+                foreach (var picture in SelectedPictures.Where(p => p.IsLocal).ToList())
+                {
+                    await this.OnSaveChanges(picture);
+                }
+            }
+        }
+
         private void OnPictureDeselected(object? sender, Picture e)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
@@ -618,6 +678,8 @@ namespace TsukiTag.ViewModels
         {
             var menus = new MenuItemViewModel();
             var allLists = this.dbRepository.OnlineList.GetAll();
+            var metadataGroups = this.dbRepository.MetadataGroup.GetAll();
+            var defaultMetadataGroup = metadataGroups.FirstOrDefault(m => m.IsDefault);
 
             menus.Header = Language.ActionThisImage;
 
@@ -730,6 +792,30 @@ namespace TsukiTag.ViewModels
             imageMenus.Header = Language.ActionThisImage;
             imageMenus.Items = new List<MenuItemViewModel>()
             {
+               {
+                    new MenuItemViewModel()
+                    {
+                        Header = CurrentPicture.IsLocal ? string.Format(Language.ActionSaveChanges, CurrentPicture.LocalProviderType?.ToLower()) : Language.ActionSaveChangesGeneral,
+                        Command = SavePictureChangesCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionApplyMetadataGroup,
+                        Items = metadataGroups.Count > 0 ? new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = defaultMetadataGroup == null ? Language.Default : string.Format($"{Language.Default} ({defaultMetadataGroup.Name})"), Command = ApplyMetadataGroupCommand, CommandParameter = defaultMetadataGroup.Id, IsEnabled = defaultMetadataGroup != null } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(metadataGroups.Select(l => new MenuItemViewModel() { Header = l.Name, Command = ApplyMetadataGroupCommand, CommandParameter = l.Id }))
+                        ) : null,
+                        IsEnabled = metadataGroups.Count > 0
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = "-"
+                    }
+                },
                 {
                     new MenuItemViewModel()
                     {
@@ -774,6 +860,8 @@ namespace TsukiTag.ViewModels
             var menus = new MenuItemViewModel();
             var allLists = this.dbRepository.OnlineList.GetAll();
             var allWorkspaces = this.dbRepository.Workspace.GetAll();
+            var metadataGroups = this.dbRepository.MetadataGroup.GetAll();
+            var defaultMetadataGroup = metadataGroups.FirstOrDefault(m => m.IsDefault);
 
             menus.Header = Language.ActionSelection;
 
@@ -881,6 +969,30 @@ namespace TsukiTag.ViewModels
             selectionMenus.Header = Language.ActionSelection;
             selectionMenus.Items = new List<MenuItemViewModel>()
             {
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionSaveChangesGeneral,
+                        Command = SelectionSavePictureChangesCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionApplyMetadataGroup,
+                        Items = metadataGroups.Count > 0 ? new List<MenuItemViewModel>(
+                            new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = defaultMetadataGroup == null ? Language.Default : string.Format($"{Language.Default} ({defaultMetadataGroup.Name})"), Command = SelectionApplyMetadataGroupCommand, CommandParameter = defaultMetadataGroup.Id, IsEnabled = defaultMetadataGroup != null } }, { new MenuItemViewModel() { Header = "-" } } }
+                            .Concat(metadataGroups.Select(l => new MenuItemViewModel() { Header = l.Name, Command = SelectionApplyMetadataGroupCommand, CommandParameter = l.Id }))
+                        ) : null,
+                        IsEnabled = metadataGroups.Count > 0
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = "-"
+                    }
+                },
                 {
                     new MenuItemViewModel()
                     {

@@ -34,7 +34,7 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Unit, Unit> RemoveFromAllWorkspaceCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> OpenInDefaultApplicationCommand { get; protected set; }
         public ReactiveCommand<Guid, Unit> ApplyMetadataGroupCommand { get; protected set; }
-        public ReactiveCommand<Unit, Unit> SavePictureChangesCommand{ get; protected set; }
+        public ReactiveCommand<Unit, Unit> SavePictureChangesCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> OpenPictureWebsiteCommand { get; protected set; }
 
         public ViewModelCollectionHandlerBase(
@@ -440,9 +440,9 @@ namespace TsukiTag.ViewModels
 
                 try
                 {
-                    if(picture.IsLocal && picture.LocalProviderId != null)
+                    if (picture.IsLocal && picture.LocalProviderId != null)
                     {
-                        if(picture.IsWorkspace)
+                        if (picture.IsWorkspace)
                         {
                             return await OnAddToSpecificWorkspace(picture.LocalProviderId.Value, picture, notify, true);
                         }
@@ -452,10 +452,17 @@ namespace TsukiTag.ViewModels
                             return true;
                         }
                     }
+                    else
+                    {
+                        if (notify)
+                        {
+                            await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastNotLocal, "metadatagroup"));
+                        }
 
-                    return false;
+                        return false;
+                    }
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return false;
                 }
@@ -468,17 +475,29 @@ namespace TsukiTag.ViewModels
             {
                 try
                 {
-                    var metadataGroup = this.dbRepository.MetadataGroup.Get(id);
-                    if (metadataGroup != null)
+                    if (picture.IsLocal && picture.LocalProviderId != null)
                     {
-                        picture = metadataGroup.ProcessPicture(picture);
+                        var metadataGroup = this.dbRepository.MetadataGroup.Get(id);
+                        if (metadataGroup != null)
+                        {
+                            picture = metadataGroup.ProcessPicture(picture);
 
+                            if (notify)
+                            {
+                                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastMetadataGroupAppliedSingle, "metadatagroup"));
+                            }
+
+                            return true;
+                        }
+                    }
+                    else
+                    {
                         if (notify)
                         {
-                            await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastMetadataGroupAppliedSingle, "metadatagroup"));
+                            await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastNotLocal, "metadatagroup"));                            
                         }
 
-                        return true;
+                        return false;
                     }
                 }
                 catch (Exception)
