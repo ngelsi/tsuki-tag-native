@@ -55,6 +55,7 @@ namespace TsukiTag.Models
         private bool isMetadataClone;
         private string createdBy;
         private bool isOnlineList;
+        private Guid pictureContext;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -236,6 +237,13 @@ namespace TsukiTag.Models
         {
             get { return isLocallyImported; }
             set { isLocallyImported = value; }
+        }
+
+        [BsonIgnore]
+        public Guid PictureContext
+        {
+            get { return pictureContext; }
+            set { pictureContext = value; }
         }
 
         [BsonIgnore]

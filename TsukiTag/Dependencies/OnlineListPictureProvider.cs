@@ -60,6 +60,7 @@ namespace TsukiTag.Dependencies
         public async Task GetPictures()
         {
             var filter = await this.providerFilterControl.GetCurrentFilter();
+            var pictureContext = await this.pictureControl.GetPictureContext();
             var pictures = this.dbRepository.OnlineListPicture.GetAllForFilter(filter);
 
             if(pictures == null || pictures.Count == 0)
@@ -82,6 +83,7 @@ namespace TsukiTag.Dependencies
                             continue;
                         }
 
+                        picture.Picture.PictureContext = pictureContext;
                         pictureControl.AddPicture(picture.Picture);
                     }
                 }

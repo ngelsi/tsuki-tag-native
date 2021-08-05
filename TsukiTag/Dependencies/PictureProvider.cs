@@ -34,6 +34,7 @@ namespace TsukiTag.Dependencies
         private readonly IOnlinePictureProvider onlinePictureProvider;
         private readonly IOnlineListPictureProvider onlineListPictureProvider;
         private readonly IWorkspacePictureProvider workspacePictureProvider;
+        private readonly IPictureControl pictureControl;
 
         private readonly IProviderFilterControl providerFilterControl;
 
@@ -43,12 +44,12 @@ namespace TsukiTag.Dependencies
             IOnlinePictureProvider onlinePictureProvider,
             IOnlineListPictureProvider onlineListPictureProvider,
             IWorkspacePictureProvider workspacePictureProvider,
-
+            IPictureControl pictureControl,
             IProviderFilterControl providerFilterControl
         )
         {
             this.providerFilterControl = providerFilterControl;
-
+            this.pictureControl = pictureControl;
             this.onlineListPictureProvider = onlineListPictureProvider;
             this.onlinePictureProvider = onlinePictureProvider;        
             this.workspacePictureProvider = workspacePictureProvider;
@@ -68,6 +69,7 @@ namespace TsukiTag.Dependencies
             
             this.currentProvider = this.onlinePictureProvider;
 
+            await this.pictureControl.SwitchPictureContext();
             await this.currentProvider.HookToFilter();
             await this.providerFilterControl.ReinitializeFilter(ProviderSession.OnlineProviderSession);
         }
@@ -81,6 +83,7 @@ namespace TsukiTag.Dependencies
 
             this.currentProvider = this.onlineListPictureProvider;
 
+            await this.pictureControl.SwitchPictureContext();
             await this.currentProvider.HookToFilter();
             await this.providerFilterControl.ReinitializeFilter(ProviderSession.AllOnlineListsSession);
         }
@@ -94,6 +97,7 @@ namespace TsukiTag.Dependencies
 
             this.currentProvider = this.onlineListPictureProvider;
 
+            await this.pictureControl.SwitchPictureContext();
             await this.currentProvider.HookToFilter();
             await this.providerFilterControl.ReinitializeFilter(id.ToString());
         }
@@ -107,6 +111,7 @@ namespace TsukiTag.Dependencies
 
             this.currentProvider = this.workspacePictureProvider;
 
+            await this.pictureControl.SwitchPictureContext();
             await this.currentProvider.HookToFilter();
             await this.providerFilterControl.ReinitializeFilter(ProviderSession.AllWorkspacesSession);
         }
@@ -120,6 +125,7 @@ namespace TsukiTag.Dependencies
 
             this.currentProvider = this.workspacePictureProvider;
 
+            await this.pictureControl.SwitchPictureContext();
             await this.currentProvider.HookToFilter();
             await this.providerFilterControl.ReinitializeFilter(id.ToString());
         }

@@ -53,6 +53,12 @@ namespace TsukiTag.Dependencies
         Task<int> GetSelectedPictureCount();
 
         Task<bool> PictureExists(string md5);
+
+        Task<Guid> GetPictureContext();
+
+        Task SwitchPictureContext();
+
+        Task<bool> PictureInContext(Picture picture);
     }
 
     public class PictureControl : IPictureControl
@@ -68,6 +74,8 @@ namespace TsukiTag.Dependencies
         private List<Picture> openedPictures;
 
         private HashSet<string> seenPictures;        
+
+        private Guid pictureContext;
 
         private readonly IPictureDownloader pictureDownloadControl;
         private readonly IDbRepository dbRepository;
@@ -96,6 +104,7 @@ namespace TsukiTag.Dependencies
             this.pictureDownloadControl = pictureDownloadControl;
             this.dbRepository = dbRepository;
 
+            pictureContext = Guid.NewGuid();
             currentTagCollection = new TagCollection();
             currentPictureSet = new List<Picture>();
             selectedPictures = new List<Picture>();
@@ -148,6 +157,22 @@ namespace TsukiTag.Dependencies
                     this.dbRepository.ApplicationSettings.Get().AllowDuplicateImages ? false :
                     seenPictures.Contains(md5) || currentPictureSet.Any(p => p.Md5 == md5)
                 );
+            }
+            catch { }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
+
+            return await Task.FromResult(false);
+        }
+
+        public async Task<bool> PictureInContext(Picture picture)
+        {
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                return await Task.FromResult(picture.PictureContext == pictureContext);
             }
             catch { }
             finally
@@ -247,7 +272,7 @@ namespace TsukiTag.Dependencies
         {
             try
             {
-                if (!(await PictureExists(picture.Md5)))
+                if (!(await PictureExists(picture.Md5)) && (await PictureInContext(picture)))
                 {
                     if (picture.PreviewImage == null && !string.IsNullOrEmpty(picture.PreviewUrl))
                     {
@@ -261,7 +286,7 @@ namespace TsukiTag.Dependencies
                     var added = false;
                     try
                     {
-                        if (!(await PictureExists(picture.Md5)))
+                        if (!(await PictureExists(picture.Md5)) && (await PictureInContext(picture)))
                         {
                             await semaphoreSlim.WaitAsync();
 
@@ -330,6 +355,36 @@ namespace TsukiTag.Dependencies
             }
 
             PicturesReset?.Invoke(this, EventArgs.Empty);
+        }
+
+        public async Task SwitchPictureContext()
+        {
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                pictureContext = Guid.NewGuid();
+            }
+            catch { }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
+        }
+
+        public async Task<Guid> GetPictureContext()
+        {
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                return await Task.FromResult(pictureContext);
+            }
+            catch { }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
+
+            return await Task.FromResult(pictureContext);
         }
 
         public async Task<TagCollection> GetTags()

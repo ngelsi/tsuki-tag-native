@@ -94,6 +94,7 @@ namespace TsukiTag.Dependencies
         {
             var filter = await this.providerFilterControl.GetCurrentFilter();
             var settings = this.dbRepository.ApplicationSettings.Get();
+            var pictureContext = await this.pictureControl.GetPictureContext();
             var providers = allProviders;
 
             Parallel.ForEach(providers, async (provider) =>
@@ -143,6 +144,8 @@ namespace TsukiTag.Dependencies
                                 }
 
                                 picture.IsOnline = true;
+                                picture.PictureContext = pictureContext;
+
                                 pictureControl.AddPicture(picture);
                             }
                         }
