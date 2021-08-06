@@ -18,7 +18,14 @@ namespace TsukiTag.Models
 
         public List<string> Tags { get; set; }
 
-        public List<string> ExcludedTags { get; set; }        
+        public List<string> ExcludedTags { get; set; }                
+
+        public List<string>? RawTags => TagsWithoutPragma?.Where(t => !(t.Contains("*") || t.Contains(".") || t.Contains("/"))).ToList();
+
+        public List<string>? TagsWithoutPragma => Tags?.Where(t => !(t.Contains(":"))).ToList();
+
+        public string? SortingKeyword => Tags.Where(t => t.StartsWith("sort:", StringComparison.OrdinalIgnoreCase) || t.StartsWith("order:", StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?
+                                            .Replace("sort:", "", StringComparison.OrdinalIgnoreCase).Replace("order:", "", StringComparison.OrdinalIgnoreCase)?.ToLower();
 
         public string TagString => string.Join(" ", Tags);
 

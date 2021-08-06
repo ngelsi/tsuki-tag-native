@@ -83,7 +83,16 @@ namespace TsukiTag.Dependencies
                         }
 
                         picture.Picture.PictureContext = pictureContext;
-                        pictureControl.AddPicture(picture.Picture);
+
+                        //We have to wait for the picture to be added if we are enforcing a sort
+                        if (!string.IsNullOrEmpty(filter.SortingKeyword))
+                        {
+                            await pictureControl.AddPicture(picture.Picture);
+                        }
+                        else
+                        {
+                            pictureControl.AddPicture(picture.Picture);
+                        }
                     }
                 }
             }

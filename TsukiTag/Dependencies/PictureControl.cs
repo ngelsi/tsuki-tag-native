@@ -30,7 +30,7 @@ namespace TsukiTag.Dependencies
 
         event EventHandler PicturesReset;
 
-        void AddPicture(Picture picture);
+        Task AddPicture(Picture picture);
 
         void RemovePicture(Picture picture);
 
@@ -268,7 +268,7 @@ namespace TsukiTag.Dependencies
             }
         }
 
-        public async void AddPicture(Picture picture)
+        public async Task AddPicture(Picture picture)
         {
             try
             {

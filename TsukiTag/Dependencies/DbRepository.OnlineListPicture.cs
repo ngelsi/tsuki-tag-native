@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TsukiTag.Extensions;
 using TsukiTag.Models;
 using TsukiTag.Models.Repository;
 
@@ -54,16 +55,61 @@ namespace TsukiTag.Dependencies
                     {
                         var coll = db.GetCollection<OnlineListPicture>();
                         var query = coll.Query();
+                        var items = new List<OnlineListPicture>();
 
                         query = query.Where(l => filterLists.Contains(l.ResourceListId));
 
-                        foreach (var tag in filter.Tags)
+                        if (filter.Tags.Count == 0)
                         {
-                            query = query.Where("COUNT(FILTER($.Picture.TagList => @ = '" + tag + "')) > 0");
+                            var completeQuery = query.Skip(filter.Page * filter.Limit).Limit(filter.Limit);
+                            items = completeQuery.ToList();
                         }
+                        else if (filter.Tags.Count > 0 && filter.RawTags?.Count == filter.Tags.Count)
+                        {
+                            foreach (var tag in filter.Tags)
+                            {
+                                query = query.Where("COUNT(FILTER($.Picture.TagList => @ = '" + tag + "')) > 0");
+                            }
 
-                        var completeQuery = query.Skip(filter.Page * filter.Limit).Limit(filter.Limit);
-                        var items = completeQuery.ToList();
+                            var completeQuery = query.Skip(filter.Page * filter.Limit).Limit(filter.Limit);
+                            items = completeQuery.ToList();
+                        }
+                        else if (filter.Tags.Count > 0)
+                        {
+                            var allItems = query.ToList();
+                            var tagsToSearch = filter.TagsWithoutPragma;
+                            var sortingKeyword = filter.SortingKeyword;
+
+                            if (!string.IsNullOrEmpty(sortingKeyword))
+                            {
+                                allItems = allItems.OrderByKeyword(sortingKeyword);
+                            }
+
+                            if (tagsToSearch?.Count > 0)
+                            {
+                                var i = 0;
+                                while (items.Count <= ((filter.Page + 1) * filter.Limit))
+                                {
+                                    var item = allItems.ElementAtOrDefault(i);
+                                    if(item == null)
+                                    {
+                                        break;
+                                    }
+
+                                    if (item != null && item.Picture.TagList.Any(t => tagsToSearch.Any(tt => t.WildcardMatches(tt)))) {
+                                        items.Add(item);
+                                    }
+
+                                    i++;
+                                }
+                            }
+                            else
+                            {
+                                items = allItems;
+                            }
+
+                            items = items.Skip(filter.Page * filter.Limit).Take(filter.Limit).ToList();
+                        }
 
                         items.ForEach((item) =>
                         {
@@ -140,7 +186,7 @@ namespace TsukiTag.Dependencies
                                 existing.Picture = list.ProcessPicture(picture.MetadatawiseClone());
                                 existing.DateModified = DateTime.Now;
 
-                                if(existing.DateAdded == null)
+                                if (existing.DateAdded == null)
                                 {
                                     existing.DateAdded = DateTime.Now;
                                 }
@@ -257,7 +303,7 @@ namespace TsukiTag.Dependencies
                                 existing.Picture = list.ProcessPicture(picture.MetadatawiseClone());
                                 existing.DateModified = DateTime.Now;
 
-                                if(existing.DateAdded == null)
+                                if (existing.DateAdded == null)
                                 {
                                     existing.DateAdded = DateTime.Now;
                                 }
