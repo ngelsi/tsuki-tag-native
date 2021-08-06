@@ -138,6 +138,13 @@ namespace TsukiTag.Dependencies
                             if (existing != null)
                             {
                                 existing.Picture = list.ProcessPicture(picture.MetadatawiseClone());
+                                existing.DateModified = DateTime.Now;
+
+                                if(existing.DateAdded == null)
+                                {
+                                    existing.DateAdded = DateTime.Now;
+                                }
+
                                 coll.Update(existing);
                             }
                             else
@@ -147,6 +154,7 @@ namespace TsukiTag.Dependencies
                                     Id = newid,
                                     ResourceListId = resourceListId,
                                     Md5 = picture.Md5,
+                                    DateAdded = DateTime.Now,
                                     Picture = list.ProcessPicture(picture.MetadatawiseClone())
                                 };
 
@@ -247,6 +255,12 @@ namespace TsukiTag.Dependencies
                             if (existing != null)
                             {
                                 existing.Picture = list.ProcessPicture(picture.MetadatawiseClone());
+                                existing.DateModified = DateTime.Now;
+
+                                if(existing.DateAdded == null)
+                                {
+                                    existing.DateAdded = DateTime.Now;
+                                }
 
                                 coll.Update(existing);
                                 pictures.Add(existing);
@@ -258,6 +272,7 @@ namespace TsukiTag.Dependencies
                                     Id = Guid.NewGuid(),
                                     ResourceListId = list.Id,
                                     Md5 = picture.Md5,
+                                    DateAdded = DateTime.Now,
                                     Picture = list.ProcessPicture(picture.MetadatawiseClone())
                                 };
 

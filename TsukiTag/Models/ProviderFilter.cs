@@ -18,7 +18,7 @@ namespace TsukiTag.Models
 
         public List<string> Tags { get; set; }
 
-        public List<string> ExcludedTags { get; set; }
+        public List<string> ExcludedTags { get; set; }        
 
         public string TagString => string.Join(" ", Tags);
 

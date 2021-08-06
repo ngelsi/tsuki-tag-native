@@ -12,6 +12,10 @@ namespace TsukiTag.Models.Repository
 
         public Guid ResourceListId { get; set; }
 
+        public DateTime? DateAdded { get; set; }
+
+        public DateTime? DateModified { get; set; }
+
         public string Md5 { get; set; }
 
         public Picture Picture { get; set; }

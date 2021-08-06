@@ -126,7 +126,13 @@ namespace TsukiTag.Dependencies
                             if (existing != null)
                             {
                                 existing.Picture = workspace.ProcessPicture(picture.MetadatawiseClone());
+                                existing.DateModified = DateTime.Now;
                                 existing.FilePath = filePath;
+
+                                if(existing.DateAdded == null)
+                                {
+                                    existing.DateAdded = DateTime.Now;
+                                }
 
                                 coll.Update(existing);
                             }
@@ -138,6 +144,7 @@ namespace TsukiTag.Dependencies
                                     ResourceListId = resourceListId,
                                     Md5 = picture.Md5,
                                     Picture = workspace.ProcessPicture(picture.MetadatawiseClone()),
+                                    DateAdded = DateTime.Now,
                                     FilePath = filePath
                                 };
 
