@@ -216,6 +216,11 @@ namespace TsukiTag.ViewModels
                 OnRedownloadPicture(CurrentPicture);
             });
 
+            this.CopyWebsiteUrlToClipboardCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnCopyPictureWebsiteUrlToClipboard(CurrentPicture);
+            });
+
             #region Online List This Image
 
             this.AddToDefaultListCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -859,6 +864,13 @@ namespace TsukiTag.ViewModels
                     {
                         Header = Language.ActionOpenPictureWebsite,
                         Command = OpenPictureWebsiteCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionCopyWebsiteUrlToClipboard,
+                        Command = CopyWebsiteUrlToClipboardCommand
                     }
                 },
                 {

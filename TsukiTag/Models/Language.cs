@@ -181,6 +181,7 @@ namespace TsukiTag.Models
         public static string ActionSaveChangesGeneral => Localizer.Get(nameof(ActionSaveChangesGeneral));
         public static string ActionOpenPictureWebsite => Localizer.Get(nameof(ActionOpenPictureWebsite));
         public static string ActionRedownload => Localizer.Get(nameof(ActionRedownload));
+        public static string ActionCopyWebsiteUrlToClipboard => Localizer.Get(nameof(ActionCopyWebsiteUrlToClipboard));
 
 
         public static string PreviousPicture => Localizer.Get(nameof(PreviousPicture));
@@ -220,6 +221,7 @@ namespace TsukiTag.Models
         public static string ToastRedownloadedSingle => Localizer.Get(nameof(ToastRedownloadedSingle));
         public static string ToastRedownloaded => Localizer.Get(nameof(ToastRedownloaded));
         public static string ToastRedownloadCouldNotFind => Localizer.Get(nameof(ToastRedownloadCouldNotFind));
+        public static string ToastPictureWebsiteUrlCopiedToClipboard => Localizer.Get(nameof(ToastPictureWebsiteUrlCopiedToClipboard));
 
         public static string NavigationOnline => Localizer.Get(nameof(NavigationOnline));
         public static string NavigationSettings => Localizer.Get(nameof(NavigationSettings));

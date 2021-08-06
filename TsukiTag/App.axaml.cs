@@ -30,7 +30,7 @@ namespace TsukiTag
                         Ioc.SimpleIoc.NotificationControl
                 ));
 
-                MainWindow = desktop.MainWindow;
+                MainWindow = desktop.MainWindow;                
             }
 
             RxApp.DefaultExceptionHandler = Observer.Create<Exception>(Console.WriteLine);

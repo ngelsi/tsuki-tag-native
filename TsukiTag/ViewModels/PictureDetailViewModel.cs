@@ -170,6 +170,11 @@ namespace TsukiTag.ViewModels
                 OnRedownloadPicture(Picture);
             });
 
+            this.CopyWebsiteUrlToClipboardCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnCopyPictureWebsiteUrlToClipboard(Picture);
+            });
+
             this.fillView = true;
 
             this.pictureControl = pictureControl;
@@ -277,6 +282,13 @@ namespace TsukiTag.ViewModels
                     {
                         Header = Language.ActionOpenPictureWebsite,
                         Command = OpenPictureWebsiteCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionCopyWebsiteUrlToClipboard,
+                        Command = CopyWebsiteUrlToClipboardCommand
                     }
                 },
                 {

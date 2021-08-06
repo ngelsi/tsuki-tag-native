@@ -1,4 +1,5 @@
-﻿using Avalonia.Media.Imaging;
+﻿using Avalonia;
+using Avalonia.Media.Imaging;
 using ExifLibrary;
 using System;
 using System.Collections.Generic;
@@ -19,11 +20,15 @@ namespace TsukiTag.Dependencies
     {
         void OpenPictureInDefaultApplication(Picture picture, Workspace? workspace = null);
 
+        Task<string> GetPictureWebsiteUrl(Picture picture);
+
         void OpenPictureWebsite(Picture picture);
 
         Task<string> SaveWorkspacePicture(Picture picture, Workspace workspace);
 
         Task<Picture?> CreatePictureMetadataFromLocalImage(string imagePath);
+
+        void CopyPictureWebsiteUrlToClipboard(Picture picture);
 
         Task DeletePicture(WorkspacePicture picture, Workspace workspace);
     }
@@ -173,45 +178,75 @@ namespace TsukiTag.Dependencies
             }
         }
 
+        public async Task<string> GetPictureWebsiteUrl(Picture picture)
+        {
+            return await Task.Run<string>(async () =>
+            {
+                try
+                {
+                    string url = null;
+                    var provider = Provider.Get(picture.Provider);
+                    if (provider != null)
+                    {
+                        url = string.Format(provider.ImageUrl, picture.Id);
+                    }
+
+                    if (string.IsNullOrEmpty(url) && !string.IsNullOrEmpty(picture.FileUrl))
+                    {
+                        url = $"file:///{picture.FileUrl.Replace("\\", "/")}";
+                    }
+
+                    return url;
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return null;
+            });
+        }
+
         public async void OpenPictureWebsite(Picture picture)
         {
-            try
+            await Task.Run(async () =>
             {
-                await Task.Run(async () =>
+                try
                 {
-                    try
+                    var url = await this.GetPictureWebsiteUrl(picture);
+                    if (!string.IsNullOrEmpty(url))
                     {
-                        string url = null;
-                        var provider = Provider.Get(picture.Provider);
-                        if (provider != null)
+                        System.Diagnostics.Process.Start(new ProcessStartInfo()
                         {
-                            url = string.Format(provider.ImageUrl, picture.Id);
-                        }
-
-                        if (string.IsNullOrEmpty(url) && !string.IsNullOrEmpty(picture.FileUrl))
-                        {
-                            url = $"file:///{picture.FileUrl.Replace("\\", "/")}";
-                        }
-
-                        if (!string.IsNullOrEmpty(url))
-                        {
-                            System.Diagnostics.Process.Start(new ProcessStartInfo()
-                            {
-                                FileName = url,
-                                UseShellExecute = true
-                            });
-                        }
+                            FileName = url,
+                            UseShellExecute = true
+                        });
                     }
-                    catch (Exception)
-                    {
+                }
+                catch (Exception)
+                {
 
-                    }
-                });
-            }
-            catch (Exception)
+                }
+            });
+        }
+
+        public async void CopyPictureWebsiteUrlToClipboard(Picture picture)
+        {
+            await Task.Run(async () =>
             {
+                try
+                {
+                    var url = await this.GetPictureWebsiteUrl(picture);
+                    if (!string.IsNullOrEmpty(url))
+                    {
+                        await Application.Current.Clipboard.SetTextAsync(url);
+                    }
+                }
+                catch (Exception)
+                {
 
-            }
+                }
+            });
         }
 
         public async Task DeletePicture(WorkspacePicture picture, Workspace workspace)
@@ -239,7 +274,7 @@ namespace TsukiTag.Dependencies
                     {
                         if (workspace.DownloadSourcePictures && picture.SourceImage == null)
                         {
-                            if(!string.IsNullOrEmpty(picture.FileUrl))
+                            if (!string.IsNullOrEmpty(picture.FileUrl))
                             {
                                 picture.SourceImage = await this.pictureDownloader.DownloadLocalBitmap(picture.FileUrl);
                             }
@@ -250,7 +285,7 @@ namespace TsukiTag.Dependencies
                         }
                         else if (picture.SampleImage == null)
                         {
-                            if(!string.IsNullOrEmpty(picture.FileUrl))
+                            if (!string.IsNullOrEmpty(picture.FileUrl))
                             {
                                 picture.SampleImage = await this.pictureDownloader.DownloadLocalBitmap(picture.FileUrl);
                             }

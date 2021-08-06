@@ -38,6 +38,7 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Unit, Unit> SavePictureChangesCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> OpenPictureWebsiteCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> RedownloadPictureCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> CopyWebsiteUrlToClipboardCommand { get; protected set; }
 
         public ViewModelCollectionHandlerBase(
             IDbRepository dbRepository,
@@ -70,6 +71,15 @@ namespace TsukiTag.ViewModels
             await Task.Run(async () =>
             {
                 this.pictureWorker.OpenPictureWebsite(picture);
+            });
+        }
+
+        protected async Task OnCopyPictureWebsiteUrlToClipboard(Picture picture)
+        {
+            await Task.Run(async () =>
+            {
+                this.pictureWorker.CopyPictureWebsiteUrlToClipboard(picture);
+                await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastPictureWebsiteUrlCopiedToClipboard, "clipboard"));
             });
         }
 

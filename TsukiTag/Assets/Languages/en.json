@@ -146,6 +146,7 @@
   "ActionSaveChangesGeneral": "Save changes (re-add)",
   "ActionOpenPictureWebsite": "Open image website",
   "ActionRedownload": "Re-download from provider",
+  "ActionCopyWebsiteUrlToClipboard": "Copy website URL to clipboard",
 
   "PreviousPicture": "Previous selected picture",
   "NextPicture": "Next selected picture",
@@ -184,6 +185,7 @@
   "ToastRedownloadedSingle": "Image {0} has been re-downloaded from {1}. Re-add or save images to persist the changes",
   "ToastRedownloaded": "Images have been re-downloaded from their providers. Re-add or save images to persist the changes.",
   "ToastRedownloadCouldNotFind": "Could not find image {0} at provider {1}",
+  "ToastPictureWebsiteUrlCopiedToClipboard": "Website URL copied to clipboard.",
 
   "NavigationOnline": "Browse online",
   "NavigationAllOnlineLists": "Browse all online lists",
