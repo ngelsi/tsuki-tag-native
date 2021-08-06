@@ -11,6 +11,7 @@
   "Default": "Default",
 
   "Rating": "Rating",
+  "Ratings": "Ratings",
   "Provider": "Provider",
   "Dimensions": "Dimensions",
   "Score": "Score",
@@ -118,6 +119,18 @@
 
   "SettingsMetadataGroupNoName": "Please specify a name for all metadata groups before saving.",
   "SettingsMetadataGroupNotUnique": "Please specify a unique name for the metadata groups.",
+
+  "SortBy": "Sort by",
+  "SortScore": "Score",
+  "SortScoreAsc": "Score ascending",
+  "SortAdded": "Date added",
+  "SortAddedAsc": "Date added ascending",
+  "SortModified": "Date modified",
+  "SortModifiedAsc": "Date modified ascending",
+  "SortMd5": "Hash",
+  "SortMd5Asc": "Hash ascending",
+  "SortId": "ID",
+  "SortIdAsc": "ID ascending",
 
   "ActionImage": "Image",
   "ActionOnlineLists": "Online lists",

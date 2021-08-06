@@ -41,6 +41,7 @@ namespace TsukiTag.Models
 
 
         public static string Rating => Localizer.Get(nameof(Rating));
+        public static string Ratings => Localizer.Get(nameof(Ratings));
         public static string Provider => Localizer.Get(nameof(Provider));
         public static string Dimensions => Localizer.Get(nameof(Dimensions));
         public static string Score => Localizer.Get(nameof(Score));
@@ -153,6 +154,18 @@ namespace TsukiTag.Models
         public static string SettingsListNotUnique => Localizer.Get(nameof(SettingsListNotUnique));
         public static string SettingsSaved => Localizer.Get(nameof(SettingsSaved));
         public static string SettingsSaveError => Localizer.Get(nameof(SettingsSaveError));
+
+        public static string SortBy => Localizer.Get(nameof(SortBy));
+        public static string SortScore => Localizer.Get(nameof(SortScore));
+        public static string SortScoreAsc => Localizer.Get(nameof(SortScoreAsc));
+        public static string SortAdded => Localizer.Get(nameof(SortAdded));
+        public static string SortAddedAsc => Localizer.Get(nameof(SortAddedAsc));
+        public static string SortModified => Localizer.Get(nameof(SortModified));
+        public static string SortModifiedAsc => Localizer.Get(nameof(SortModifiedAsc));
+        public static string SortMd5 => Localizer.Get(nameof(SortMd5));
+        public static string SortMd5Asc => Localizer.Get(nameof(SortMd5Asc));
+        public static string SortId => Localizer.Get(nameof(SortId));
+        public static string SortIdAsc => Localizer.Get(nameof(SortIdAsc));
 
         public static string ActionImage => Localizer.Get(nameof(ActionImage));
         public static string ActionOnlineLists => Localizer.Get(nameof(ActionOnlineLists));

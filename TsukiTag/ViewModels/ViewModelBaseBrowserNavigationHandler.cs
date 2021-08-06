@@ -29,6 +29,8 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<string, Unit> SwitchRatingCommand { get; protected set; }
         public ReactiveCommand<string, Unit> SwitchProviderCommand { get; protected set; }
 
+        public ReactiveCommand<string, Unit> SetSortByCommand { get; protected set; }
+
         public bool SafeRatingEnabled
         {
             get { return safeRatingEnabled; }
@@ -115,6 +117,11 @@ namespace TsukiTag.ViewModels
                 await this.providerFilterControl.Refresh();
             });
 
+            this.SetSortByCommand = ReactiveCommand.CreateFromTask<string>(async (keyword) =>
+            {
+                await this.SetSortBy(keyword);
+            });
+
             this.ConfigureFilters();
         }
 
@@ -122,6 +129,19 @@ namespace TsukiTag.ViewModels
         {
             this.providerFilterControl.PageChanged -= OnPageChanged;
             this.providerFilterControl.FilterChanged -= OnFilterChanged;
+        }
+
+        protected virtual async Task SetSortBy(string keyword)
+        {
+            var filter = await this.providerFilterControl.GetCurrentFilter();
+            if (!string.IsNullOrEmpty(filter.SortingKeyword))
+            {
+                this.providerFilterControl.SetTag($"sort:{keyword}");
+            }
+            else
+            {
+                this.providerFilterControl.AddTag($"sort:{keyword}");
+            }
         }
 
         protected virtual async Task SwitchRating(string rating)

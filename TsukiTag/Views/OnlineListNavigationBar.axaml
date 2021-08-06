@@ -20,8 +20,10 @@
   </UserControl.Styles>
   <Menu VerticalAlignment="Top" HorizontalAlignment="Left">
     <MenuItem Header="{Binding Language.Session}" Padding="0 5 5 5">
-      <MenuItem Header="Ratings" IsEnabled="False"></MenuItem>
+      
+      <MenuItem Header="{Binding Language.Ratings}" IsEnabled="False"></MenuItem>
       <Separator></Separator>
+      
       <MenuItem Command="{Binding SwitchRatingCommand}" CommandParameter="s">
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal">
@@ -46,17 +48,39 @@
           </StackPanel>
         </MenuItem.Header>
       </MenuItem>
+      
+      <MenuItem Header="{Binding Language.SortBy}" IsEnabled="False"></MenuItem>
+      <Separator></Separator>
+      
+      <MenuItem Header="{Binding Language.SortScore}" Command="{Binding SetSortByCommand}" CommandParameter="score"></MenuItem>
+      <MenuItem Header="{Binding Language.SortScoreAsc}" Command="{Binding SetSortByCommand}" CommandParameter="scoreasc"></MenuItem>
+
+      <MenuItem Header="{Binding Language.SortAdded}" Command="{Binding SetSortByCommand}" CommandParameter="added"></MenuItem>
+      <MenuItem Header="{Binding Language.SortAddedAsc}" Command="{Binding SetSortByCommand}" CommandParameter="addedasc"></MenuItem>
+
+      <MenuItem Header="{Binding Language.SortModified}" Command="{Binding SetSortByCommand}" CommandParameter="modified"></MenuItem>
+      <MenuItem Header="{Binding Language.SortModifiedAsc}" Command="{Binding SetSortByCommand}" CommandParameter="modifiedasc"></MenuItem>
+
+      <MenuItem Header="{Binding Language.SortMd5}" Command="{Binding SetSortByCommand}" CommandParameter="md5"></MenuItem>
+      <MenuItem Header="{Binding Language.SortMd5Asc}" Command="{Binding SetSortByCommand}" CommandParameter="md5asc"></MenuItem>
+
+      <MenuItem Header="{Binding Language.SortId}" Command="{Binding SetSortByCommand}" CommandParameter="id"></MenuItem>
+      <MenuItem Header="{Binding Language.SortIdAsc}" Command="{Binding SetSortByCommand}" CommandParameter="idasc"></MenuItem>
+
     </MenuItem>
+    
     <MenuItem ToolTip.Tip="{Binding Language.PreviousPage}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToPreviousPage}" Command="{Binding PreviousPageCommand}">
       <MenuItem.Header>
         <i:Icon Value="fa-arrow-left"></i:Icon>
       </MenuItem.Header>
     </MenuItem>
+    
     <MenuItem ToolTip.Tip="{Binding Language.NextPage}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
       <MenuItem.Header>
         <i:Icon Value="fa-arrow-right"></i:Icon>
       </MenuItem.Header>
     </MenuItem>
+    
     <MenuItem ToolTip.Tip="{Binding Language.Refresh}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Command="{Binding RefreshCommand}">
       <MenuItem.Header>
         <i:Icon Value="fa-random"></i:Icon>
