@@ -47,7 +47,7 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Guid, Unit> ImportFolderToSpecifcWorkspacesCommand { get; }
 
         public ReactiveCommand<Unit, Unit> ImportFolderToAllWorkspacesCommand { get; }
-        
+
         public ReactiveCommand<Unit, Unit> ConvertFolderToLocalWorkspaceCommand { get; }
 
         public ObservableCollection<MenuItemViewModel> MainWindowMenus
@@ -63,7 +63,17 @@ namespace TsukiTag.ViewModels
         public ContentControl CurrentContent
         {
             get { return currentContent; }
-            set { this.RaiseAndSetIfChanged(ref currentContent, value); }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref currentContent, value);                ;
+                this.RaisePropertyChanged(nameof(AllowImporting));
+                this.OnResourceListsChanged(this, EventArgs.Empty);
+            }
+        }
+
+        public bool AllowImporting
+        {
+            get { return !(CurrentContent is Settings); }
         }
 
         //Avalonia exception happens if we try to re-instate the entire provider
@@ -286,7 +296,7 @@ namespace TsukiTag.ViewModels
                             }
                         }
 
-                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastWorkspaceProcessed), "workspace"));                        
+                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastWorkspaceProcessed), "workspace"));
                     }
                 }
 
@@ -480,7 +490,7 @@ namespace TsukiTag.ViewModels
                     new MenuItemViewModel()
                     {
                         Header = Language.ActionImportImagesToWorkspaces,
-                        IsEnabled = allWorkspaces.Count > 0,
+                        IsEnabled = allWorkspaces.Count > 0 && AllowImporting,
                         Items = new List<MenuItemViewModel>(
                             new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = ImportFilesToAllWorkspacesCommand } }, { new MenuItemViewModel() { Header = "-" } } }
                             .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = ImportFilesToSpecifcWorkspacesCommand, CommandParameter = l.Id })))
@@ -490,7 +500,7 @@ namespace TsukiTag.ViewModels
                     new MenuItemViewModel()
                     {
                         Header = Language.ActionImportFolderToWorkspace,
-                        IsEnabled = allWorkspaces.Count > 0,
+                        IsEnabled = allWorkspaces.Count > 0 && AllowImporting,
                         Items = new List<MenuItemViewModel>(
                             new List<MenuItemViewModel>() { { new MenuItemViewModel() { Header = Language.All, Command = ImportFolderToAllWorkspacesCommand } }, { new MenuItemViewModel() { Header = "-" } } }
                             .Concat(allWorkspaces.Select(l => new MenuItemViewModel() { Header = l.Name, Command = ImportFolderToSpecifcWorkspacesCommand, CommandParameter = l.Id })))
@@ -500,7 +510,8 @@ namespace TsukiTag.ViewModels
                     new MenuItemViewModel()
                     {
                         Header = Language.ActionCreateWorkspaceFromFolder,
-                        Command = ConvertFolderToLocalWorkspaceCommand
+                        Command = ConvertFolderToLocalWorkspaceCommand,
+                        IsEnabled = AllowImporting
                     }
                 },
                 {
