@@ -10,6 +10,7 @@ using System.Reactive;
 using ReactiveUI;
 using System.Collections.ObjectModel;
 using TsukiTag.Models.Repository;
+using Avalonia.Media.Imaging;
 
 namespace TsukiTag.ViewModels
 {
@@ -205,9 +206,9 @@ namespace TsukiTag.ViewModels
             });
         }
 
-        protected async Task<bool> OnAddToAllWorkspaces(Picture picture, bool notify = true)
+        protected async Task<bool> OnAddToAllWorkspaces(Picture picture, Bitmap? image = null, bool notify = true)
         {
-            return await OnAddToWorkspaces(this.dbRepository.Workspace.GetAll(), picture, true);
+            return await OnAddToWorkspaces(this.dbRepository.Workspace.GetAll(), picture, image, true);
         }
 
         protected async Task OnAddToAllLists(Picture picture, bool notify = true)
@@ -233,9 +234,9 @@ namespace TsukiTag.ViewModels
             });
         }
 
-        protected async Task<bool> OnAddToEligibleWorkspaces(Picture picture, bool notify = true)
+        protected async Task<bool> OnAddToEligibleWorkspaces(Picture picture, Bitmap? image = null, bool notify = true)
         {
-            return await OnAddToWorkspaces(this.dbRepository.Workspace.GetAll().Where(w => w.IsEligible(picture)).ToList(), picture, notify);
+            return await OnAddToWorkspaces(this.dbRepository.Workspace.GetAll().Where(w => w.IsEligible(picture)).ToList(), picture, image, notify);
         }
 
         protected async Task OnAddToEligibleLists(Picture picture, bool notify = true)
@@ -276,7 +277,7 @@ namespace TsukiTag.ViewModels
 
                 if (picture != null)
                 {
-                    return await OnAddToSpecificWorkspace(id, picture, notify, reinitialize);
+                    return await OnAddToSpecificWorkspace(id, picture.Picture, picture.Image, notify, reinitialize);
                 }
 
                 if (notify)
@@ -288,7 +289,7 @@ namespace TsukiTag.ViewModels
             });
         }
 
-        protected async Task<bool> OnAddToSpecificWorkspace(Guid id, Picture picture, bool notify = true, bool reinitialize = true)
+        protected async Task<bool> OnAddToSpecificWorkspace(Guid id, Picture picture, Bitmap? image = null, bool notify = true, bool reinitialize = true)
         {
             return await Task.Run<bool>(async () =>
             {
@@ -299,11 +300,10 @@ namespace TsukiTag.ViewModels
 
                 var pictureClone = picture.MetadatawiseClone();
                 pictureClone.PreviewImage = picture.PreviewImage;
-                pictureClone.SampleImage = picture.SampleImage;
 
                 pictureClone = workspace.ProcessPicture(picture);
 
-                var filePath = await this.pictureWorker.SaveWorkspacePicture(pictureClone, workspace);
+                var filePath = await this.pictureWorker.SaveWorkspacePicture(pictureClone, workspace, image);
                 if (!string.IsNullOrEmpty(filePath))
                 {
                     this.dbRepository.WorkspacePicture.AddToWorkspace(id, pictureClone, filePath);
@@ -366,12 +366,12 @@ namespace TsukiTag.ViewModels
             });
         }
 
-        protected async Task<bool> OnAddToDefaultWorkspace(Picture picture, bool notify = true)
+        protected async Task<bool> OnAddToDefaultWorkspace(Picture picture, Bitmap? image = null, bool notify = true)
         {
             var workspace = this.dbRepository.Workspace.GetDefault();
             if (workspace != null)
             {
-                return await OnAddToSpecificWorkspace(workspace.Id, picture, notify);
+                return await OnAddToSpecificWorkspace(workspace.Id, picture, image, notify);
             }
             else
             {
@@ -413,7 +413,7 @@ namespace TsukiTag.ViewModels
            });
         }
 
-        protected async Task<bool> OnAddToWorkspaces(List<Workspace> workspaces, Picture picture, bool notify = true)
+        protected async Task<bool> OnAddToWorkspaces(List<Workspace> workspaces, Picture picture, Bitmap? image = null, bool notify = true)
         {
             return await Task.Run<bool>(async () =>
             {
@@ -426,7 +426,7 @@ namespace TsukiTag.ViewModels
                         await this.notificationControl.SendToastMessage(ToastMessage.Uncloseable(string.Format(Language.ToastWorkspaceProcessing, picture.Id, workspace.Name, i + 1, workspaces.Count), "workspace"));
                     }
 
-                    if (!await OnAddToSpecificWorkspace(workspace.Id, picture, false, false))
+                    if (!await OnAddToSpecificWorkspace(workspace.Id, picture, image, false, false))
                     {
                         if (notify)
                         {
@@ -447,7 +447,7 @@ namespace TsukiTag.ViewModels
             });
         }
 
-        protected async Task<bool> OnSaveChanges(Picture picture, bool notify = true)
+        protected async Task<bool> OnSaveChanges(Picture picture, Bitmap? image = null, bool notify = true)
         {
             return await Task.Run<bool>(async () =>
             {
@@ -458,7 +458,7 @@ namespace TsukiTag.ViewModels
                     {
                         if (picture.IsWorkspace)
                         {
-                            return await OnAddToSpecificWorkspace(picture.LocalProviderId.Value, picture, notify, true);
+                            return await OnAddToSpecificWorkspace(picture.LocalProviderId.Value, picture, image, notify, true);
                         }
                         else
                         {

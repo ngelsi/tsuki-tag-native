@@ -291,7 +291,7 @@ namespace TsukiTag.ViewModels
                                 var picture = await this.pictureWorker.CreatePictureMetadataFromLocalImage(image);
                                 if (picture != null)
                                 {
-                                    this.dbRepository.WorkspacePicture.AddToWorkspace(newWorkspace.Id, picture, image);
+                                    this.dbRepository.WorkspacePicture.AddToWorkspace(newWorkspace.Id, picture.Picture, image);
                                 }
                             }
                         }
@@ -377,15 +377,15 @@ namespace TsukiTag.ViewModels
 
                         if (picture != null)
                         {
-                            var result = await this.pictureWorker.SaveWorkspacePicture(picture, workspace);
+                            var result = await this.pictureWorker.SaveWorkspacePicture(picture.Picture, workspace, picture.Image);
                             if (!string.IsNullOrEmpty(result))
                             {
-                                await Task.Run(() => this.dbRepository.WorkspacePicture.AddToWorkspace(id, picture, result));
+                                await Task.Run(() => this.dbRepository.WorkspacePicture.AddToWorkspace(id, picture.Picture, result));
                             }
                             else
                             {
                                 return false;
-                            }
+                            }                        
                         }
                     }
 

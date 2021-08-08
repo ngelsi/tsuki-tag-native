@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 using ReactiveUI;
 using System;
@@ -22,12 +23,13 @@ namespace TsukiTag.Views
             InitializeComponent();
         }
 
-        public PictureDetail(Picture picture)
+        public PictureDetail(Picture picture, Bitmap image)
         {
             InitializeComponent();
 
             DataContext = new PictureDetailViewModel(
                 picture,
+                image,
                 Ioc.SimpleIoc.PictureControl,
                 Ioc.SimpleIoc.DbRepository,
                 Ioc.SimpleIoc.NotificationControl,

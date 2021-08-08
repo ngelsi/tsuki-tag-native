@@ -9,6 +9,8 @@ using System.Reactive.Concurrency;
 using System.Reactive;
 using ReactiveUI;
 using System.Collections.ObjectModel;
+using Avalonia.Media.Imaging;
+using TsukiTag.Converters;
 
 namespace TsukiTag.ViewModels
 {
@@ -20,11 +22,18 @@ namespace TsukiTag.ViewModels
         private ObservableCollection<MenuItemViewModel> onlineListMenus;
         private bool maximizedView;
         private bool fillView;
+        private Bitmap image;
 
         public Picture Picture
         {
             get { return picture; }
             set { picture = value; }
+        }
+
+        public Bitmap Image
+        {
+            get { return image; }
+            set { image = value; }
         }
 
         public bool MaximizedView
@@ -68,6 +77,7 @@ namespace TsukiTag.ViewModels
 
         public PictureDetailViewModel(
             Picture picture,
+            Bitmap image,
             IPictureControl pictureControl,
             IDbRepository dbRepository,
             INotificationControl notificationControl,
@@ -122,22 +132,22 @@ namespace TsukiTag.ViewModels
 
             this.AddToDefaultWorkspaceCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                OnAddToDefaultWorkspace(Picture);
+                OnAddToDefaultWorkspace(Picture, Image);
             });
 
             this.AddToSpecificWorkspaceCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
             {
-                OnAddToSpecificWorkspace(id, Picture);
+                OnAddToSpecificWorkspace(id, Picture, Image);
             });
 
             this.AddToEligibleWorkspacesCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                OnAddToEligibleWorkspaces(Picture);
+                OnAddToEligibleWorkspaces(Picture, Image);
             });
 
             this.AddToAllWorkspacesCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                OnAddToAllWorkspaces(Picture);
+                OnAddToAllWorkspaces(Picture, Image);
             });
 
             this.RemoveFromSpecificWorkspaceCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
@@ -179,6 +189,7 @@ namespace TsukiTag.ViewModels
 
             this.pictureControl = pictureControl;
             this.picture = picture;
+            this.image = image;
             this.onlineListMenus = GetMenus();
 
             this.dbRepository.OnlineList.OnlineListsChanged += OnResourceListsChanged;
@@ -192,6 +203,9 @@ namespace TsukiTag.ViewModels
             this.dbRepository.OnlineList.OnlineListsChanged -= OnResourceListsChanged;
             this.dbRepository.Workspace.WorkspacesChanged -= OnResourceListsChanged;
             this.picture.PropertyChanged -= OnPicturePropertiesChanged;
+
+            this.Image?.Dispose();
+            this.Image = null;
         }
 
         public async void OnSwitchDisplay()
@@ -244,7 +258,7 @@ namespace TsukiTag.ViewModels
 
             var imageMenus = new MenuItemViewModel();
             imageMenus.Header = Language.ActionImage;
-            imageMenus.Items = new List<MenuItemViewModel>() {                
+            imageMenus.Items = new List<MenuItemViewModel>() {
                 {
                     new MenuItemViewModel()
                     {
@@ -269,7 +283,7 @@ namespace TsukiTag.ViewModels
                         ) : null,
                         IsEnabled = metadataGroups.Count > 0 && Picture.IsLocal
                     }
-                },                
+                },
                 {
                     new MenuItemViewModel()
                     {

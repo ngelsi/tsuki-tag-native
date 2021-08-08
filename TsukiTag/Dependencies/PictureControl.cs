@@ -22,11 +22,11 @@ namespace TsukiTag.Dependencies
 
         event EventHandler<Picture> PictureDeselected;
 
-        event EventHandler<Picture> PictureOpened;
+        event EventHandler<PictureOpenedEventArgs> PictureOpened;
 
         event EventHandler<Picture> PictureClosed;
 
-        event EventHandler<Picture> PictureOpenedInBackground;
+        event EventHandler<PictureOpenedEventArgs> PictureOpenedInBackground;
 
         event EventHandler PicturesReset;
 
@@ -88,9 +88,9 @@ namespace TsukiTag.Dependencies
 
         public event EventHandler<Picture> PictureRemoved;
 
-        public event EventHandler<Picture> PictureOpened;
+        public event EventHandler<PictureOpenedEventArgs> PictureOpened;
 
-        public event EventHandler<Picture> PictureOpenedInBackground;
+        public event EventHandler<PictureOpenedEventArgs> PictureOpenedInBackground;
 
         public event EventHandler<Picture> PictureClosed;
 
@@ -207,25 +207,11 @@ namespace TsukiTag.Dependencies
             await semaphoreSlim.WaitAsync();
             try
             {
-                if (!string.IsNullOrEmpty(picture.FileUrl))
-                {
-                    picture.SampleImage = await pictureDownloadControl.DownloadLocalBitmap(picture.FileUrl);
-                }
-
-                if(picture.SampleImage == null && !string.IsNullOrEmpty(picture.Source) && picture.IsLocallyImported)
-                {
-                    picture.SampleImage = await pictureDownloadControl.DownloadLocalBitmap(picture.Source);
-                }
-
-                if (picture.SampleImage == null && !string.IsNullOrEmpty(picture.Url))
-                {
-                    picture.SampleImage = await pictureDownloadControl.DownloadBitmap(picture.Url);
-                }
-
-                if(picture.SampleImage != null)
+                var bitmap = await this.pictureDownloadControl.DownloadBitmap(picture);
+                if(bitmap != null)
                 {
                     openedPictures.Add(picture);
-                    PictureOpened?.Invoke(this, picture);
+                    PictureOpened?.Invoke(this, new PictureOpenedEventArgs(picture, bitmap));
                 }
             }
             catch { }
@@ -240,25 +226,11 @@ namespace TsukiTag.Dependencies
             await semaphoreSlim.WaitAsync();
             try
             {
-                if (!string.IsNullOrEmpty(picture.FileUrl))
-                {
-                    picture.SampleImage = await pictureDownloadControl.DownloadLocalBitmap(picture.FileUrl);
-                }
-
-                if (picture.SampleImage == null && !string.IsNullOrEmpty(picture.Source) && picture.IsLocallyImported)
-                {
-                    picture.SampleImage = await pictureDownloadControl.DownloadLocalBitmap(picture.Source);
-                }
-
-                if (picture.SampleImage == null && !string.IsNullOrEmpty(picture.Url))
-                {
-                    picture.SampleImage = await pictureDownloadControl.DownloadBitmap(picture.Url);
-                }
-
-                if(picture.SampleImage != null)
+                var bitmap = await this.pictureDownloadControl.DownloadBitmap(picture);
+                if (bitmap != null)
                 {
                     openedPictures.Add(picture);
-                    PictureOpenedInBackground?.Invoke(this, picture);
+                    PictureOpenedInBackground?.Invoke(this, new PictureOpenedEventArgs(picture, bitmap));
                 }
             }
             catch { }

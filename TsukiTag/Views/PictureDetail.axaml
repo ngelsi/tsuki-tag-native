@@ -37,9 +37,9 @@
         </Button>
       </DockPanel>
     </ExperimentalAcrylicBorder>
-    <Image DockPanel.Dock="Top" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding FillView}" MaxWidth="{Binding Picture.Width}" MaxHeight="{Binding Picture.Height}" Source="{Binding Picture, Converter={StaticResource sampleConverter}}"></Image>
+    <Image DockPanel.Dock="Top" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding FillView}" MaxWidth="{Binding Picture.Width}" MaxHeight="{Binding Picture.Height}" Source="{Binding Image}"></Image>
     <ScrollViewer x:Name="PictureScroller" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" DockPanel.Dock="Top" IsVisible="{Binding MaximizedView}">
-      <Image Cursor="Hand" PointerPressed="ImagePointerPressed" PointerReleased="ImagePointerReleased" PointerMoved="ImagePointerMove" Stretch="None" StretchDirection="Both" DockPanel.Dock="Top" MaxWidth="{Binding Picture.Width}" MaxHeight="{Binding Picture.Height}" Source="{Binding Picture, Converter={StaticResource sampleConverter}}"></Image>
+      <Image Cursor="Hand" PointerPressed="ImagePointerPressed" PointerReleased="ImagePointerReleased" PointerMoved="ImagePointerMove" Stretch="None" StretchDirection="Both" DockPanel.Dock="Top" MaxWidth="{Binding Picture.Width}" MaxHeight="{Binding Picture.Height}" Source="{Binding Image}"></Image>
     </ScrollViewer>
   </DockPanel>
 </UserControl>

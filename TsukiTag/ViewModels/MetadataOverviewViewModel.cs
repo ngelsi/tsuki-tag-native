@@ -359,13 +359,7 @@ namespace TsukiTag.ViewModels
             {
                 foreach (var picture in SelectedPictures.ToList())
                 {
-                    await OnAddToDefaultWorkspace(picture, true);
-
-                    if (picture.SourceImage != null)
-                    {
-                        picture.SourceImage.Dispose();
-                        picture.SourceImage = null;
-                    }
+                    await OnAddToDefaultWorkspace(picture, null, true);
                 }
 
                 GC.Collect();
@@ -375,13 +369,7 @@ namespace TsukiTag.ViewModels
             {
                 foreach (var picture in SelectedPictures.ToList())
                 {
-                    await OnAddToSpecificWorkspace(id, picture, true);
-
-                    if (picture.SourceImage != null)
-                    {
-                        picture.SourceImage.Dispose();
-                        picture.SourceImage = null;
-                    }
+                    await OnAddToSpecificWorkspace(id, picture, null, true);
                 }
 
                 GC.Collect();
@@ -391,13 +379,7 @@ namespace TsukiTag.ViewModels
             {
                 foreach (var picture in SelectedPictures.ToList())
                 {
-                    await OnAddToEligibleWorkspaces(picture, true);
-
-                    if (picture.SourceImage != null)
-                    {
-                        picture.SourceImage.Dispose();
-                        picture.SourceImage = null;
-                    }
+                    await OnAddToEligibleWorkspaces(picture, null, true);
                 }
 
                 GC.Collect();
@@ -407,13 +389,7 @@ namespace TsukiTag.ViewModels
             {
                 foreach (var picture in SelectedPictures.ToList())
                 {
-                    await OnAddToAllWorkspaces(picture, true);
-
-                    if (picture.SourceImage != null)
-                    {
-                        picture.SourceImage.Dispose();
-                        picture.SourceImage = null;
-                    }
+                    await OnAddToAllWorkspaces(picture, null, true);
                 }
 
                 GC.Collect();

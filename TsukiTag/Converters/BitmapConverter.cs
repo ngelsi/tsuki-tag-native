@@ -36,25 +36,21 @@ namespace TsukiTag.Converters
         {
             if (value is Picture picture)
             {
-                var pic = picture.SampleImage as Bitmap;
-                if (pic == null)
+                Bitmap pic = null;
+                try
                 {
-                    try
+                    if (!string.IsNullOrEmpty(picture.FileUrl))
                     {
-                        if (!string.IsNullOrEmpty(picture.FileUrl))
-                        {
-                            pic = Ioc.SimpleIoc.PictureDownloader.DownloadLocalBitmap(picture.FileUrl).GetAwaiter().GetResult();
-                        }
-                        
-                        if(pic == null && !string.IsNullOrEmpty(picture.Url))
-                        {
-                            pic = Ioc.SimpleIoc.PictureDownloader.DownloadBitmap(picture.Url).GetAwaiter().GetResult();
-                        }
-
-                        picture.SampleImage = pic;                        
+                        pic = Ioc.SimpleIoc.PictureDownloader.DownloadLocalBitmap(picture.FileUrl).GetAwaiter().GetResult();
                     }
-                    catch { }
+
+                    if (pic == null && !string.IsNullOrEmpty(picture.Url))
+                    {
+                        pic = Ioc.SimpleIoc.PictureDownloader.DownloadBitmap(picture.Url).GetAwaiter().GetResult();
+                    }
                 }
+                catch { }
+
 
                 return pic;
             }

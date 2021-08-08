@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using TsukiTag.Models;
 
 namespace TsukiTag.Dependencies
 {
@@ -20,6 +21,8 @@ namespace TsukiTag.Dependencies
         Task<Bitmap> DownloadBitmap(string url);
 
         Task<Bitmap> DownloadBitmap(string url, string? md5);
+
+        Task<Bitmap> DownloadBitmap(Picture picture);
 
         Task<Bitmap> DownloadLocalBitmap(string filePath);
     }
@@ -59,6 +62,28 @@ namespace TsukiTag.Dependencies
                     return stream;
                 }
             }
+        }
+
+        public async Task<Bitmap> DownloadBitmap(Picture picture)
+        {
+            Bitmap image = null;
+
+            if (!string.IsNullOrEmpty(picture.FileUrl))
+            {
+                image = await DownloadLocalBitmap(picture.FileUrl);
+            }
+
+            if (image == null && !string.IsNullOrEmpty(picture.Source) && picture.IsLocallyImported)
+            {
+                image = await DownloadLocalBitmap(picture.Source);
+            }
+
+            if (image == null && !string.IsNullOrEmpty(picture.Url))
+            {
+                image = await DownloadBitmap(picture.Url);
+            }
+
+            return image;
         }
 
         public async Task<Bitmap> DownloadLocalBitmap(string filePath)

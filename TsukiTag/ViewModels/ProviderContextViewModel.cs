@@ -237,18 +237,18 @@ namespace TsukiTag.ViewModels
             });
         }
 
-        private void OnPictureOpened(object? sender, Picture e)
+        private void OnPictureOpened(object? sender, PictureOpenedEventArgs e)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                if (!this.Tabs.Any(t => (t.Context is Picture picture) && picture.Equals(e)))
+                if (!this.Tabs.Any(t => (t.Context is Picture picture) && picture.Equals(e.Picture)))
                 {
                     this.Tabs.Add(new ProviderTabModel()
                     {
-                        Header = e.Id ?? e.Md5,
-                        Identifier = e.Md5,
-                        Context = e,
-                        Content = new PictureDetail(e)
+                        Header = e.Picture.Id ?? e.Picture.Md5,
+                        Identifier = e.Picture.Md5,
+                        Context = e.Picture,
+                        Content = new PictureDetail(e.Picture, e.Image)
                     });
 
                     this.SelectedTabIndex = this.Tabs.Count - 1;
@@ -257,13 +257,32 @@ namespace TsukiTag.ViewModels
                 }
                 else
                 {
-                    var tab = this.Tabs.FirstOrDefault(t => (t.Context is Picture picture) && picture.Equals(e));
+                    var tab = this.Tabs.FirstOrDefault(t => (t.Context is Picture picture) && picture.Equals(e.Picture));
                     if (tab != null)
                     {
                         this.SelectedTabIndex = this.Tabs.IndexOf(tab);
                         this.RaisePropertyChanged(nameof(Tabs));
                         this.RaisePropertyChanged(nameof(SelectedTabIndex));
                     }
+                }
+            });
+        }
+
+        private void OnPictureOpenedInBackground(object? sender, PictureOpenedEventArgs e)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                if (!this.Tabs.Any(t => (t.Context is Picture picture) && picture.Equals(e.Picture)))
+                {
+                    this.Tabs.Add(new ProviderTabModel()
+                    {
+                        Header = e.Picture.Id ?? e.Picture.Md5,
+                        Identifier = e.Picture.Md5,
+                        Content = new PictureDetail(e.Picture, e.Image),
+                        Context = e.Picture
+                    });
+
+                    this.RaisePropertyChanged(nameof(Tabs));
                 }
             });
         }
@@ -487,25 +506,6 @@ namespace TsukiTag.ViewModels
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
                 SelectedPictureCount = await this.pictureControl.GetSelectedPictureCount();
-            });
-        }
-
-        private void OnPictureOpenedInBackground(object? sender, Picture e)
-        {
-            RxApp.MainThreadScheduler.Schedule(async () =>
-            {
-                if (!this.Tabs.Any(t => (t.Context is Picture picture) && picture.Equals(e)))
-                {
-                    this.Tabs.Add(new ProviderTabModel()
-                    {
-                        Header = e.Id ?? e.Md5,
-                        Identifier = e.Md5,
-                        Content = new PictureDetail(e),
-                        Context = e
-                    });
-
-                    this.RaisePropertyChanged(nameof(Tabs));
-                }
             });
         }
     }

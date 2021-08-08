@@ -24,13 +24,15 @@ namespace TsukiTag.Dependencies
 
         void OpenPictureWebsite(Picture picture);
 
-        Task<string> SaveWorkspacePicture(Picture picture, Workspace workspace);
+        Task<string> SaveWorkspacePicture(Picture picture, Workspace workspace, Bitmap? image = null);
 
-        Task<Picture?> CreatePictureMetadataFromLocalImage(string imagePath);
+        Task<PictureImageTuple?> CreatePictureMetadataFromLocalImage(string imagePath);
 
         void CopyPictureWebsiteUrlToClipboard(Picture picture);
 
         Task DeletePicture(WorkspacePicture picture, Workspace workspace);
+
+        Bitmap ClonePicture(Bitmap picture);
     }
 
     public class PictureWorker : IPictureWorker
@@ -45,17 +47,18 @@ namespace TsukiTag.Dependencies
             this.pictureDownloader = pictureDownloader;
         }
 
-        public async Task<Picture?> CreatePictureMetadataFromLocalImage(string imagePath)
+        public async Task<PictureImageTuple?> CreatePictureMetadataFromLocalImage(string imagePath)
         {
             try
             {
-                return await Task.Run<Picture?>(async () =>
+                return await Task.Run<PictureImageTuple?>(async () =>
                 {
                     try
                     {
                         var imageBytes = File.ReadAllBytes(imagePath);
-
                         var picture = new Picture();
+                        var tuple = new PictureImageTuple();
+
                         picture.Provider = Provider.Local.Name;
                         picture.Id = Guid.NewGuid().ToString("N");
                         picture.Md5 = GetMD5HashFromFile(imageBytes);
@@ -103,12 +106,13 @@ namespace TsukiTag.Dependencies
                                 picture.PreviewImage = new Bitmap(ms2);
                             }
 
+                            tuple.Picture = picture;
+
                             ms.Position = 0;
-                            picture.SampleImage = new Bitmap(ms);
-                            picture.SourceImage = picture.SampleImage;
+                            tuple.Image = new Bitmap(ms);                            
 
                             systemBitmap.Dispose();
-                            return picture;
+                            return tuple;
                         }
                     }
                     catch (Exception)
@@ -131,29 +135,34 @@ namespace TsukiTag.Dependencies
                 {
                     try
                     {
-                        string filePath = null;
+                        string? filePath = null;
                         if (!string.IsNullOrEmpty(picture.FileUrl) && File.Exists(picture.FileUrl))
                         {
                             filePath = picture.FileUrl;
                         }
                         else
                         {
-                            if (workspace?.DownloadSourcePictures == true && picture.SourceImage == null)
-                            {
-                                picture.SourceImage = await this.pictureDownloader.DownloadBitmap(picture.DownloadUrl);
-                            }
-                            else if (picture.SampleImage == null)
-                            {
-                                picture.SampleImage = await this.pictureDownloader.DownloadBitmap(picture.Url);
-                            }
+                            Bitmap? image = null;
 
-                            var selectedImage = (picture.SourceImage ?? picture.SampleImage);
-                            if (selectedImage != null)
+                            if (workspace?.DownloadSourcePictures == true)
+                            {
+                                image = await this.pictureDownloader.DownloadBitmap(picture.DownloadUrl);
+                            }
+                            
+                            if (image == null)
+                            {
+                                image = await this.pictureDownloader.DownloadBitmap(picture.Url);
+                            }
+                            
+                            if (image != null)
                             {
                                 var temporaryFile = Path.Combine(Path.GetTempPath(), $"{picture.Md5}.{picture.Extension}");
-                                selectedImage.Save(temporaryFile);
+                                image.Save(temporaryFile);
 
                                 filePath = temporaryFile;
+
+                                image.Dispose();
+                                image = null;
                             }
                         }
 
@@ -264,7 +273,7 @@ namespace TsukiTag.Dependencies
             }
         }
 
-        public async Task<string> SaveWorkspacePicture(Picture picture, Workspace workspace)
+        public async Task<string> SaveWorkspacePicture(Picture picture, Workspace workspace, Bitmap? image = null)
         {
             try
             {
@@ -272,31 +281,32 @@ namespace TsukiTag.Dependencies
                 {
                     try
                     {
-                        if (workspace.DownloadSourcePictures && picture.SourceImage == null)
+                        Bitmap? workingImage = null;
+                        if (workspace.DownloadSourcePictures)
                         {
                             if (!string.IsNullOrEmpty(picture.FileUrl))
                             {
-                                picture.SourceImage = await this.pictureDownloader.DownloadLocalBitmap(picture.FileUrl);
+                                workingImage = await this.pictureDownloader.DownloadLocalBitmap(picture.FileUrl);
                             }
                             else
                             {
-                                picture.SourceImage = await this.pictureDownloader.DownloadBitmap(picture.DownloadUrl);
+                                workingImage = await this.pictureDownloader.DownloadBitmap(picture.DownloadUrl);
                             }
                         }
-                        else if (picture.SampleImage == null)
+                        
+                        if (workingImage == null)
                         {
                             if (!string.IsNullOrEmpty(picture.FileUrl))
                             {
-                                picture.SampleImage = await this.pictureDownloader.DownloadLocalBitmap(picture.FileUrl);
+                                workingImage = await this.pictureDownloader.DownloadLocalBitmap(picture.FileUrl);
                             }
                             else
                             {
-                                picture.SampleImage = await this.pictureDownloader.DownloadBitmap(picture.Url);
+                                workingImage = image != null ? this.ClonePicture(image) : await this.pictureDownloader.DownloadBitmap(picture.Url);
                             }
                         }
 
-                        Bitmap imageBitmap = workspace.DownloadSourcePictures ? picture.SourceImage : picture.SampleImage;
-                        if (imageBitmap == null)
+                        if (workingImage == null)
                         {
                             return null;
                         }
@@ -306,7 +316,7 @@ namespace TsukiTag.Dependencies
                             {
                                 using (var destStream = new MemoryStream())
                                 {
-                                    imageBitmap.Save(sourceStream);
+                                    workingImage.Save(sourceStream);
                                     sourceStream.Position = 0;
 
                                     var drawingImage = new System.Drawing.Bitmap(sourceStream);
@@ -415,6 +425,22 @@ namespace TsukiTag.Dependencies
             }
 
             return sb.ToString();
+        }
+
+        public Bitmap ClonePicture(Bitmap picture)
+        {
+            if(picture != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    picture.Save(ms);
+                    ms.Position = 0;
+
+                    return new Bitmap(ms);
+                }
+            }
+
+            return null;
         }
     }
 }

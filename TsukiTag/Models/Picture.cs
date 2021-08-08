@@ -32,15 +32,12 @@ namespace TsukiTag.Models
         private string downloadUrl;
         private string status;
         private string tags;
-        private string userTags;
         private bool hasChildren;
         private bool selected;
         private string extension;
         private string source;
         private Bitmap previewImage;
-        private Bitmap sampleImage;
         private bool isLocal;
-        private Bitmap sourceImage;
         private string fileUrl;
         private string localProvider;
         private string localProviderType;
@@ -317,22 +314,6 @@ namespace TsukiTag.Models
             set { previewImage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PreviewImage))); }
         }
 
-        [BsonIgnore]
-        [JsonIgnore]
-        public Bitmap SampleImage
-        {
-            get { return sampleImage; }
-            set { sampleImage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SampleImage))); }
-        }
-
-        [BsonIgnore]
-        [JsonIgnore]
-        public Bitmap SourceImage
-        {
-            get { return sourceImage; }
-            set { sourceImage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceImage))); }
-        }
-
         public string Extension
         {
             get
@@ -450,12 +431,6 @@ namespace TsukiTag.Models
 
         public void RemovePictureBitmaps(bool includePreviewImage = false)
         {
-            SourceImage?.Dispose();
-            SourceImage = null;
-
-            SampleImage?.Dispose();
-            SampleImage = null;
-
             if (includePreviewImage)
             {
                 PreviewImage?.Dispose();
