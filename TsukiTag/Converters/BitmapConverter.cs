@@ -16,11 +16,11 @@ namespace TsukiTag.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value is Picture picture)
+            if (value is Picture picture)
             {
                 return picture.PreviewImage as IBitmap;
             }
-            
+
             return null;
         }
 
@@ -36,7 +36,27 @@ namespace TsukiTag.Converters
         {
             if (value is Picture picture)
             {
-                return picture.SampleImage as IBitmap;
+                var pic = picture.SampleImage as Bitmap;
+                if (pic == null)
+                {
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(picture.FileUrl))
+                        {
+                            pic = Ioc.SimpleIoc.PictureDownloader.DownloadLocalBitmap(picture.FileUrl).GetAwaiter().GetResult();
+                        }
+                        
+                        if(pic == null && !string.IsNullOrEmpty(picture.Url))
+                        {
+                            pic = Ioc.SimpleIoc.PictureDownloader.DownloadBitmap(picture.Url).GetAwaiter().GetResult();
+                        }
+
+                        picture.SampleImage = pic;                        
+                    }
+                    catch { }
+                }
+
+                return pic;
             }
 
             return null;

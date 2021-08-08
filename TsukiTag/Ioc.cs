@@ -51,6 +51,7 @@ namespace TsukiTag
         public IOnlineListPictureProvider OnlineListPictureProvider => container.GetInstance<IOnlineListPictureProvider>();
         public IPictureWorker PictureWorker => container.GetInstance<IPictureWorker>();
         public IWorkspacePictureProvider WorkspacePictureProvider => container.GetInstance<IWorkspacePictureProvider>();
+        public IPictureDownloader PictureDownloader => container.GetInstance<IPictureDownloader>();
 
         private Container CreateContainer()
         {
