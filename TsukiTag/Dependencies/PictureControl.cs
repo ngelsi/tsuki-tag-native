@@ -42,11 +42,11 @@ namespace TsukiTag.Dependencies
 
         void DeselectPicture(Picture picture);
 
-        void OpenPicture(Picture picture);
+        Task OpenPicture(Picture picture);
 
-        void OpenPictureInBackground(Picture picture);
+        Task OpenPictureInBackground(Picture picture);
 
-        void ClosePicture(Picture picture);
+        Task ClosePicture(Picture picture);
 
         Task<TagCollection> GetTags();
 
@@ -202,7 +202,7 @@ namespace TsukiTag.Dependencies
             }
         }
 
-        public async void OpenPicture(Picture picture)
+        public async Task OpenPicture(Picture picture)
         {
             await semaphoreSlim.WaitAsync();
             try
@@ -235,7 +235,7 @@ namespace TsukiTag.Dependencies
             }
         }
 
-        public async void OpenPictureInBackground(Picture picture)
+        public async Task OpenPictureInBackground(Picture picture)
         {
             await semaphoreSlim.WaitAsync();
             try
@@ -318,7 +318,7 @@ namespace TsukiTag.Dependencies
             }
         }
 
-        public async void ClosePicture(Picture picture)
+        public async Task ClosePicture(Picture picture)
         {
             await Task.Run(() =>
             {

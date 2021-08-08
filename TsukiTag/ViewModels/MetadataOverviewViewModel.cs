@@ -514,7 +514,10 @@ namespace TsukiTag.ViewModels
                 var picture = SelectedPictures.ElementAt(CurrentPictureIndex);
                 if (picture != null)
                 {
-                    this.pictureControl.OpenPicture(picture);
+                    Task.Run(async () =>
+                    {
+                        this.pictureControl.OpenPicture(picture);
+                    });
                 }
             });
         }

@@ -43,7 +43,10 @@ namespace TsukiTag.ViewModels
             {
                 if (e != null)
                 {
-                    this.pictureControl.OpenPicture(e);
+                    Task.Run(async () =>
+                    {
+                        this.pictureControl.OpenPicture(e);
+                    });                    
                 }
             });
         }
@@ -54,7 +57,10 @@ namespace TsukiTag.ViewModels
             {
                 if (e != null)
                 {
-                    this.pictureControl.OpenPictureInBackground(e);
+                    Task.Run(async () =>
+                    {
+                        this.pictureControl.OpenPictureInBackground(e);
+                    });                    
                 }
             });
         }
