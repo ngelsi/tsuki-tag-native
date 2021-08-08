@@ -120,6 +120,17 @@ namespace TsukiTag.Dependencies
         {
             await Task.Run(() =>
             {
+                if (tag.Contains(":"))
+                {
+                    if (tag.StartsWith("page", StringComparison.OrdinalIgnoreCase) && int.TryParse(tag.Split(':')[1], out int pageNumber))
+                    {
+                        currentFilter.Page = Math.Max(0, pageNumber - 1);
+                        FilterChanged?.Invoke(this, EventArgs.Empty);
+
+                        return;
+                    }
+                }
+
                 if (currentFilter.ExcludedTags.Contains(tag))
                 {
                     currentFilter.Page = 0;
@@ -132,7 +143,7 @@ namespace TsukiTag.Dependencies
                     currentFilter.Page = 0;
                     currentFilter.Tags.Add(tag);
 
-                    FilterChanged?.Invoke(this, EventArgs.Empty);                    
+                    FilterChanged?.Invoke(this, EventArgs.Empty);
                 }
             });
         }
@@ -148,7 +159,7 @@ namespace TsukiTag.Dependencies
 
                     FilterChanged?.Invoke(this, EventArgs.Empty);
                 }
-                else if(!currentFilter.ExcludedTags.Contains(tag))
+                else if (!currentFilter.ExcludedTags.Contains(tag))
                 {
                     currentFilter.Page = 0;
                     currentFilter.ExcludedTags.Add(tag);
@@ -162,7 +173,7 @@ namespace TsukiTag.Dependencies
         {
             await Task.Run(() =>
             {
-                if(currentFilter.Tags.Contains(tag))
+                if (currentFilter.Tags.Contains(tag))
                 {
                     currentFilter.Page = 0;
                     currentFilter.Tags.Remove(tag);
@@ -183,7 +194,7 @@ namespace TsukiTag.Dependencies
         {
             await Task.Run(() =>
             {
-                if(currentFilter.ExcludedTags.Contains(tag))
+                if (currentFilter.ExcludedTags.Contains(tag))
                 {
                     currentFilter.Page = 0;
                     currentFilter.ExcludedTags.Remove(tag);
@@ -200,7 +211,7 @@ namespace TsukiTag.Dependencies
                 currentFilter.Page = 0;
                 currentFilter.Tags.Clear();
                 currentFilter.Tags.Add(tag);
-                currentFilter.ExcludedTags.Clear(); 
+                currentFilter.ExcludedTags.Clear();
 
                 FilterChanged?.Invoke(this, EventArgs.Empty);
             });

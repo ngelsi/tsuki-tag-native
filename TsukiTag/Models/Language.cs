@@ -211,6 +211,7 @@ namespace TsukiTag.Models
         public static string SetThisTagSearch => Localizer.Get(nameof(SetThisTagSearch));
         public static string SelectAll => Localizer.Get(nameof(SelectAll));
         public static string AddTag => Localizer.Get(nameof(AddTag));
+        public static string FilterImages => Localizer.Get(nameof(FilterImages));
         public static string SearchTags => Localizer.Get(nameof(SearchTags));
         public static string ExcludeTags => Localizer.Get(nameof(ExcludeTags));
         public static string ExcludeTagsDescription => Localizer.Get(nameof(ExcludeTagsDescription));
