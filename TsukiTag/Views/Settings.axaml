@@ -102,6 +102,10 @@
                   <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsCloseTabsOnContextSwitch}"></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                  <ToggleSwitch IsChecked="{Binding ApplicationSettings.RemoveTagsOnContextSwitch}"></ToggleSwitch>
+                  <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsRemoveTagsOnContextSwitch}"></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
                   <ToggleSwitch IsChecked="{Binding ApplicationSettings.JumpToBrowserTabOnClose}"></ToggleSwitch>
                   <TextBlock Margin="0 6 0 0" Text="{x:Static model:Language.AppSettingsJumpToBrowserTabOnClose}"></TextBlock>
                 </StackPanel>

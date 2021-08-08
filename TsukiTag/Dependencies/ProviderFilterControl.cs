@@ -273,6 +273,8 @@ namespace TsukiTag.Dependencies
         public async Task ReinitializeFilter(string providerSessionId)
         {
             this.currentSession = providerSessionId;
+            var appSettings = dbRepository.ApplicationSettings.Get();
+
             var session = dbRepository.ProviderSession.Get(providerSessionId);
             if (session != null)
             {
@@ -283,6 +285,12 @@ namespace TsukiTag.Dependencies
                 if (session.Limit > 0)
                 {
                     filter.Limit = session.Limit;
+                }
+
+                if (!appSettings.RemoveTagsOnContextSwitch && currentFilter != null)
+                {
+                    filter.Tags = new List<string>(currentFilter.Tags);
+                    filter.ExcludedTags = new List<string>(currentFilter.ExcludedTags);
                 }
 
                 currentFilter = filter;
