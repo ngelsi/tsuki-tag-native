@@ -22,13 +22,15 @@ namespace TsukiTag.ViewModels
         protected bool explicitRatingEnabled;
 
         protected readonly IProviderFilterControl providerFilterControl;
+        private int currentPage;
 
         public ReactiveCommand<Unit, Unit> NextPageCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> PreviousPageCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> ResetPageCommand { get; protected set; }
+
         public ReactiveCommand<Unit, Unit> RefreshCommand { get; protected set; }
         public ReactiveCommand<string, Unit> SwitchRatingCommand { get; protected set; }
         public ReactiveCommand<string, Unit> SwitchProviderCommand { get; protected set; }
-
         public ReactiveCommand<string, Unit> SetSortByCommand { get; protected set; }
 
         public bool SafeRatingEnabled
@@ -81,6 +83,15 @@ namespace TsukiTag.ViewModels
             }
         }
 
+        public int CurrentPage
+        {
+            get { return (currentPage + 1); }
+            set
+            {
+                currentPage = value;
+                this.RaisePropertyChanged(nameof(CurrentPage));
+            }
+        }
 
         public ViewModelBaseBrowserNavigationHandler(
             IProviderFilterControl providerFilterControl
@@ -100,6 +111,11 @@ namespace TsukiTag.ViewModels
             this.PreviousPageCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 await this.providerFilterControl.PreviousPage();
+            });
+
+            this.ResetPageCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await this.providerFilterControl.ResetPage();
             });
 
             this.SwitchRatingCommand = ReactiveCommand.CreateFromTask<string>(async (rating) =>
@@ -200,8 +216,11 @@ namespace TsukiTag.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
+                var filter = await this.providerFilterControl.GetCurrentFilter();
+
                 this.CanAdvanceToNextPage = this.providerFilterControl.CanAdvanceNextPage();
-                this.CanAdvanceToPreviousPage = this.providerFilterControl.CanAdvancePreviousPage();
+                this.CanAdvanceToPreviousPage = this.providerFilterControl.CanAdvancePreviousPage();                
+                this.CurrentPage = filter.Page;
 
                 this.RaisePropertyChanged(nameof(CanAdvanceToNextPage));
                 this.RaisePropertyChanged(nameof(CanAdvanceToPreviousPage));

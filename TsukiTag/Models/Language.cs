@@ -64,6 +64,7 @@ namespace TsukiTag.Models
 
         public static string NextPage => Localizer.Get(nameof(NextPage));
         public static string PreviousPage => Localizer.Get(nameof(PreviousPage));
+        public static string ResetPage => Localizer.Get(nameof(ResetPage));
 
         public static string Browse => Localizer.Get(nameof(Browse));
 

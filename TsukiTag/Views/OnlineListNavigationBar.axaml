@@ -74,6 +74,15 @@
         <i:Icon Value="fa-arrow-left"></i:Icon>
       </MenuItem.Header>
     </MenuItem>
+
+    <MenuItem Header="{Binding CurrentPage}" IsVisible="{Binding CanAdvanceToPreviousPage}" Focusable="False">
+      <MenuItem Header="{Binding Language.NextPage}" IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
+      </MenuItem>
+      <MenuItem Header="{Binding Language.PreviousPage}" IsVisible="{Binding CanAdvanceToPreviousPage}" Command="{Binding PreviousPageCommand}">
+      </MenuItem>
+      <MenuItem Header="{Binding Language.ResetPage}" Command="{Binding ResetPageCommand}">
+      </MenuItem>
+    </MenuItem>
     
     <MenuItem ToolTip.Tip="{Binding Language.NextPage}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
       <MenuItem.Header>
