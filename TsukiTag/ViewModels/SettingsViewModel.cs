@@ -1,5 +1,6 @@
 ﻿using LiteDB;
 using ReactiveUI;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -149,6 +150,7 @@ namespace TsukiTag.ViewModels
                 }
                 catch (Exception ex)
                 {
+                    Log.Error(ex, $"Exception occurred while saving settings");
                     this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.SettingsSaveError));
                 }
             });

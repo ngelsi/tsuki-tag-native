@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Media.Imaging;
 using ExifLibrary;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -97,7 +98,10 @@ namespace TsukiTag.Dependencies
                                         picture.Tags = string.Join(" ", tagProperty.Value.ToString()?.Split(';').Select(s => s.Trim()));
                                     }
                                 }
-                                catch { }
+                                catch (Exception ex)
+                                {
+                                    Log.Error<Picture>(ex, $"Error occurred while retrieving EXIF tags from picture", picture);
+                                }
                             }
 
                             using (var ms2 = new MemoryStream(ResizeImage(systemBitmap, picture.PreviewWidth, picture.PreviewHeight)))
@@ -109,20 +113,22 @@ namespace TsukiTag.Dependencies
                             tuple.Picture = picture;
 
                             ms.Position = 0;
-                            tuple.Image = new Bitmap(ms);                            
+                            tuple.Image = new Bitmap(ms);
 
                             systemBitmap.Dispose();
                             return tuple;
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        Log.Error(ex, $"Error occurred while processing image metadata for local image from {imagePath}");
                         return null;
                     }
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, $"Error occurred while processing image metadata for local image from {imagePath}");
                 return null;
             }
         }
@@ -148,12 +154,12 @@ namespace TsukiTag.Dependencies
                             {
                                 image = await this.pictureDownloader.DownloadBitmap(picture.DownloadUrl);
                             }
-                            
+
                             if (image == null)
                             {
                                 image = await this.pictureDownloader.DownloadBitmap(picture.Url);
                             }
-                            
+
                             if (image != null)
                             {
                                 var temporaryFile = Path.Combine(Path.GetTempPath(), $"{picture.Md5}.{picture.Extension}");
@@ -175,15 +181,15 @@ namespace TsukiTag.Dependencies
                             });
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-
+                        Log.Error<Picture>(ex, $"Error occurred while opening picture in default application", picture);
                     }
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Log.Error<Picture>(ex, $"Error occurred while opening picture in default application", picture);
             }
         }
 
@@ -207,9 +213,9 @@ namespace TsukiTag.Dependencies
 
                     return url;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    Log.Error<Picture>(ex, $"Error occurred while re-constructing picture website URL", picture);
                 }
 
                 return null;
@@ -232,9 +238,9 @@ namespace TsukiTag.Dependencies
                         });
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    Log.Error<Picture>(ex, $"Error occurred while opening picture in web browser", picture);
                 }
             });
         }
@@ -251,9 +257,9 @@ namespace TsukiTag.Dependencies
                         await Application.Current.Clipboard.SetTextAsync(url);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    Log.Error<Picture>(ex, $"Error occurred while copying picture website URL to clipboard", picture);
                 }
             });
         }
@@ -267,9 +273,9 @@ namespace TsukiTag.Dependencies
                     File.Delete(picture.FilePath);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Log.Error(ex, $"Could not delete picture physical file at {picture?.FilePath}");
             }
         }
 
@@ -293,7 +299,7 @@ namespace TsukiTag.Dependencies
                                 workingImage = await this.pictureDownloader.DownloadBitmap(picture.DownloadUrl);
                             }
                         }
-                        
+
                         if (workingImage == null)
                         {
                             if (!string.IsNullOrEmpty(picture.FileUrl))
@@ -369,14 +375,16 @@ namespace TsukiTag.Dependencies
                             }
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        Log.Error<Picture>(ex, $"Error occurred while saving picture to workspace {workspace?.Id}", picture);
                         return null;
                     }
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error<Picture>(ex, $"Error occurred while saving picture to workspace {workspace?.Id}", picture);
                 return null;
             }
         }
@@ -429,7 +437,7 @@ namespace TsukiTag.Dependencies
 
         public Bitmap ClonePicture(Bitmap picture)
         {
-            if(picture != null)
+            if (picture != null)
             {
                 using (var ms = new MemoryStream())
                 {

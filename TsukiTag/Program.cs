@@ -3,7 +3,9 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
+using Serilog;
 using System;
+using System.IO;
 
 namespace TsukiTag
 {
@@ -18,14 +20,34 @@ namespace TsukiTag
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
-                .AfterSetup(AfterSetupCallback)                
+                .AfterSetup(AfterSetupCallback)                     
                 .UsePlatformDetect()
-                .LogToTrace()
+                .LogToTrace()                
                 .UseReactiveUI();
 
         private static void AfterSetupCallback(AppBuilder appBuilder)
         {
+            SetUpFontAwesome();
+            SetUpLogging();
+        }
+
+        private static void SetUpFontAwesome()
+        {
             IconProvider.Register<FontAwesomeIconProvider>();
+        }
+
+        private static void SetUpLogging()
+        {
+            var logPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TsukiTag", "logs");
+            if (!Directory.Exists(logPath))
+            {
+                Directory.CreateDirectory(logPath);
+            }
+
+            Log.Logger = new LoggerConfiguration()                        
+                        .WriteTo.Console(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug)
+                        .WriteTo.File(Path.Combine(logPath, "log-.txt"), restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information, rollingInterval: RollingInterval.Day, fileSizeLimitBytes: (1024*1024), rollOnFileSizeLimit: true, retainedFileCountLimit: 5, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}{NewLine}{Properties:j}")
+                        .CreateLogger();                              
         }
     }
 }

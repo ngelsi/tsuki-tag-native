@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -73,7 +74,7 @@ namespace TsukiTag.Dependencies
 
         private List<Picture> openedPictures;
 
-        private HashSet<string> seenPictures;        
+        private HashSet<string> seenPictures;
 
         private Guid pictureContext;
 
@@ -129,7 +130,10 @@ namespace TsukiTag.Dependencies
                     PictureSelected?.Invoke(this, picture);
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Log.Error<Picture>(ex, $"Error occurred while selecting picture", picture);
+            }
             finally
             {
                 semaphoreSlim.Release();
@@ -174,13 +178,10 @@ namespace TsukiTag.Dependencies
             {
                 return await Task.FromResult(picture.PictureContext == pictureContext);
             }
-            catch { }
             finally
             {
                 semaphoreSlim.Release();
             }
-
-            return await Task.FromResult(false);
         }
 
         public async void DeselectPicture(Picture picture)
@@ -195,7 +196,10 @@ namespace TsukiTag.Dependencies
 
                 PictureDeselected?.Invoke(this, picture);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Log.Error<Picture>(ex, $"Error occurred while de-selecting picture", picture);
+            }
             finally
             {
                 semaphoreSlim.Release();
@@ -208,13 +212,16 @@ namespace TsukiTag.Dependencies
             try
             {
                 var bitmap = await this.pictureDownloadControl.DownloadBitmap(picture);
-                if(bitmap != null)
+                if (bitmap != null)
                 {
                     openedPictures.Add(picture);
                     PictureOpened?.Invoke(this, new PictureOpenedEventArgs(picture, bitmap));
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Log.Error<Picture>(ex, $"Error occurred while opening picture", picture);
+            }
             finally
             {
                 semaphoreSlim.Release();
@@ -233,7 +240,10 @@ namespace TsukiTag.Dependencies
                     PictureOpenedInBackground?.Invoke(this, new PictureOpenedEventArgs(picture, bitmap));
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Log.Error<Picture>(ex, $"Error occurred while opening picture in background", picture);
+            }
             finally
             {
                 semaphoreSlim.Release();
@@ -272,9 +282,9 @@ namespace TsukiTag.Dependencies
                             PictureAdded?.Invoke(this, picture);
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        Log.Error<Picture>(ex, $"Error occurred while downloading thumbnail and adding picture to current collection", picture);
                     }
                     finally
                     {
@@ -285,8 +295,9 @@ namespace TsukiTag.Dependencies
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error<Picture>(ex, $"Error occurred while checking picture existence before downloading and adding to current collection", picture);
             }
         }
 
@@ -319,8 +330,6 @@ namespace TsukiTag.Dependencies
                 currentPictureSet = new List<Picture>();
                 seenPictures = new HashSet<string>();
             }
-            catch(Exception)
-            {}
             finally
             {
                 semaphoreSlim.Release();
@@ -336,7 +345,6 @@ namespace TsukiTag.Dependencies
             {
                 pictureContext = Guid.NewGuid();
             }
-            catch { }
             finally
             {
                 semaphoreSlim.Release();
@@ -350,7 +358,6 @@ namespace TsukiTag.Dependencies
             {
                 return await Task.FromResult(pictureContext);
             }
-            catch { }
             finally
             {
                 semaphoreSlim.Release();
@@ -366,7 +373,10 @@ namespace TsukiTag.Dependencies
             {
                 return await Task.FromResult(currentTagCollection);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Exception occurred while getting current tag collection");
+            }
             finally
             {
                 semaphoreSlim.Release();

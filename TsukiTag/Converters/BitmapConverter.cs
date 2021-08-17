@@ -2,6 +2,7 @@
 using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -49,7 +50,10 @@ namespace TsukiTag.Converters
                         pic = Ioc.SimpleIoc.PictureDownloader.DownloadBitmap(picture.Url).GetAwaiter().GetResult();
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Log.Error<Picture>(ex, $"Error occurred while downloading bitmap for image", picture);
+                }
 
 
                 return pic;

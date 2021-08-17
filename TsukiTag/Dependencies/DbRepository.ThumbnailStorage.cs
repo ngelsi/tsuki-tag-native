@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using LiteDB;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -85,13 +86,13 @@ namespace TsukiTag.Dependencies
                         {
                             return;
                         }
-
+                        
                         storage.Upload(md5, md5, ms);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    Log.Error(ex, $"Exception happened while adding or updating bitmap thumbnail for hash {md5}");
                 }
                 finally
                 {

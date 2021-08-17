@@ -11,6 +11,7 @@ using ReactiveUI;
 using System.Collections.ObjectModel;
 using TsukiTag.Models.Repository;
 using Avalonia.Media.Imaging;
+using Serilog;
 
 namespace TsukiTag.ViewModels
 {
@@ -57,7 +58,7 @@ namespace TsukiTag.ViewModels
         public virtual void Reinitialize()
         {
 
-        }        
+        }
 
         protected async Task OnOpenInDefaultApplication(Picture picture)
         {
@@ -322,6 +323,8 @@ namespace TsukiTag.ViewModels
                 }
                 else
                 {
+                    Log.Warning<Picture>($"Picture worker returned falsely for adding picture to workspace {id}", picture);
+
                     if (notify)
                     {
                         await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError, "workspace"));
@@ -350,6 +353,8 @@ namespace TsukiTag.ViewModels
                     }
                     else
                     {
+                        Log.Warning<Picture>($"Picture worker returned falsely for adding picture to online list {id}", picture);
+
                         if (notify)
                         {
                             await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ActionGenericError));
@@ -427,7 +432,7 @@ namespace TsukiTag.ViewModels
                     }
 
                     if (!await OnAddToSpecificWorkspace(workspace.Id, picture, image, false, false))
-                    {
+                    {                       
                         if (notify)
                         {
                             await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastWorkspaceProcessError, "workspace"));
@@ -476,8 +481,9 @@ namespace TsukiTag.ViewModels
                         return false;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<Picture>(ex, "Exception occurred while saving changes to picture", picture);
                     return false;
                 }
             });
@@ -491,17 +497,17 @@ namespace TsukiTag.ViewModels
                 {
                     if (!string.IsNullOrEmpty(picture.Id) && !string.IsNullOrEmpty(picture.Provider))
                     {
-                        if(notify)
+                        if (notify)
                         {
                             await this.notificationControl.SendToastMessage(ToastMessage.Uncloseable(string.Format(Language.ToastRedownloading, picture.Id, picture.Provider), "redownload"));
                         }
 
                         var newPicture = await this.providerContext.RedownloadPicture(picture);
-                        if(newPicture != null)
+                        if (newPicture != null)
                         {
                             picture.UpdateGenericMetadata(newPicture);
 
-                            if(notify)
+                            if (notify)
                             {
                                 await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastRedownloadedSingle, picture.Id, picture.Provider), "redownload"));
                             }
@@ -510,10 +516,10 @@ namespace TsukiTag.ViewModels
                         }
                         else
                         {
-                            if(notify)
+                            if (notify)
                             {
                                 await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastRedownloadCouldNotFind, picture.Id, picture.Provider), "redownload"));
-                            }                            
+                            }
 
                             return false;
                         }
@@ -528,8 +534,9 @@ namespace TsukiTag.ViewModels
                         return false;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<Picture>(ex, "Exception occurred while re-downloading picture", picture);
                 }
 
                 if (notify)
@@ -566,14 +573,16 @@ namespace TsukiTag.ViewModels
                     {
                         if (notify)
                         {
-                            await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastNotLocal, "metadatagroup"));                            
+                            await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastNotLocal, "metadatagroup"));
                         }
 
                         return false;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<Picture>(ex, $"Exception occurred while applying metadata group {id} to picture", picture);
+
                 }
 
                 if (notify)

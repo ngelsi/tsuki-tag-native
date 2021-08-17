@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using LiteDB;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -120,8 +121,9 @@ namespace TsukiTag.Dependencies
                         return items;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<ProviderFilter>(ex, "Error occurred while getting workspace pictures for filter", filter);
                     return new List<WorkspacePicture>();
                 }
             }
@@ -148,8 +150,9 @@ namespace TsukiTag.Dependencies
                         return allItems;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error(ex, $"Error occurred while getting all workspace pictures for hash {md5}");
                     return new List<WorkspacePicture>();
                 }
             }
@@ -210,8 +213,9 @@ namespace TsukiTag.Dependencies
 
                     return false;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<Picture>(ex, $"Could not add picture to workspace {resourceListId} with file path {filePath}", picture);
                     return false;
                 }
             }
@@ -239,8 +243,9 @@ namespace TsukiTag.Dependencies
 
                     return true;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<Picture>($"Could not remove picture from workspace {resourceListId}", picture);
                     return false;
                 }
             }

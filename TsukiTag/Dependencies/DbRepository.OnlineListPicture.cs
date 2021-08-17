@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -91,12 +92,13 @@ namespace TsukiTag.Dependencies
                                 while (items.Count <= ((filter.Page + 1) * filter.Limit))
                                 {
                                     var item = allItems.ElementAtOrDefault(i);
-                                    if(item == null)
+                                    if (item == null)
                                     {
                                         break;
                                     }
 
-                                    if (item != null && item.Picture.TagList.Any(t => tagsToSearch.Any(tt => t.WildcardMatches(tt)))) {
+                                    if (item != null && item.Picture.TagList.Any(t => tagsToSearch.Any(tt => t.WildcardMatches(tt))))
+                                    {
                                         items.Add(item);
                                     }
 
@@ -123,8 +125,9 @@ namespace TsukiTag.Dependencies
                         return items;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<ProviderFilter>(ex, "Error occurred while retrieving online list pictures for filter", filter);
                     return new List<OnlineListPicture>();
                 }
             }
@@ -150,8 +153,9 @@ namespace TsukiTag.Dependencies
                         return items;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<string>(ex, "Error occurred while retrieving all online list pictures for MD5", md5);
                     return new List<OnlineListPicture>();
                 }
             }
@@ -220,8 +224,9 @@ namespace TsukiTag.Dependencies
 
                     return false;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<Picture>(ex, $"Could not add picture to online list {resourceListId}", picture);
                     return false;
                 }
             }
@@ -250,8 +255,9 @@ namespace TsukiTag.Dependencies
                     return true;
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<Picture>(ex, $"Could not remove picture from online lists", picture);
                     return false;
                 }
             }
@@ -279,8 +285,9 @@ namespace TsukiTag.Dependencies
 
                     return true;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<Picture>(ex, $"Could not remove picture from online list {resourceListId}", picture);
                     return false;
                 }
             }
@@ -337,8 +344,9 @@ namespace TsukiTag.Dependencies
 
                     return true;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error<Picture>(ex, $"Could not add picture to specific online lists", picture);
                     return false;
                 }
             }

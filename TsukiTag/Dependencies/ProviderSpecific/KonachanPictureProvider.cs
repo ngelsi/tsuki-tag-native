@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,8 +101,10 @@ namespace TsukiTag.Dependencies.ProviderSpecific
                     }
                 }
             }
-            catch
-            {  }
+            catch (Exception ex)
+            {
+                Log.Error<ProviderFilterElement>(ex, $"Error occurred while transforming raw response data for {Provider} for filter", filter);
+            }
 
             return Task.FromResult(pictures);
         }

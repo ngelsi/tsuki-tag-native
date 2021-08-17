@@ -1,4 +1,5 @@
 ﻿using RestSharp;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +49,9 @@ namespace TsukiTag.Dependencies
                 }
             }
             catch (Exception ex)
-            { }
+            {
+                Log.Error(ex, $"Error occured while getting picture from online provider {Provider} with ID {id}");
+            }
 
             return null;
         }
@@ -83,11 +86,15 @@ namespace TsukiTag.Dependencies
                     result.ProviderEnd = true;
                     result.ErrorCode = "ToastProviderError";
 
+                    Log.Warning<ProviderFilterElement>($"Non-OK status code {response?.StatusCode} received from provider {Provider} to filter.", filter);
+
                     OnNonOkResultReceived(response, filter, result);
                 }
             }
             catch (Exception ex)
             {
+                Log.Error<ProviderFilterElement>(ex, $"Exception occurred during picture retrieval from provider {Provider} to filter.", filter);
+
                 result.Succeeded = false;
                 result.ErrorCode = "ToastProviderError";
             }

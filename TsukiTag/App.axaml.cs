@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
+using Serilog;
 using System;
 using System.Reactive;
 using TsukiTag.ViewModels;
@@ -16,7 +17,7 @@ namespace TsukiTag
 
         public override void Initialize()
         {
-            AvaloniaXamlLoader.Load(this);          
+            AvaloniaXamlLoader.Load(this);
         }
 
         public override void OnFrameworkInitializationCompleted()
@@ -30,11 +31,22 @@ namespace TsukiTag
                         Ioc.SimpleIoc.NotificationControl
                 ));
 
-                MainWindow = desktop.MainWindow;                
+                MainWindow = desktop.MainWindow;
             }
 
-            RxApp.DefaultExceptionHandler = Observer.Create<Exception>(Console.WriteLine);
+            RxApp.DefaultExceptionHandler = Observer.Create<Exception>((ex) =>
+            {
+                Log.Error(ex, "General unhandled exception catched");
+            });
+
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
             base.OnFrameworkInitializationCompleted();
+        }
+
+        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Log.Error(e.ExceptionObject as Exception, "General unhandled exception catched");            
         }
     }
 }
