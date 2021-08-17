@@ -394,7 +394,7 @@ namespace TsukiTag.Dependencies
             var destRect = new System.Drawing.Rectangle(0, 0, width, height);
             var destImage = new System.Drawing.Bitmap(width, height);
 
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+            destImage.SetResolution(width, height);
 
             using (var graphics = System.Drawing.Graphics.FromImage(destImage))
             {
