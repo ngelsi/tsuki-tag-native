@@ -162,6 +162,8 @@
   "ActionOpenPictureWebsite": "Open image website",
   "ActionRedownload": "Re-download from provider",
   "ActionCopyWebsiteUrlToClipboard": "Copy website URL to clipboard",
+  "ActionSaveImageAs": "Save image as",
+  "ActionSaveOriginalImageAs":  "Save original image as",
 
   "PreviousPicture": "Previous selected picture",
   "NextPicture": "Next selected picture",
@@ -202,6 +204,9 @@
   "ToastRedownloaded": "Images have been re-downloaded from their providers. Re-add or save images to persist the changes.",
   "ToastRedownloadCouldNotFind": "Could not find image {0} at provider {1}",
   "ToastPictureWebsiteUrlCopiedToClipboard": "Website URL copied to clipboard.",
+  "ToastSavingAs": "Saving image to {0}",
+  "ToastSavingAsComplete": "Image saved to {0}",
+  "ToastSavingAsError":  "Something went wrong while saving the image.",
 
   "NavigationOnline": "Browse online",
   "NavigationAllOnlineLists": "Browse all online lists",

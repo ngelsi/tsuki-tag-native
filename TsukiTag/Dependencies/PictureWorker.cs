@@ -34,6 +34,8 @@ namespace TsukiTag.Dependencies
         Task DeletePicture(WorkspacePicture picture, Workspace workspace);
 
         Bitmap ClonePicture(Bitmap picture);
+
+        Task<bool> SavePictureToPath(Picture picture, string path, bool sourcePicture, Bitmap? image = null);
     }
 
     public class PictureWorker : IPictureWorker
@@ -277,6 +279,68 @@ namespace TsukiTag.Dependencies
             {
                 Log.Error(ex, $"Could not delete picture physical file at {picture?.FilePath}");
             }
+        }
+
+        public async Task<bool> SavePictureToPath(Picture picture, string path, bool sourcePicture, Bitmap? image = null)
+        {
+            return await Task.Run<bool>(async () =>
+            {
+                try
+                {
+                    Bitmap? workingImage = null;
+                    if (sourcePicture)
+                    {
+                        if (!string.IsNullOrEmpty(picture.FileUrl))
+                        {
+                            workingImage = await this.pictureDownloader.DownloadLocalBitmap(picture.FileUrl);
+                        }
+                        else
+                        {
+                            workingImage = await this.pictureDownloader.DownloadBitmap(picture.DownloadUrl);
+                        }
+                    }
+
+                    if (workingImage == null)
+                    {
+                        if (!string.IsNullOrEmpty(picture.FileUrl))
+                        {
+                            workingImage = await this.pictureDownloader.DownloadLocalBitmap(picture.FileUrl);
+                        }
+                        else
+                        {
+                            workingImage = image != null ? this.ClonePicture(image) : await this.pictureDownloader.DownloadBitmap(picture.Url);
+                        }
+                    }
+
+                    if (workingImage == null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        using (var sourceStream = new MemoryStream())
+                        {
+                            path = path.ReplaceProperties(picture);
+
+                            workingImage.Save(sourceStream);
+                            sourceStream.Position = 0;
+
+                            var currentExtension = Path.GetExtension(path).Replace(".", "");
+                            var drawingImage = new System.Drawing.Bitmap(sourceStream);
+
+                            drawingImage.Save(path, currentExtension.Equals("jpg", StringComparison.OrdinalIgnoreCase) ||
+                               currentExtension.Equals("jpeg", StringComparison.OrdinalIgnoreCase) ? ImageFormat.Jpeg : ImageFormat.Png);
+
+                            return true;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error<Picture>(ex, $"Error occurred while saving picture to path {path}", picture);
+                    return false;
+                }
+            });
         }
 
         public async Task<string> SaveWorkspacePicture(Picture picture, Workspace workspace, Bitmap? image = null)

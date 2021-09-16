@@ -22,7 +22,7 @@ namespace TsukiTag
             => AppBuilder.Configure<App>()
                 .AfterSetup(AfterSetupCallback)                     
                 .UsePlatformDetect()
-                .LogToTrace()                
+                .LogToTrace(Avalonia.Logging.LogEventLevel.Error)                
                 .UseReactiveUI();
 
         private static void AfterSetupCallback(AppBuilder appBuilder)

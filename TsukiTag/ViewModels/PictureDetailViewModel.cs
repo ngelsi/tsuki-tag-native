@@ -11,6 +11,7 @@ using ReactiveUI;
 using System.Collections.ObjectModel;
 using Avalonia.Media.Imaging;
 using TsukiTag.Converters;
+using Avalonia.Controls;
 
 namespace TsukiTag.ViewModels
 {
@@ -185,6 +186,16 @@ namespace TsukiTag.ViewModels
                 OnCopyPictureWebsiteUrlToClipboard(Picture);
             });
 
+            this.SaveImageAsCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnSavePictureAs(false);
+            });
+
+            this.SaveOriginalImageAsCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnSavePictureAs(true);
+            });
+
             this.fillView = true;
 
             this.pictureControl = pictureControl;
@@ -251,6 +262,23 @@ namespace TsukiTag.ViewModels
             });
         }
 
+        private async void OnSavePictureAs(bool sourceImage)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                if (Picture != null)
+                {
+                    var dialog = new SaveFileDialog() { DefaultExtension = picture.Extension, InitialFileName = $"{picture.Md5}.{picture.Extension}" };
+                    var filePath = await dialog.ShowAsync(App.MainWindow);
+
+                    if(!string.IsNullOrEmpty(filePath))
+                    {
+                        await OnSaveImageAs(Picture, filePath, sourceImage, Image, true);
+                    }
+                }
+            });
+        }
+
         private ObservableCollection<MenuItemViewModel> GetMenus()
         {
             var metadataGroups = this.dbRepository.MetadataGroup.GetAll();
@@ -265,6 +293,20 @@ namespace TsukiTag.ViewModels
                         Header = Picture.IsLocal ? string.Format(Language.ActionSaveChanges, Picture.LocalProviderType?.ToLower()) : Language.ActionSaveChangesGeneral,
                         IsEnabled = Picture.IsLocal,
                         Command = SavePictureChangesCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionSaveImageAs,
+                        Command = SaveImageAsCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionSaveOriginalImageAs,
+                        Command = SaveOriginalImageAsCommand
                     }
                 },
                 {

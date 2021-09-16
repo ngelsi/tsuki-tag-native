@@ -41,6 +41,9 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Unit, Unit> OpenPictureWebsiteCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> RedownloadPictureCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> CopyWebsiteUrlToClipboardCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SaveImageAsCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SaveOriginalImageAsCommand { get; protected set; }
+
 
         public ViewModelCollectionHandlerBase(
             IDbRepository dbRepository,
@@ -82,6 +85,32 @@ namespace TsukiTag.ViewModels
             {
                 this.pictureWorker.CopyPictureWebsiteUrlToClipboard(picture);
                 await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastPictureWebsiteUrlCopiedToClipboard, "clipboard"));
+            });
+        }
+
+        protected async Task OnSaveImageAs(Picture picture, string path, bool sourceImage, Bitmap? image = null, bool notify = true)
+        {
+            await Task.Run(async () =>
+            {
+                if (notify)
+                {
+                    await this.notificationControl.SendToastMessage(ToastMessage.Uncloseable(string.Format(Language.ToastSavingAs, path), "saveas"));
+                }
+
+                if(await pictureWorker.SavePictureToPath(picture, path, sourceImage, image))
+                {
+                    if (notify)
+                    {
+                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(string.Format(Language.ToastSavingAsComplete, path), "saveas"));
+                    }
+                }
+                else
+                {
+                    if (notify)
+                    {
+                        await this.notificationControl.SendToastMessage(ToastMessage.Closeable(Language.ToastSavingAsError, "saveas"));
+                    }
+                }
             });
         }
 

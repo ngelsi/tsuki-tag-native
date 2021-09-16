@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Controls;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -125,6 +126,9 @@ namespace TsukiTag.ViewModels
         public ReactiveCommand<Guid, Unit> SelectionApplyMetadataGroupCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> SelectionSavePictureChangesCommand { get; protected set; }
         public ReactiveCommand<Unit, Unit> SelectionRedownloadPicturesCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SelectionSavePicturesAsCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SelectionSaveOriginalPicturesAsCommand { get; protected set; }
+
 
 
         public MetadataOverviewViewModel(
@@ -219,6 +223,16 @@ namespace TsukiTag.ViewModels
             this.CopyWebsiteUrlToClipboardCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 OnCopyPictureWebsiteUrlToClipboard(CurrentPicture);
+            });
+
+            this.SaveImageAsCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnSavePictureAs(false);
+            });
+
+            this.SaveOriginalImageAsCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                OnSavePictureAs(true);
             });
 
             #region Online List This Image
@@ -432,6 +446,18 @@ namespace TsukiTag.ViewModels
                 GC.Collect();
             });
 
+            this.SelectionSavePicturesAsCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await OnSelectionSavePictureAs(false);
+                GC.Collect();
+            });
+
+            this.SelectionSaveOriginalPicturesAsCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await OnSelectionSavePictureAs(true);
+                GC.Collect();
+            });
+
             #endregion SelectionSelection
         }
 
@@ -632,6 +658,40 @@ namespace TsukiTag.ViewModels
             await this.notificationControl.SendToastMessage(ToastMessage.Uncloseable(string.Format(Language.ToastRedownloaded), "redownload"));
         }
 
+        private async Task OnSelectionSavePictureAs(bool sourceImage)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                var dialog = new OpenFolderDialog() { Title = sourceImage ? Language.ActionSaveOriginalImageAs : Language.ActionSaveImageAs };
+                var directoryPath = await dialog.ShowAsync(App.MainWindow);
+
+                if (!string.IsNullOrEmpty(directoryPath))
+                {
+                    foreach(var picture in SelectedPictures.ToList())
+                    {
+                        await OnSaveImageAs(picture, System.IO.Path.Combine(directoryPath, $"{picture.Md5}.{picture.Extension}"), sourceImage, null, true);
+                    }
+                }
+            });
+        }
+
+        private async Task OnSavePictureAs(bool sourceImage)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                if (CurrentPicture != null)
+                {
+                    var dialog = new SaveFileDialog() { DefaultExtension = CurrentPicture.Extension, InitialFileName = $"{CurrentPicture.Md5}.{CurrentPicture.Extension}" };
+                    var filePath = await dialog.ShowAsync(App.MainWindow);
+
+                    if (!string.IsNullOrEmpty(filePath))
+                    {
+                        await OnSaveImageAs(CurrentPicture, filePath, sourceImage, null, true);
+                    }
+                }
+            });
+        }
+
         private void OnPictureDeselected(object? sender, Picture e)
         {
             RxApp.MainThreadScheduler.Schedule(async () =>
@@ -800,7 +860,7 @@ namespace TsukiTag.ViewModels
             imageMenus.Header = Language.ActionThisImage;
             imageMenus.Items = new List<MenuItemViewModel>()
             {
-               {
+                {
                     new MenuItemViewModel()
                     {
                         Header = CurrentPicture?.IsLocal == true ? string.Format(Language.ActionSaveChanges, CurrentPicture?.LocalProviderType?.ToLower()) : Language.ActionSaveChangesGeneral,
@@ -816,6 +876,20 @@ namespace TsukiTag.ViewModels
                             .Concat(metadataGroups.Select(l => new MenuItemViewModel() { Header = l.Name, Command = ApplyMetadataGroupCommand, CommandParameter = l.Id }))
                         ) : null,
                         IsEnabled = metadataGroups.Count > 0
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionSaveImageAs,
+                        Command = SaveImageAsCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionSaveOriginalImageAs,
+                        Command = SaveOriginalImageAsCommand
                     }
                 },
                 {
@@ -996,6 +1070,20 @@ namespace TsukiTag.ViewModels
                     {
                         Header = Language.ActionSaveChangesGeneral,
                         Command = SelectionSavePictureChangesCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionSaveImageAs,
+                        Command = SelectionSavePicturesAsCommand
+                    }
+                },
+                {
+                    new MenuItemViewModel()
+                    {
+                        Header = Language.ActionSaveOriginalImageAs,
+                        Command = SelectionSaveOriginalPicturesAsCommand
                     }
                 },
                 {
