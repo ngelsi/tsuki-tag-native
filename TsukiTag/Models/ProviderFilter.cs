@@ -12,13 +12,15 @@ namespace TsukiTag.Models
 
         public int Page { get; set; }
 
+        public string Session { get; set; }
+
         public List<string> Providers { get; set; }
 
         public List<string> Ratings { get; set; }
 
         public List<string> Tags { get; set; }
 
-        public List<string> ExcludedTags { get; set; }                
+        public List<string> ExcludedTags { get; set; }
 
         public List<string>? RawTags => TagsWithoutPragma?.Where(t => !(t.Contains("*") || t.Contains(".") || t.Contains("/"))).ToList();
 

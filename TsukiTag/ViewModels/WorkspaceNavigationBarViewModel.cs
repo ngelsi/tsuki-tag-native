@@ -13,8 +13,9 @@ namespace TsukiTag.ViewModels
     public class WorkspaceNavigationBarViewModel : ViewModelBaseBrowserNavigationHandler
     {
         public WorkspaceNavigationBarViewModel(
-            IProviderFilterControl providerFilterControl
-        ) : base(providerFilterControl)
+            IProviderFilterControl providerFilterControl,
+            IDbRepository dbRepository
+        ) : base(providerFilterControl, dbRepository)
         {
         }
     }

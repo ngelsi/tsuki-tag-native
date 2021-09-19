@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
@@ -8,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TsukiTag.Dependencies;
 using TsukiTag.Models;
-
+using TsukiTag.Models.Repository;
 
 namespace TsukiTag.ViewModels
 {
@@ -22,6 +23,8 @@ namespace TsukiTag.ViewModels
         protected bool explicitRatingEnabled;
 
         protected readonly IProviderFilterControl providerFilterControl;
+        protected readonly IDbRepository dbRepository;
+
         private int currentPage;
 
         public ReactiveCommand<Unit, Unit> NextPageCommand { get; protected set; }
@@ -93,13 +96,18 @@ namespace TsukiTag.ViewModels
             }
         }
 
+
+
         public ViewModelBaseBrowserNavigationHandler(
-            IProviderFilterControl providerFilterControl
+            IProviderFilterControl providerFilterControl,
+            IDbRepository dbRepository
          )
         {
             this.providerFilterControl = providerFilterControl;
             this.providerFilterControl.PageChanged += OnPageChanged;
             this.providerFilterControl.FilterChanged += OnFilterChanged;
+
+            this.dbRepository = dbRepository;
 
             this.canAdvanceToNextPage = true;
 
@@ -219,7 +227,7 @@ namespace TsukiTag.ViewModels
                 var filter = await this.providerFilterControl.GetCurrentFilter();
 
                 this.CanAdvanceToNextPage = this.providerFilterControl.CanAdvanceNextPage();
-                this.CanAdvanceToPreviousPage = this.providerFilterControl.CanAdvancePreviousPage();                
+                this.CanAdvanceToPreviousPage = this.providerFilterControl.CanAdvancePreviousPage();
                 this.CurrentPage = filter.Page;
 
                 this.RaisePropertyChanged(nameof(CanAdvanceToNextPage));

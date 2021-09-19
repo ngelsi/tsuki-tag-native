@@ -104,6 +104,9 @@ namespace TsukiTag.Models
         public static string ProviderTagsDescription => Localizer.Get(nameof(ProviderTagsDescription));
         public static string ExcludeTagsDescriptionWildcard => $"{Localizer.Get(nameof(ExcludeTagsDescription))}\r\n\r\n{localizer.Get(nameof(WildcardDescription))}";
         public static string BlacklistTagsDescriptionWildcard => $"{Localizer.Get(nameof(AppSettingsBlacklistTagsDescription))}\r\n\r\n{localizer.Get(nameof(WildcardDescription))}";
+        public static string PreviousSessions => Localizer.Get(nameof(PreviousSessions));
+        public static string PreviousSessionsDefault => Localizer.Get(nameof(PreviousSessionsDefault));
+
 
         public static string Workspaces => Localizer.Get(nameof(Workspaces));
         public static string Workspace => Localizer.Get(nameof(Workspace));

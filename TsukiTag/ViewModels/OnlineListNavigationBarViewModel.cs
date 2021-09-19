@@ -13,8 +13,9 @@ namespace TsukiTag.ViewModels
     public class OnlineListNavigationBarViewModel : ViewModelBaseBrowserNavigationHandler
     {
         public OnlineListNavigationBarViewModel(
-            IProviderFilterControl providerFilterControl
-        ) : base(providerFilterControl)
+            IProviderFilterControl providerFilterControl,
+            IDbRepository dbRepository
+        ) : base(providerFilterControl, dbRepository)
         {
         }
     }

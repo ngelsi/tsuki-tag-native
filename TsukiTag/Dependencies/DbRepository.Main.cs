@@ -30,6 +30,8 @@ namespace TsukiTag.Dependencies
         IApplicationSettingsDb ApplicationSettings { get; }
 
         IMetadataGroupDb MetadataGroup { get; }
+
+        IPreviousSessionDb PreviousSession { get; }
     }
 
     public partial class DbRepository : IDbRepository
@@ -58,6 +60,7 @@ namespace TsukiTag.Dependencies
             WorkspaceHistory = new WorkspaceHistoryDb();
             ApplicationSettings = new ApplicationSettingsDb(this);
             MetadataGroup = new MetadataGroupDb();
+            PreviousSession = new PreviousSessionDb();
         }
 
         private void EnsureRepositoryPath()

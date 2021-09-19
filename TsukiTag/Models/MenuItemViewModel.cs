@@ -19,6 +19,10 @@ namespace TsukiTag.Models
 
         public bool IsEnabled { get; set; }
 
+        public string Icon { get; set; }
+
+        public bool HasIcon { get; set; }
+
         public MenuItemViewModel()
         {
             IsEnabled = true;

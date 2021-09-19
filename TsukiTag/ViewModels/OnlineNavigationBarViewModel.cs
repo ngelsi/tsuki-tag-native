@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TsukiTag.Dependencies;
 using TsukiTag.Models;
+using TsukiTag.Models.Repository;
 
 namespace TsukiTag.ViewModels
 {
@@ -18,6 +20,9 @@ namespace TsukiTag.ViewModels
         private bool konachanEnabled;
         private bool danbooruEnabled;
         private bool yandereEnabled;
+
+        private ObservableCollection<PreviousSession> previousSessions;
+        private ObservableCollection<MenuItemViewModel> previousSessionMenuItems;
 
         public bool SafebooruEnabled
         {
@@ -69,11 +74,40 @@ namespace TsukiTag.ViewModels
             }
         }
 
-        public OnlineNavigationBarViewModel(
-            IProviderFilterControl providerFilterControl
-        ) : base(providerFilterControl)
+        public ReactiveCommand<Guid, Unit> SetFilterFromPreviousSessionCommand { get; protected set; }
+
+        public ObservableCollection<PreviousSession> PreviousSessions
         {
+            get { return previousSessions; }
+            set
+            {
+                previousSessions = value;
+                this.RaisePropertyChanged(nameof(PreviousSessions));
+            }
         }
+
+        public ObservableCollection<MenuItemViewModel> PreviousSessionMenuItems
+        {
+            get { return previousSessionMenuItems; }
+            set
+            {
+                previousSessionMenuItems = value;
+                this.RaisePropertyChanged(nameof(PreviousSessionMenuItems));
+            }
+        }
+
+        public OnlineNavigationBarViewModel(
+            IProviderFilterControl providerFilterControl,
+            IDbRepository dbRepository
+        ) : base(providerFilterControl, dbRepository)
+        {
+            this.SetFilterFromPreviousSessionCommand = ReactiveCommand.CreateFromTask<Guid>(async (id) =>
+            {
+                await this.SetFilterFromPreviousSession(id);
+            });
+
+            this.GetPreviousSessions();
+        }        
 
         protected override async void ConfigureFilters()
         {
@@ -91,6 +125,121 @@ namespace TsukiTag.ViewModels
                     YandereEnabled = currentFilter.Providers.Contains(Provider.Yandere.Name);
                 }
             });
+        }
+
+        protected override void OnFilterChanged(object? sender, EventArgs e)
+        {
+            base.OnFilterChanged(sender, e);
+            this.ConfigurePreviousSessions();
+        }
+
+        protected override void OnPageChanged(object? sender, int e)
+        {
+            base.OnPageChanged(sender, e);
+            this.ConfigurePreviousSessions();
+        }
+
+        protected virtual async Task SetFilterFromPreviousSession(Guid id)
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                var session = PreviousSessions.FirstOrDefault(s => s.Id == id);
+                if (session != null)
+                {
+                    await this.providerFilterControl.SetFilter(session.Tags, session.ExcludedTags, session.Page);
+                }
+            });
+        }
+
+        protected virtual async void ConfigurePreviousSessions()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                PreviousSessions = new ObservableCollection<PreviousSession>(dbRepository.PreviousSession.GetAll());
+
+                var currentFilter = await this.providerFilterControl.GetCurrentFilter();
+                var currentSession = PreviousSessions?.FirstOrDefault();
+
+                if (currentFilter != null && currentFilter.Session == ProviderSession.OnlineProviderSession)
+                {
+                    var newSession = false;
+                    if (currentSession != null)
+                    {
+                        if ((currentFilter.Tags.All(t => currentSession.Tags.Contains(t)) &&
+                           currentFilter.ExcludedTags.All(t => currentSession.ExcludedTags.Contains(t))) &&
+                           (currentSession.Tags.All(t => currentFilter.Tags.Contains(t)) &&
+                           currentSession.ExcludedTags.All(t => currentFilter.ExcludedTags.Contains(t))))
+                        {
+                            currentSession.Page = currentFilter.Page;
+                            this.dbRepository.PreviousSession.AddOrUpdate(this.previousSessions.ToList());
+                        }
+                        else if (currentFilter.Tags.Count == 0 && currentFilter.ExcludedTags.Count == 0 &&
+                            currentSession.Tags?.Count() == 0 && currentSession.ExcludedTags?.Count() == 0)
+                        {
+                            currentSession.Page = currentFilter.Page;
+                            this.dbRepository.PreviousSession.AddOrUpdate(this.previousSessions.ToList());
+                        }
+                        else
+                        {
+                            newSession = true;
+                        }
+                    }
+                    else
+                    {
+                        newSession = true;
+                    }
+
+                    if (newSession)
+                    {
+                        if (this.previousSessions == null)
+                        {
+                            this.previousSessions = new ObservableCollection<PreviousSession>();
+                        }
+
+                        this.previousSessions.Add(new PreviousSession()
+                        {
+                            Added = DateTime.Now,
+                            Id = Guid.NewGuid(),
+                            Tags = currentFilter.Tags.ToArray(),
+                            ExcludedTags = currentFilter.ExcludedTags.ToArray(),
+                            Page = currentFilter.Page
+                        });
+
+                        this.dbRepository.PreviousSession.AddOrUpdate(previousSessions.ToList());
+                    }
+
+                    this.GetPreviousSessions();
+                }
+            });
+        }
+
+        protected virtual async void GetPreviousSessions()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                PreviousSessions = new ObservableCollection<PreviousSession>(dbRepository.PreviousSession.GetAll());
+                PreviousSessionMenuItems = GetPreviousSessionMenus();
+            });
+        }
+
+        protected virtual ObservableCollection<MenuItemViewModel> GetPreviousSessionMenus()
+        {
+            var menus = new MenuItemViewModel();
+
+            menus.Header = Language.PreviousSessions;
+            menus.HasIcon = true;
+            menus.Icon = "fa-undo";
+            menus.Items = PreviousSessions?.Select(s =>
+            {
+                return new MenuItemViewModel()
+                {
+                    Header = s.Name,
+                    Command = SetFilterFromPreviousSessionCommand,
+                    CommandParameter = s.Id
+                };
+            })?.ToList();
+
+            return new ObservableCollection<MenuItemViewModel>() { menus };
         }
 
     }

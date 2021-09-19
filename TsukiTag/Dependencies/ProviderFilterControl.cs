@@ -40,6 +40,8 @@ namespace TsukiTag.Dependencies
 
         Task SetTag(string tag);
 
+        Task SetFilter(string[]? tags, string[]? excludedTags, int? page);
+
         Task RemoveRating(string rating);
 
         Task AddRating(string rating);
@@ -199,7 +201,7 @@ namespace TsukiTag.Dependencies
                     currentFilter.Page = 0;
                     currentFilter.ExcludedTags.Remove(tag);
 
-                    FilterChanged?.Invoke(this, EventArgs.Empty);
+                    FilterChanged?.Invoke(this, EventArgs.Empty);                    
                 }
             });
         }
@@ -214,6 +216,30 @@ namespace TsukiTag.Dependencies
                 currentFilter.ExcludedTags.Clear();
 
                 FilterChanged?.Invoke(this, EventArgs.Empty);
+            });
+        }
+
+        public async Task SetFilter(string[]? tags, string[]? excludedTags, int? page)
+        {
+            await Task.Run(() => {
+
+                currentFilter.Page = page ?? 0;
+                
+                currentFilter.Tags.Clear();                
+                currentFilter.ExcludedTags.Clear();
+
+                if(tags != null && tags.Length > 0)
+                {
+                    currentFilter.Tags = new List<string>(tags);
+                }
+
+                if(excludedTags != null && excludedTags.Length > 0)
+                {
+                    currentFilter.ExcludedTags = new List<string>(excludedTags);
+                }
+
+                FilterChanged?.Invoke(this, EventArgs.Empty);
+
             });
         }
 
@@ -279,6 +305,8 @@ namespace TsukiTag.Dependencies
             if (session != null)
             {
                 var filter = new ProviderFilter();
+
+                filter.Session = providerSessionId;
                 filter.Providers.AddRange(session.Providers);
                 filter.Ratings.AddRange(session.Ratings);
 
