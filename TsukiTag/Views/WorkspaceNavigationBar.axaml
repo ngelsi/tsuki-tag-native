@@ -69,7 +69,7 @@
 
     </MenuItem>
     
-    <MenuItem ToolTip.Tip="{Binding Language.PreviousPage}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToPreviousPage}" Command="{Binding PreviousPageCommand}">
+    <MenuItem ToolTip.Tip="{Binding Language.PreviousPage}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToPreviousPage}" Command="{Binding PreviousPageCommand}">
       <MenuItem.Header>
         <i:Icon Value="fa-arrow-left"></i:Icon>
       </MenuItem.Header>
@@ -84,13 +84,13 @@
       </MenuItem>
     </MenuItem>
 
-    <MenuItem ToolTip.Tip="{Binding Language.NextPage}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
+    <MenuItem ToolTip.Tip="{Binding Language.NextPage}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
       <MenuItem.Header>
         <i:Icon Value="fa-arrow-right"></i:Icon>
       </MenuItem.Header>
     </MenuItem>
     
-    <MenuItem ToolTip.Tip="{Binding Language.Refresh}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Command="{Binding RefreshCommand}">
+    <MenuItem ToolTip.Tip="{Binding Language.Refresh}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding RefreshCommand}">
       <MenuItem.Header>
         <i:Icon Value="fa-random"></i:Icon>
       </MenuItem.Header>

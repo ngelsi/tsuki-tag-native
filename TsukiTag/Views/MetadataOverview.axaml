@@ -45,27 +45,27 @@
   </UserControl.Styles>
   <DockPanel IsVisible="{Binding HasSelectedPicture}">
     <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
-      <Button ToolTip.Tip="{Binding Language.SwitchToTag}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Command="{Binding SwitchToTabOverviewCommand}" DockPanel.Dock="Left" Classes="actionbutton" HorizontalAlignment="Left" Margin="0 0 5 0">
+      <Button ToolTip.Tip="{Binding Language.SwitchToTag}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding SwitchToTabOverviewCommand}" DockPanel.Dock="Left" Classes="actionbutton" HorizontalAlignment="Left" Margin="0 0 5 0">
         <i:Icon  FontSize="14" Value="fa-angle-double-left"></i:Icon>
       </Button>
       <Label DockPanel.Dock="Left" Content="{Binding Language.Metadata}"></Label>
       <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 2 5 0">
-        <Button ToolTip.Tip="{Binding Language.PreviousPicture}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Command="{Binding PreviousPictureCommand}" Classes="actionbutton" Margin="0 0 5 0">
+        <Button ToolTip.Tip="{Binding Language.PreviousPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding PreviousPictureCommand}" Classes="actionbutton" Margin="0 0 5 0">
           <i:Icon FontSize="14" Value="fa-chevron-circle-left"></i:Icon>
         </Button>
         <TextBlock HorizontalAlignment="Right" FontSize="15" Text="{Binding CurrentPictureIndexDisplay}"></TextBlock>
         <TextBlock HorizontalAlignment="Right" FontSize="15" Text="/"></TextBlock>
         <TextBlock HorizontalAlignment="Right" FontSize="15" Text="{Binding SelectedPictureCount}"></TextBlock>
-        <Button ToolTip.Tip="{Binding Language.NextPicture}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Command="{Binding NextPictureCommand}" Classes="actionbutton" Margin="5 0 0 0">
+        <Button ToolTip.Tip="{Binding Language.NextPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding NextPictureCommand}" Classes="actionbutton" Margin="5 0 0 0">
           <i:Icon FontSize="14" Value="fa-chevron-circle-right"></i:Icon>
         </Button>
-        <Button ToolTip.Tip="{Binding Language.OpenPicture}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" PointerReleased="OpenPressReleased" Command="{Binding OpenPictureCommand}" Classes="actionbutton" Margin="10 0 0 0">
+        <Button ToolTip.Tip="{Binding Language.OpenPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" PointerReleased="OpenPressReleased" Command="{Binding OpenPictureCommand}" Classes="actionbutton" Margin="10 0 0 0">
           <i:Icon FontSize="14" Value="fa-clone"></i:Icon>
         </Button>
-        <Button ToolTip.Tip="{Binding Language.DeselectAllPictures}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Command="{Binding DeselectAllCommand}" Classes="actionbutton" Margin="10 0 0 0">
+        <Button ToolTip.Tip="{Binding Language.DeselectAllPictures}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding DeselectAllCommand}" Classes="actionbutton" Margin="10 0 0 0">
           <i:Icon FontSize="14" Value="fa-eraser"></i:Icon>
         </Button>
-        <Button ToolTip.Tip="{Binding Language.DeselectPicture}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" Command="{Binding DeselectPictureCommand}" Classes="actionbutton" Margin="10 0 0 0">
+        <Button ToolTip.Tip="{Binding Language.DeselectPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding DeselectPictureCommand}" Classes="actionbutton" Margin="10 0 0 0">
           <i:Icon FontSize="14" Value="fa-times"></i:Icon>
         </Button>
       </StackPanel>

@@ -30,7 +30,7 @@
   </UserControl.Styles>
   <DockPanel>
     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10 5 5 5">
-      <Button ToolTip.Tip="{Binding Language.SwitchToMetadata}" ToolTip.ShowDelay="0" ToolTip.Placement="Pointer" IsVisible="{Binding HasSelectedPictures}" Command="{Binding SwitchToMetadataOverviewCommand}" DockPanel.Dock="Left" Classes="actionbutton" HorizontalAlignment="Left" Margin="0 0 5 0">
+      <Button ToolTip.Tip="{Binding Language.SwitchToMetadata}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" IsVisible="{Binding HasSelectedPictures}" Command="{Binding SwitchToMetadataOverviewCommand}" DockPanel.Dock="Left" Classes="actionbutton" HorizontalAlignment="Left" Margin="0 0 5 0">
         <i:Icon FontSize="14" Value="fa-angle-double-left"></i:Icon>
       </Button>
       <Label Content="All tags"></Label>
