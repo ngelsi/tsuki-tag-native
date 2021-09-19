@@ -38,6 +38,7 @@ namespace TsukiTag.Models
         public static string Filter => Localizer.Get(nameof(Filter));
         public static string ImageFiles => Localizer.Get(nameof(ImageFiles));
         public static string Default => Localizer.Get(nameof(Default));
+        public static string Clear => Localizer.Get(nameof(Clear));
 
 
         public static string Rating => Localizer.Get(nameof(Rating));

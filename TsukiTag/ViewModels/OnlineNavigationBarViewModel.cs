@@ -75,6 +75,7 @@ namespace TsukiTag.ViewModels
         }
 
         public ReactiveCommand<Guid, Unit> SetFilterFromPreviousSessionCommand { get; protected set; }
+        public ReactiveCommand<Unit, Unit> ClearPreviousSessionsCommand { get; protected set; }
 
         public ObservableCollection<PreviousSession> PreviousSessions
         {
@@ -106,8 +107,13 @@ namespace TsukiTag.ViewModels
                 await this.SetFilterFromPreviousSession(id);
             });
 
+            this.ClearPreviousSessionsCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await this.ClearPreviousSessions();
+            });
+
             this.GetPreviousSessions();
-        }        
+        }
 
         protected override async void ConfigureFilters()
         {
@@ -116,7 +122,7 @@ namespace TsukiTag.ViewModels
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
                 var currentFilter = await this.providerFilterControl.GetCurrentFilter();
-                if(currentFilter != null)
+                if (currentFilter != null)
                 {
                     SafebooruEnabled = currentFilter.Providers.Contains(Provider.Safebooru.Name);
                     GelbooruEnabled = currentFilter.Providers.Contains(Provider.Gelbooru.Name);
@@ -137,6 +143,15 @@ namespace TsukiTag.ViewModels
         {
             base.OnPageChanged(sender, e);
             this.ConfigurePreviousSessions();
+        }
+
+        protected virtual async Task ClearPreviousSessions()
+        {
+            RxApp.MainThreadScheduler.Schedule(async () =>
+            {
+                this.dbRepository.PreviousSession.Clear();
+                this.ConfigurePreviousSessions();
+            });
         }
 
         protected virtual async Task SetFilterFromPreviousSession(Guid id)
@@ -229,16 +244,29 @@ namespace TsukiTag.ViewModels
             menus.Header = Language.PreviousSessions;
             menus.HasIcon = true;
             menus.Icon = "fa-undo";
-            menus.Items = PreviousSessions?.Select(s =>
+            menus.Items = new List<MenuItemViewModel>();
+
+            menus.Items.Add(new MenuItemViewModel()
             {
-                return new MenuItemViewModel()
+                Header = Language.Clear,
+                Command = ClearPreviousSessionsCommand
+            });
+
+            menus.Items.Add(new MenuItemViewModel()
+            {
+                Header = "-"
+            });
+
+            foreach(var s in PreviousSessions.ToList())
+            {
+                menus.Items.Add(new MenuItemViewModel()
                 {
                     Header = s.Name,
                     Command = SetFilterFromPreviousSessionCommand,
                     CommandParameter = s.Id
-                };
-            })?.ToList();
-
+                });
+            }
+            
             return new ObservableCollection<MenuItemViewModel>() { menus };
         }
 

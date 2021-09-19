@@ -9,6 +9,7 @@
   "Filter": "Filter",
   "ImageFiles": "Image files",
   "Default": "Default",
+  "Clear": "Clear",
 
   "Rating": "Rating",
   "Ratings": "Ratings",
@@ -163,7 +164,7 @@
   "ActionRedownload": "Re-download from provider",
   "ActionCopyWebsiteUrlToClipboard": "Copy website URL to clipboard",
   "ActionSaveImageAs": "Save image as",
-  "ActionSaveOriginalImageAs":  "Save original image as",
+  "ActionSaveOriginalImageAs": "Save original image as",
 
   "PreviousPicture": "Previous selected picture",
   "NextPicture": "Next selected picture",
@@ -184,7 +185,7 @@
   "ExcludeTags": "Exclude tags",
   "ExcludeTagsDescription": "Excluding pictures based on these tags happen locally and not on provider side. If no or very few pictures are being displayed, the excluded tags are too strict for the current search.",
   "PreviousSessions": "Previous sessions",
-  "PreviousSessionsDefault":  "Default",
+  "PreviousSessionsDefault": "Default",
 
   "ToastProviderEnd": "No more results from provider {0}.",
   "ToastOnlineListsEnd": "No more results from online lists.",
@@ -208,7 +209,7 @@
   "ToastPictureWebsiteUrlCopiedToClipboard": "Website URL copied to clipboard.",
   "ToastSavingAs": "Saving image to {0}",
   "ToastSavingAsComplete": "Image saved to {0}",
-  "ToastSavingAsError":  "Something went wrong while saving the image.",
+  "ToastSavingAsError": "Something went wrong while saving the image.",
 
   "NavigationOnline": "Browse online",
   "NavigationAllOnlineLists": "Browse all online lists",

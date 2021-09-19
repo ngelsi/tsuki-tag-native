@@ -14,6 +14,8 @@ namespace TsukiTag.Dependencies
 
         List<PreviousSession> GetAll();
 
+        void Clear();
+
         void AddOrUpdate(List<PreviousSession> PreviousSessions);
     }
 
@@ -45,6 +47,18 @@ namespace TsukiTag.Dependencies
                     {
                         coll.Upsert(PreviousSession);
                     }
+                }
+
+                EnsureSessionCache(true);
+                PreviousSessionsChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+            public void Clear()
+            {
+                using (var db = new LiteDatabase(MetadataRepositoryPath))
+                {
+                    var coll = db.GetCollection<PreviousSession>();
+                    coll.DeleteAll();
                 }
 
                 EnsureSessionCache(true);

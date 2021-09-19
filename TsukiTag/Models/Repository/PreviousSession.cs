@@ -66,7 +66,7 @@ namespace TsukiTag.Models.Repository
             get
             {
                 var str = Tags?.Any() == true || ExcludedTags?.Any() == true ?
-                    $"({Page + 1}) {string.Join(", ", Tags)} {string.Join(", ", ExcludedTags?.Select(s => $"-{s}"))}" :
+                    $"({Page + 1}) {string.Join(" ", Tags)} {string.Join(" ", ExcludedTags?.Select(s => $"-{s}"))}" :
                     $"({Page + 1}) {Language.PreviousSessionsDefault}";
 
                 return str.Length > 50 ? str.Substring(0, 46) + "..." : str;
