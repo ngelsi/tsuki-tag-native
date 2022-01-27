@@ -84,13 +84,7 @@ Releases of Tsuki-Tag can be found under the releases section. Windows x86-x64 v
 
 ## MacOS and Linux
 
-MacOS and Linux releases are available, however,
-- MacOS release is completely untested and the release version may not function at all.
-- The Linux release requires an additional package for image operations, which should be available in your default repositories for most of the popular releases and can be installed on Debian-based distributions by:
-
-```
-sudo apt-get install -y libgdiplus
-```
+MacOS and Linux releases are available, however, the MacOS release is completely untested and the release version may not function at all.
 
 # Build
 
