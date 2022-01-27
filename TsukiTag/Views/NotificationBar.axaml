@@ -20,30 +20,18 @@
     <Style Selector="TextBlock">
       <Setter Property="Foreground" Value="White"></Setter>      
     </Style>
-    <Style Selector="TextBlock.main">
-      <Setter Property="Padding" Value="10"></Setter>
-      <Setter Property="Margin" Value="10 0 10 0"></Setter>
-      <Setter Property="Width" Value="250"></Setter>
-      <Setter Property="TextWrapping" Value="Wrap"></Setter>
-    </Style>
   </UserControl.Styles>
-  <Border ToolTip.ShowDelay="300" ToolTip.Placement="Left" ToolTip.VerticalOffset="80" ToolTip.HorizontalOffset="-20" ToolTip.IsOpen="{Binding IsTooltipOpen}" DockPanel.Dock="Right">
-    <ToolTip.Tip>
-      <StackPanel Orientation="Vertical">
-        <ItemsControl Items="{Binding Messages}">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <StackPanel Orientation="Horizontal">
-                <TextBlock Classes="main" Text="{Binding Text}"></TextBlock>
-                <Button Command="{Binding $parent[ItemsControl].DataContext.CloseToastMessageCommand}" CommandParameter="{Binding Id}" IsVisible="{Binding IsCloseable}" Margin="0 0 10 0" Classes="actionbutton">
-                  <i:Icon FontSize="12" Value="fa-times"></i:Icon>
-                </Button>
-              </StackPanel>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-      </StackPanel>
-    </ToolTip.Tip>
-    <TextBlock></TextBlock>
-  </Border>
+  
+  <StackPanel IsVisible="{Binding HasTooltips}" Orientation="Horizontal" Margin="0,7,0,0">
+    <TextBlock Text="-" Margin="0, 1, 0,0"></TextBlock>
+    <ItemsControl Items="{Binding Messages}" Margin="11, 1, 0,0">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding Text}"></TextBlock>
+          </StackPanel>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </StackPanel>
 </UserControl>

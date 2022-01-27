@@ -16,17 +16,18 @@ namespace TsukiTag.ViewModels
     public class NotificationBarViewModel : ViewModelBase
     {
         private readonly INotificationControl notificationControl;
-
-        private bool isTooltipOpen;
+        private const bool OneMessage = true; //For now, only one message is allowed to be displayed per.
+        
+        private bool hasTooltips;
         private ObservableCollection<ToastMessage> messages;
         private Timer timeoutTimer;
 
         public ReactiveCommand<string, Unit> CloseToastMessageCommand { get; }
 
-        public bool IsTooltipOpen
+        public bool HasTooltips
         {
-            get { return isTooltipOpen; }
-            set { isTooltipOpen = value; this.RaisePropertyChanged(nameof(IsTooltipOpen)); }
+            get { return hasTooltips; }
+            set { hasTooltips = value; this.RaisePropertyChanged(nameof(HasTooltips)); }
         }
 
         public ObservableCollection<ToastMessage> Messages
@@ -68,7 +69,7 @@ namespace TsukiTag.ViewModels
                     Messages.Remove(message);
                     if (Messages.Count == 0)
                     {
-                        IsTooltipOpen = false;
+                        HasTooltips = false;
                     }
                 }
             });
@@ -80,24 +81,31 @@ namespace TsukiTag.ViewModels
             {
                 this.timeoutTimer.Stop();
 
-                if(!messages.Any(m => m.Id == e.Id))
+                if (OneMessage)
                 {
-                    Messages.Add(e);
+                    Messages = new ObservableCollection<ToastMessage>() {e};
                 }
                 else
                 {
-                    var message = messages.FirstOrDefault(m => m.Id == e.Id);
-                    if(message != null)
+                    if(!messages.Any(m => m.Id == e.Id))
                     {
-                        var index = messages.IndexOf(message);
-                        
-                        Messages.Insert(index, e);
-                        Messages.Remove(message);
+                        Messages.Add(e);
                     }
+                    else
+                    {
+                        var message = messages.FirstOrDefault(m => m.Id == e.Id);
+                        if(message != null)
+                        {
+                            var index = messages.IndexOf(message);
+                        
+                            Messages.Insert(index, e);
+                            Messages.Remove(message);
+                        }
+                    }   
                 }
 
-                IsTooltipOpen = true;
-
+                HasTooltips = true;
+                
                 this.timeoutTimer.Start();
             });
         }
@@ -107,7 +115,7 @@ namespace TsukiTag.ViewModels
             RxApp.MainThreadScheduler.Schedule(async () =>
             {
                 Messages = new ObservableCollection<ToastMessage>();
-                IsTooltipOpen = false;
+                HasTooltips = false;
             });
         }
     }

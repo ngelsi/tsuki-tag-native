@@ -22,7 +22,6 @@
 
   <DockPanel Margin="{Binding #MainWindow.OffScreenMargin}">
     <DockPanel DockPanel.Dock="Top">
-      <local:NotificationBar DockPanel.Dock="Right"></local:NotificationBar>
       <Menu DockPanel.Dock="Left" VerticalAlignment="Top" HorizontalAlignment="Left" Items="{Binding MainWindowMenus}">
         <Menu.Styles>
           <Style Selector="MenuItem">
@@ -34,6 +33,7 @@
           </Style>
         </Menu.Styles>
       </Menu>
+      <local:NotificationBar DockPanel.Dock="Left"></local:NotificationBar>
     </DockPanel>
     <DockPanel Margin="0 5 0 0" DockPanel.Dock="Top">
       <ContentControl Content="{Binding CurrentContent}">        
