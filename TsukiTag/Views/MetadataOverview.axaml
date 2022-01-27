@@ -95,10 +95,11 @@
               <Setter Property="Items" Value="{Binding Items}"/>
               <Setter Property="IsEnabled" Value="{Binding IsEnabled}"></Setter>
               <Setter Property="Command" Value="{Binding Command}"/>
-              <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+              <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>  
+              <Setter Property="HotKey" Value="{Binding HotKey}"></Setter>
             </Style>
           </Menu.Styles>
-        </Menu>
+        </Menu>      
       </DockPanel>
     </ExperimentalAcrylicBorder>
     <DockPanel DockPanel.Dock="Top">

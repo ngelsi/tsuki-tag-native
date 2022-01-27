@@ -8,6 +8,7 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading.Tasks;
+using Avalonia.Input;
 using TsukiTag.Dependencies;
 using TsukiTag.Extensions;
 using TsukiTag.Models;
@@ -1114,7 +1115,7 @@ namespace TsukiTag.ViewModels
                     new MenuItemViewModel()
                     {
                         Header = Language.SelectAll,
-                        Command = SelectAllCommand
+                        Command = SelectAllCommand,
                     }
                 },
                 {

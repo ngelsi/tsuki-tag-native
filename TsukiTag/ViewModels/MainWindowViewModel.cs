@@ -65,7 +65,7 @@ namespace TsukiTag.ViewModels
             get { return currentContent; }
             set
             {
-                this.RaiseAndSetIfChanged(ref currentContent, value);                ;
+                this.RaiseAndSetIfChanged(ref currentContent, value);                
                 this.RaisePropertyChanged(nameof(AllowImporting));
                 this.OnResourceListsChanged(this, EventArgs.Empty);
             }

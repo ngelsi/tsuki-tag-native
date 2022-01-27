@@ -5,12 +5,15 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Processing;
+using SkiaSharp;
 using TsukiTag.Extensions;
 using TsukiTag.Models;
 using TsukiTag.Models.Repository;
@@ -75,7 +78,7 @@ namespace TsukiTag.Dependencies
 
                         using (var ms = new MemoryStream(imageBytes.ToArray()))
                         {
-                            var systemBitmap = new System.Drawing.Bitmap(ms);
+                            var systemBitmap = Image.Load(ms);
 
                             picture.Width = systemBitmap.Width;
                             picture.Height = systemBitmap.Height;
@@ -324,12 +327,11 @@ namespace TsukiTag.Dependencies
 
                             workingImage.Save(sourceStream);
                             sourceStream.Position = 0;
-
+                            
                             var currentExtension = Path.GetExtension(path).Replace(".", "");
-                            var drawingImage = new System.Drawing.Bitmap(sourceStream);
-
+                            var drawingImage = Image.Load(sourceStream);
                             drawingImage.Save(path, currentExtension.Equals("jpg", StringComparison.OrdinalIgnoreCase) ||
-                               currentExtension.Equals("jpeg", StringComparison.OrdinalIgnoreCase) ? ImageFormat.Jpeg : ImageFormat.Png);
+                                                    currentExtension.Equals("jpeg", StringComparison.OrdinalIgnoreCase) ? new JpegEncoder() : new PngEncoder());
 
                             return true;
                         }
@@ -389,11 +391,11 @@ namespace TsukiTag.Dependencies
                                     workingImage.Save(sourceStream);
                                     sourceStream.Position = 0;
 
-                                    var drawingImage = new System.Drawing.Bitmap(sourceStream);
+                                    var drawingImage = Image.Load(sourceStream);
                                     var notJpg = !picture.IsJpg;
 
-                                    var imageFormat = notJpg && workspace.ConvertToJpg ? ImageFormat.Jpeg : notJpg ? ImageFormat.Png : ImageFormat.Jpeg;
-                                    picture.OverrideExtension(imageFormat == ImageFormat.Jpeg ? "jpg" : "png");
+                                    var imageFormat = notJpg && workspace.ConvertToJpg ? "jpg" : notJpg ? "png" : "jpg";
+                                    picture.OverrideExtension(imageFormat);
 
                                     var fileName = workspace.FileNameTemplate.ReplaceProperties(picture);
                                     var filePath = System.IO.Path.Combine(workspace.FolderPath, fileName);
@@ -403,7 +405,7 @@ namespace TsukiTag.Dependencies
                                         Directory.CreateDirectory(workspace.FolderPath);
                                     }
 
-                                    drawingImage.Save(destStream, imageFormat);
+                                    drawingImage.Save(destStream, imageFormat == "jpg" ? new JpegEncoder() : new PngEncoder());
                                     destStream.Position = 0;
 
                                     if (workspace.InjectMetadata || workspace.InjectTags)
@@ -453,31 +455,12 @@ namespace TsukiTag.Dependencies
             }
         }
 
-        public byte[] ResizeImage(System.Drawing.Image image, int width, int height)
+        public byte[] ResizeImage(Image image, int width, int height)
         {
-            var destRect = new System.Drawing.Rectangle(0, 0, width, height);
-            var destImage = new System.Drawing.Bitmap(width, height);
-
-            destImage.SetResolution(width, height);
-
-            using (var graphics = System.Drawing.Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, System.Drawing.GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
+            var destImage = image.Clone(x => x.Resize(width, height));
             using (var ms = new MemoryStream())
             {
-                destImage.Save(ms, ImageFormat.Jpeg);
+                destImage.Save(ms, new JpegEncoder());
                 ms.Position = 0;
 
                 destImage.Dispose();
