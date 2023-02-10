@@ -38,8 +38,8 @@ namespace TsukiTag.Dependencies
             try
             {
                 var url = ConstructIdentifiedUrl(id);
-                var client = new RestClient(url);
-                var request = new RestRequest(Method.GET) { RequestFormat = IsXml ? DataFormat.Xml : DataFormat.Json };
+                var client = new RestClient();
+                var request = new RestRequest(url, Method.Get) { RequestFormat = IsXml ? DataFormat.Xml : DataFormat.Json };
                 var response = await client.ExecuteAsync(request);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
@@ -66,8 +66,8 @@ namespace TsukiTag.Dependencies
             try
             {
                 var url = ConstructUrl(filter);
-                var client = new RestClient(url);
-                var request = new RestRequest(Method.GET) { RequestFormat = IsXml ? DataFormat.Xml : DataFormat.Json };
+                var client = new RestClient();
+                var request = new RestRequest(url, Method.Get) { RequestFormat = IsXml ? DataFormat.Xml : DataFormat.Json };
                 var response = await client.ExecuteAsync(request);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
@@ -102,12 +102,12 @@ namespace TsukiTag.Dependencies
             return result;
         }
 
-        protected virtual void OnResultProcessed(IRestResponse response, ProviderFilterElement filter, ProviderResult result)
+        protected virtual void OnResultProcessed(RestResponse response, ProviderFilterElement filter, ProviderResult result)
         {
 
         }
 
-        protected virtual void OnNonOkResultReceived(IRestResponse response, ProviderFilterElement filter, ProviderResult result)
+        protected virtual void OnNonOkResultReceived(RestResponse response, ProviderFilterElement filter, ProviderResult result)
         {
 
         }

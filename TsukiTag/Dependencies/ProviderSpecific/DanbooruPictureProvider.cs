@@ -108,7 +108,7 @@ namespace TsukiTag.Dependencies.ProviderSpecific
             return Task.FromResult(pictures);
         }
 
-        protected override void OnNonOkResultReceived(IRestResponse response, ProviderFilterElement filter, ProviderResult result)
+        protected override void OnNonOkResultReceived(RestResponse response, ProviderFilterElement filter, ProviderResult result)
         {
             if (filter.Tags.Count > 2)
             {

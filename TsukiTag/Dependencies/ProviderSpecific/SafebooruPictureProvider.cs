@@ -132,7 +132,7 @@ namespace TsukiTag.Dependencies.ProviderSpecific
             return Task.FromResult(pictures);
         }
 
-        protected override void OnResultProcessed(IRestResponse response, ProviderFilterElement filter, ProviderResult result)
+        protected override void OnResultProcessed(RestResponse response, ProviderFilterElement filter, ProviderResult result)
         {
             //Sometimes Safebooru responds with an empty response, even when there are no current restrictions present.
             //So we dont mark this specific situation as the provider is finished.
