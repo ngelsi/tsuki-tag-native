@@ -27,6 +27,14 @@ namespace TsukiTag.Dependencies.ProviderSpecific
 
         public override bool IsXml => true;
 
+        private static Dictionary<string, string> _ratings = new Dictionary<string, string>()
+        {
+            { "general", "s" },
+            { "sensitive", "q"},
+            { "questionable", "q"},
+            { "explicit", "e" }
+        };
+
         public override string ConstructIdentifiedUrl(string id)
         {
             return $"{BaseUrl}&tags=id:{id}";
@@ -95,6 +103,11 @@ namespace TsukiTag.Dependencies.ProviderSpecific
                     picture.CreatedAt = post.created_at;
                     picture.CreatedBy = post.creator_id;
                     picture.Author = picture.CreatedBy;
+
+                    if (_ratings.TryGetValue(post.rating, out string r))
+                    {
+                        picture.Rating = r;
+                    }
 
                     if (int.TryParse(post.score, out int s))
                     {

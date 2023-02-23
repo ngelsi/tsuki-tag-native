@@ -100,6 +100,7 @@ namespace TsukiTag.Dependencies
         {
             using (var client = new WebClient())
             {
+                client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36");
                 using (var stream = await client.OpenReadTaskAsync(new Uri(url)))
                 {
                     using (var ms = new MemoryStream())

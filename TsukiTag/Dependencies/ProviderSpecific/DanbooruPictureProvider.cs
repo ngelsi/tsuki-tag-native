@@ -25,6 +25,14 @@ namespace TsukiTag.Dependencies.ProviderSpecific
         public override string Provider => Models.Provider.Danbooru.Name;
 
         public override bool IsXml => false;
+        
+        private static Dictionary<string, string> _ratings = new Dictionary<string, string>()
+        {
+            { "g", "s" },
+            { "s", "q"},
+            { "q", "q"},
+            { "e", "e" }
+        };
 
         public override string ConstructIdentifiedUrl(string id)
         {
@@ -77,6 +85,11 @@ namespace TsukiTag.Dependencies.ProviderSpecific
                     picture.CreatedBy = pobj.GetValue("uploader_id")?.ToString();
                     picture.Author = picture.CreatedBy;
 
+                    if (!string.IsNullOrEmpty(picture.Rating) && _ratings.TryGetValue(picture.Rating, out string r))
+                    {
+                        picture.Rating = r;
+                    }
+                    
                     if (int.TryParse(pobj.GetValue("image_height")?.ToString(), out int h))
                     {
                         picture.Height = h;
