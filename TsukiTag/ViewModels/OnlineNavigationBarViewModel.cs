@@ -20,6 +20,7 @@ namespace TsukiTag.ViewModels
         private bool konachanEnabled;
         private bool danbooruEnabled;
         private bool yandereEnabled;
+        private bool r34Enabled;
 
         private ObservableCollection<PreviousSession> previousSessions;
         private ObservableCollection<MenuItemViewModel> previousSessionMenuItems;
@@ -71,6 +72,16 @@ namespace TsukiTag.ViewModels
             {
                 yandereEnabled = value;
                 this.RaisePropertyChanged(nameof(YandereEnabled));
+            }
+        }
+        
+        public bool R34Enabled
+        {
+            get { return r34Enabled; }
+            set
+            {
+                r34Enabled = value;
+                this.RaisePropertyChanged(nameof(R34Enabled));
             }
         }
 
@@ -129,6 +140,7 @@ namespace TsukiTag.ViewModels
                     KonachanEnabled = currentFilter.Providers.Contains(Provider.Konachan.Name);
                     DanbooruEnabled = currentFilter.Providers.Contains(Provider.Danbooru.Name);
                     YandereEnabled = currentFilter.Providers.Contains(Provider.Yandere.Name);
+                    R34Enabled = currentFilter.Providers.Contains(Provider.R34.Name);
                 }
             });
         }

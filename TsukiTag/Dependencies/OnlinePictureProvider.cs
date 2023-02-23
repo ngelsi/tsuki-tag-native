@@ -21,6 +21,7 @@ namespace TsukiTag.Dependencies
         private readonly IKonachanPictureProvider konachanPictureProvider;
         private readonly IDanbooruPictureProvider danbooruPictureProvider;
         private readonly IYanderePictureProvider yanderePictureProvider;
+        private readonly IR34PictureProvider r34PictureProvider;
 
         private readonly IPictureControl pictureControl;
         private readonly IProviderFilterControl providerFilterControl;
@@ -36,6 +37,7 @@ namespace TsukiTag.Dependencies
             IKonachanPictureProvider konachanPictureProvider,
             IDanbooruPictureProvider danbooruPictureProvider,
             IYanderePictureProvider yanderePictureProvider,
+            IR34PictureProvider r34PictureProvider,
 
             IDbRepository dbRepository,
             IProviderFilterControl providerFilterControl,
@@ -49,6 +51,7 @@ namespace TsukiTag.Dependencies
             this.konachanPictureProvider = konachanPictureProvider;
             this.danbooruPictureProvider = danbooruPictureProvider;
             this.yanderePictureProvider = yanderePictureProvider;
+            this.r34PictureProvider = r34PictureProvider;
 
             this.providerFilterControl = providerFilterControl;
             this.notificationControl = notificationControl;
@@ -66,7 +69,7 @@ namespace TsukiTag.Dependencies
         }
 
         private List<IPictureProviderElement> allProviders => new List<IPictureProviderElement>()
-            { safebooruPictureProvider, gelbooruPictureProvider, konachanPictureProvider, danbooruPictureProvider, yanderePictureProvider }
+            { safebooruPictureProvider, gelbooruPictureProvider, konachanPictureProvider, danbooruPictureProvider, yanderePictureProvider, r34PictureProvider }
             .Where(p => !finishedProviders.Contains(p.Provider))
             .ToList();
 
@@ -98,7 +101,8 @@ namespace TsukiTag.Dependencies
                 gelbooruPictureProvider,
                 konachanPictureProvider,
                 danbooruPictureProvider,
-                yanderePictureProvider
+                yanderePictureProvider,
+                r34PictureProvider
             }.FirstOrDefault(p => p.Provider == picture.Provider);
 
             if (provider != null && !string.IsNullOrEmpty(picture.Id))

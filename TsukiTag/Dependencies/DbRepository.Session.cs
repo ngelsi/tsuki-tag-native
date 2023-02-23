@@ -54,7 +54,8 @@ namespace TsukiTag.Dependencies
                                 Models.Provider.Gelbooru.Name,
                                 Models.Provider.Konachan.Name,
                                 Models.Provider.Danbooru.Name,
-                                Models.Provider.Yandere.Name
+                                Models.Provider.Yandere.Name,
+                                Models.Provider.R34.Name
                             },
                         Ratings = new string[]
                         {

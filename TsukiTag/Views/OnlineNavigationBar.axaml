@@ -64,6 +64,14 @@
             </StackPanel>
           </MenuItem.Header>
         </MenuItem>
+        <MenuItem Command="{Binding SwitchProviderCommand}" CommandParameter="R34">
+          <MenuItem.Header>
+            <StackPanel Orientation="Horizontal">
+              <ToggleSwitch IsChecked="{Binding R34Enabled}" Command="{Binding SwitchProviderCommand}" CommandParameter="R34"></ToggleSwitch>
+              <Label Content="R34"></Label>
+            </StackPanel>
+          </MenuItem.Header>
+        </MenuItem>        
         <MenuItem Header="" IsEnabled="False"></MenuItem>
         <MenuItem Header="Ratings" IsEnabled="False"></MenuItem>
         <Separator></Separator>
