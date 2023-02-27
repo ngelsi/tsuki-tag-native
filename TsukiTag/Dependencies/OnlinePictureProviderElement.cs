@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TsukiTag.Extensions;
 using TsukiTag.Models;
 
 namespace TsukiTag.Dependencies
