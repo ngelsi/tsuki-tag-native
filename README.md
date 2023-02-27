@@ -35,6 +35,7 @@ Tsuki-tag uses a pre-configured list of image providers available for online bro
 - Danbooru
 - Yandere
 - Konachan
+- R34
 
 # Online lists
 
