@@ -20,6 +20,10 @@
     <Style Selector="AutoCompleteBox">
       <Setter Property="FontSize" Value="16"></Setter>
     </Style>
+    <Style Selector="ToolTip">
+      <Setter Property="Width" Value="1000"></Setter>
+      <Setter Property="MaxWidth" Value="1000"></Setter>
+    </Style>
   </UserControl.Styles>
   <DockPanel>
     <Grid DockPanel.Dock="Top">
