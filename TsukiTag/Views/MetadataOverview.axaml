@@ -142,22 +142,11 @@
         <TextBox Classes="metadatavalue" Grid.Column="1" Grid.Row="6" Text="{Binding CurrentPicture.Id, Mode=OneWay}" Height="15"/>
         
         <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="7" Text="{Binding Language.Url}"></TextBlock>
-        <TextBox Grid.Column="1" Grid.Row="7" Classes="metadatavalue" Text="{Binding CurrentPicture.Url, Mode=OneWay}" Width="150" Height="15"/>
+        <TextBox Grid.Column="1" Grid.Row="7" Classes="metadatavalue" Text="{Binding CurrentPicture.Url, Mode=OneWay}" Width="250" Height="15"/>
         
         <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="8" Text="{Binding Language.Source}"></TextBlock>
-        <TextBox Grid.Column="1" Grid.Row="8" Classes="metadatavalue" Text="{Binding CurrentPicture.Source, Mode=OneWay}" Width="150" Height="15"/>
+        <TextBox Grid.Column="1" Grid.Row="8" Classes="metadatavalue" Text="{Binding CurrentPicture.Source, Mode=OneWay}" Width="250" Height="15"/>
       </Grid>
-
-      <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding CurrentPicture.IsOnlineList}">
-        <StackPanel Margin="13 0 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-          <TextBlock Classes="metadatatitle" Text="{Binding Language.Url}"></TextBlock>
-          <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Url, Mode=OneWay}" Width="280"/>
-        </StackPanel>
-        <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-          <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
-          <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Source, Mode=OneWay}" Width="280"/>
-        </StackPanel>
-      </StackPanel>
 
       <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding CurrentPicture.IsWorkspace}">
         <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">

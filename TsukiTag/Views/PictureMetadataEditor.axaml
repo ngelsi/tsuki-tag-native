@@ -89,38 +89,28 @@
             <TextBox Classes="metadatavalue" Grid.Column="1" Grid.Row="6" Text="{Binding Picture.Id, Mode=OneWay}" Height="15"/>
             
             <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="7" Text="{Binding Language.Url}"></TextBlock>
-            <TextBox Grid.Column="1" Grid.Row="7" Classes="metadatavalue" Text="{Binding Picture.Url, Mode=OneWay}" Width="150" Height="15"/>
+            <TextBox Grid.Column="1" Grid.Row="7" Classes="metadatavalue" Text="{Binding Picture.Url, Mode=OneWay}" Width="250" Height="15"/>
         
             <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="8" Text="{Binding Language.Source}"></TextBlock>
-            <TextBox Grid.Column="1" Grid.Row="8" Classes="metadatavalue" Text="{Binding Picture.Source, Mode=OneWay}" Width="150" Height="15"/>
+            <TextBox Grid.Column="1" Grid.Row="8" Classes="metadatavalue" Text="{Binding Picture.Source, Mode=OneWay}" Width="250" Height="15"/>
           </Grid>
           
-          <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding Picture.IsLocal}">
-            <!--<StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-              <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
-              <TextBox Classes="metadatavalue" Text="{Binding Picture.Source, Mode=OneWay}" Width="280"/>
-            </StackPanel>-->
-            <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-              <TextBlock Classes="metadatatitle" Text="{Binding Language.Author}"></TextBlock>
-              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Author, Mode=TwoWay}" Width="NaN"/>
-            </StackPanel>
-            <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-              <TextBlock Classes="metadatatitle" Text="{Binding Language.Title}"></TextBlock>
-              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Title, Mode=TwoWay}" Width="NaN"/>
-            </StackPanel>
-            <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-              <TextBlock Classes="metadatatitle" Text="{Binding Language.Description}"></TextBlock>
-              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Description, Mode=TwoWay}" Width="NaN"/>
-            </StackPanel>
-            <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-              <TextBlock Classes="metadatatitle" Text="{Binding Language.Copyright}"></TextBlock>
-              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Copyright, Mode=TwoWay}" Width="NaN"/>
-            </StackPanel>
-            <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-              <TextBlock Classes="metadatatitle" Text="{Binding Language.Notes}"></TextBlock>
-              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Notes, Mode=TwoWay}" Width="NaN"/>
-            </StackPanel>
-          </StackPanel>
+          <Grid Margin="13 0 5 5" DockPanel.Dock="Top" ColumnDefinitions="0.4*,0.6*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+            <TextBlock Grid.Column="0" Grid.Row="0" Classes="metadatatitle" Text="{Binding Language.Author}"></TextBlock>
+            <TextBox Grid.Column="1" Grid.Row="0" AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Author, Mode=TwoWay}" Width="250" Height="15"/>
+
+            <TextBlock Grid.Column="0" Grid.Row="1" Classes="metadatatitle" Text="{Binding Language.Title}"></TextBlock>
+            <TextBox Grid.Column="1" Grid.Row="1" AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Title, Mode=TwoWay}" Width="250" Height="15"/>
+            
+            <TextBlock Grid.Column="0" Grid.Row="2" Classes="metadatatitle" Text="{Binding Language.Description}"></TextBlock>
+            <TextBox Grid.Column="1" Grid.Row="2" AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Description, Mode=TwoWay}" Width="250" Height="15"/>
+
+            <TextBlock Grid.Column="0" Grid.Row="3" Classes="metadatatitle" Text="{Binding Language.Copyright}"></TextBlock>
+            <TextBox Grid.Column="1" Grid.Row="3" AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Copyright, Mode=TwoWay}" Width="250" Height="15"/>
+
+            <TextBlock Grid.Column="0" Grid.Row="4" Classes="metadatatitle" Text="{Binding Language.Notes}"></TextBlock>
+            <TextBox Grid.Column="1" Grid.Row="4" AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Notes, Mode=TwoWay}" Width="250" Height="15"/>
+          </Grid>
          
         </DockPanel>
         <DockPanel DockPanel.Dock="Top">
