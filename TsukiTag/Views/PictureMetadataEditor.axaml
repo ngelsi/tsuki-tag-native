@@ -36,30 +36,36 @@
       <Setter Property="Padding" Value="5"></Setter>
     </Style>
     <Style Selector="TextBox.metadatavalue">
-      <Setter Property="FontSize" Value="12"></Setter>
+      <Setter Property="FontSize" Value="16"></Setter>
       <Setter Property="BorderThickness" Value="0"></Setter>
       <Setter Property="IsReadOnly" Value="True"></Setter>
       <Setter Property="TextWrapping" Value="Wrap"></Setter>
       <Setter Property="Background" Value="Transparent"></Setter>
       <Setter Property="Foreground" Value="White"></Setter>
       <Setter Property="Padding" Value="0"></Setter>
+      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+      <Setter Property="Margin" Value="0,0,10,0"></Setter>
+    </Style>
+    <Style Selector="TextBlock.metadatavalue">
+      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+      <Setter Property="Margin" Value="0,0,10,0"></Setter>
     </Style>
     <Style Selector="TextBlock.metadatatitle,TextBlock.metadatavalue">
-      <Setter Property="FontSize" Value="14"></Setter>
+      <Setter Property="FontSize" Value="16"></Setter>
     </Style>
     <Style Selector="TextBlock.metadatatitle">
       <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
     </Style>
     <Style Selector="TextBox.filter">
-      <Setter Property="FontSize" Value="13"></Setter>
+      <Setter Property="FontSize" Value="16"></Setter>
       <Setter Property="Padding" Value="7"></Setter>
     </Style>
   </UserControl.Styles>
       <DockPanel>
         <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
-          <Label DockPanel.Dock="Left" Content="Metadata"></Label>
+          <Label DockPanel.Dock="Left" FontSize="16" Content="Metadata"></Label>
         </DockPanel>
-        <DockPanel DockPanel.Dock="Top">
+        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch">
           <Grid Margin="13 5 5 5" DockPanel.Dock="Top" ColumnDefinitions="0.4*,0.6*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
             <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="0" Text="{Binding Language.Provider}"></TextBlock>
             <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="0" Text="{Binding Picture.Provider}"></TextBlock>
@@ -81,25 +87,13 @@
 
             <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="6" Text="{Binding Language.Id}"></TextBlock>
             <TextBox Classes="metadatavalue" Grid.Column="1" Grid.Row="6" Text="{Binding Picture.Id, Mode=OneWay}" Height="15"/>
+            
+            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="7" Text="{Binding Language.Url}"></TextBlock>
+            <TextBox Grid.Column="1" Grid.Row="7" Classes="metadatavalue" Text="{Binding Picture.Url, Mode=OneWay}" Width="150" Height="15"/>
+        
+            <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="8" Text="{Binding Language.Source}"></TextBlock>
+            <TextBox Grid.Column="1" Grid.Row="8" Classes="metadatavalue" Text="{Binding Picture.Source, Mode=OneWay}" Width="150" Height="15"/>
           </Grid>
-
-          <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding Picture.IsOnline}">
-            <StackPanel Margin="13 0 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-              <TextBlock Classes="metadatatitle" Text="{Binding Language.Url}"></TextBlock>
-              <TextBox Classes="metadatavalue" Text="{Binding Picture.Url, Mode=OneWay}" Width="280"/>
-            </StackPanel>
-            <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-              <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
-              <TextBox Classes="metadatavalue" Text="{Binding Picture.Source, Mode=OneWay}" Width="280"/>
-            </StackPanel>   
-          </StackPanel>
-
-          <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding Picture.IsOnlineList}">
-            <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-              <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
-              <TextBox Classes="metadatavalue" Text="{Binding Picture.Source, Mode=OneWay}" Width="280"/>
-            </StackPanel>
-          </StackPanel>
           
           <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding Picture.IsLocal}">
             <!--<StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
@@ -108,36 +102,36 @@
             </StackPanel>-->
             <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
               <TextBlock Classes="metadatatitle" Text="{Binding Language.Author}"></TextBlock>
-              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Author, Mode=TwoWay}" Width="280"/>
+              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Author, Mode=TwoWay}" Width="NaN"/>
             </StackPanel>
             <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
               <TextBlock Classes="metadatatitle" Text="{Binding Language.Title}"></TextBlock>
-              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Title, Mode=TwoWay}" Width="280"/>
+              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Title, Mode=TwoWay}" Width="NaN"/>
             </StackPanel>
             <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
               <TextBlock Classes="metadatatitle" Text="{Binding Language.Description}"></TextBlock>
-              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Description, Mode=TwoWay}" Width="280"/>
+              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Description, Mode=TwoWay}" Width="NaN"/>
             </StackPanel>
             <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
               <TextBlock Classes="metadatatitle" Text="{Binding Language.Copyright}"></TextBlock>
-              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Copyright, Mode=TwoWay}" Width="280"/>
+              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Copyright, Mode=TwoWay}" Width="NaN"/>
             </StackPanel>
             <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
               <TextBlock Classes="metadatatitle" Text="{Binding Language.Notes}"></TextBlock>
-              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Notes, Mode=TwoWay}" Width="280"/>
+              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="False" Classes="metadatavalue" Text="{Binding Picture.Notes, Mode=TwoWay}" Width="NaN"/>
             </StackPanel>
           </StackPanel>
          
         </DockPanel>
         <DockPanel DockPanel.Dock="Top">
           <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
-            <Label DockPanel.Dock="Left" Content="{Binding Language.Tags}"></Label>
-            <Label DockPanel.Dock="Left" Margin="5 0 0 0" Content="{Binding TagCount}"></Label>
+            <Label DockPanel.Dock="Left" FontSize="16" Content="{Binding Language.Tags}"></Label>
+            <Label DockPanel.Dock="Left" FontSize="16" Margin="5 0 0 0" Content="{Binding TagCount}"></Label>
           </DockPanel>
           <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Margin="10 5 5 5">
-            <TextBox Classes="filter" Watermark="{Binding Language.Filter}" Width="280" HorizontalContentAlignment="Left" Text="{Binding FilterString}" Name="FilterBox"></TextBox>
+            <TextBox Classes="filter" Watermark="{Binding Language.Filter}" Width="NaN" HorizontalContentAlignment="Left" Text="{Binding FilterString}" Name="FilterBox"></TextBox>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="2 10 0 0">
-              <TextBox KeyDown="OnAddTagKeyDown" Classes="filter" Watermark="{Binding Language.AddTag}" Width="240" HorizontalAlignment="Left" Text="{Binding CurrentTag}" Name="TagBox"></TextBox>
+              <TextBox KeyDown="OnAddTagKeyDown" Classes="filter" Watermark="{Binding Language.AddTag}" Width="340" HorizontalAlignment="Left" Text="{Binding CurrentTag}" Name="TagBox"></TextBox>
               <Button Classes="actionbutton" HorizontalAlignment="Left" Margin="15 0 0 0" Command="{Binding AddTagCommand}">
                 <i:Icon Value="fa-plus"></i:Icon>
               </Button>
@@ -147,11 +141,11 @@
             <ItemsRepeater Items="{Binding FilteredTags}" Margin="10 5 5 5">
               <ItemsRepeater.ItemTemplate>
                 <DataTemplate>
-                  <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="5 5 0 0" Text="x" Classes="primary" PointerPressed="TagRemoveGotPress"></TextBlock>
-                    <TextBlock Margin="5 5 0 0" Text="+" Classes="primary" PointerPressed="TagPlusGotPress"></TextBlock>
-                    <TextBlock Margin="5 5 0 0" Text="-" Classes="primary" PointerPressed="TagMinusGotPress"></TextBlock>
-                    <TextBlock Margin="5 5 0 0" Text="{Binding}" Classes="primary" PointerPressed="TagLabelGotPress"></TextBlock>
+                  <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Margin="5 5 0 0" FontSize="23" Text="x" Classes="primary" PointerPressed="TagRemoveGotPress"></TextBlock>
+                    <TextBlock Margin="15 5 0 0" FontSize="25" VerticalAlignment="Center" Text="+" Classes="primary" PointerPressed="TagPlusGotPress"></TextBlock>
+                    <TextBlock Margin="15 5 0 0" FontSize="25" VerticalAlignment="Center" Text="-" Classes="primary" PointerPressed="TagMinusGotPress"></TextBlock>
+                    <TextBlock Margin="15 5 0 0" FontSize="17" VerticalAlignment="Center" Text="{Binding}" Classes="primary" PointerPressed="TagLabelGotPress"></TextBlock>
                   </StackPanel>
                 </DataTemplate>
               </ItemsRepeater.ItemTemplate>

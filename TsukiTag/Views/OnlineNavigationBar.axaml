@@ -16,12 +16,18 @@
       <Setter Property="OffContent" Value=""></Setter>
     </Style>
     <Style Selector="Label">
-      <Setter Property="Margin" Value="5 7 5 5"></Setter>
+      <Setter Property="Margin" Value="5 3 5 5"></Setter>
+    </Style>
+    <Style Selector="MenuItem">
+      <Setter Property="FontSize" Value="16"></Setter>
+    </Style>
+    <Style Selector="MenuItem.margined">
+      <Setter Property="Margin" Value="0,0,10,0"></Setter>
     </Style>
   </UserControl.Styles>
-  <StackPanel Orientation="Horizontal">
-    <Menu VerticalAlignment="Top" HorizontalAlignment="Left">
-      <MenuItem Header="{Binding Language.Session}" Padding="0 5 5 5">
+  <DockPanel>
+    <Menu VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Left">
+      <MenuItem Classes="margined" Header="{Binding Language.Session}" Padding="0 5 5 5">
         <MenuItem Header="{Binding Language.Providers}" IsEnabled="False"></MenuItem>
         <Separator></Separator>
         <MenuItem Command="{Binding SwitchProviderCommand}" CommandParameter="Safebooru">
@@ -100,12 +106,12 @@
           </MenuItem.Header>
         </MenuItem>
       </MenuItem>
-      <MenuItem ToolTip.Tip="{Binding Language.PreviousPage}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToPreviousPage}" Command="{Binding PreviousPageCommand}">
+      <MenuItem Classes="margined" ToolTip.Tip="{Binding Language.PreviousPage}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToPreviousPage}" Command="{Binding PreviousPageCommand}">
         <MenuItem.Header>
           <i:Icon Value="fa-arrow-left"></i:Icon>
         </MenuItem.Header>
       </MenuItem>
-      <MenuItem Header="{Binding CurrentPage}" IsVisible="{Binding CanAdvanceToPreviousPage}" Focusable="False">
+      <MenuItem Classes="margined" Header="{Binding CurrentPage}" IsVisible="{Binding CanAdvanceToPreviousPage}" Focusable="False">
         <MenuItem Header="{Binding Language.NextPage}" IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
         </MenuItem>
         <MenuItem Header="{Binding Language.PreviousPage}" IsVisible="{Binding CanAdvanceToPreviousPage}" Command="{Binding PreviousPageCommand}">
@@ -113,18 +119,18 @@
         <MenuItem Header="{Binding Language.ResetPage}" Command="{Binding ResetPageCommand}">
         </MenuItem>
       </MenuItem>
-      <MenuItem ToolTip.Tip="{Binding Language.NextPage}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
+      <MenuItem Classes="margined" ToolTip.Tip="{Binding Language.NextPage}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" IsVisible="{Binding CanAdvanceToNextPage}" Command="{Binding NextPageCommand}">
         <MenuItem.Header>
           <i:Icon Value="fa-arrow-right"></i:Icon>
         </MenuItem.Header>
       </MenuItem>
-      <MenuItem ToolTip.Tip="{Binding Language.Refresh}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding RefreshCommand}">
+      <MenuItem Classes="margined" ToolTip.Tip="{Binding Language.Refresh}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding RefreshCommand}">
         <MenuItem.Header>
           <i:Icon Value="fa-random"></i:Icon>
         </MenuItem.Header>
       </MenuItem>
     </Menu>
-    <Menu VerticalAlignment="Top" HorizontalAlignment="Left" Items="{Binding PreviousSessionMenuItems}" ToolTip.Tip="{Binding Language.PreviousSessions}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer">
+    <Menu DockPanel.Dock="Left" VerticalAlignment="Top" HorizontalAlignment="Left" Items="{Binding PreviousSessionMenuItems}" ToolTip.Tip="{Binding Language.PreviousSessions}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer">
       <Menu.Styles>
         <Style Selector="MenuItem">
           <Setter Property="Header" Value="{Binding Header}"/>
@@ -132,7 +138,7 @@
           <Setter Property="IsEnabled" Value="{Binding IsEnabled}"></Setter>
           <Setter Property="Command" Value="{Binding Command}"/>
           <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
-          <Setter Property="Icon" Value="{Binding Icon}"></Setter>          
+          <Setter Property="Icon" Value="{Binding Icon}"></Setter>  
         </Style>
         <Style Selector="MenuItem[Icon=fa-undo]">
           <Setter Property="Header">
@@ -145,5 +151,5 @@
         </Style>
       </Menu.Styles>
     </Menu>
-  </StackPanel>
+  </DockPanel>
 </UserControl>

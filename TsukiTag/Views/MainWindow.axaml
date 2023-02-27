@@ -22,7 +22,7 @@
 
   <DockPanel Margin="{Binding #MainWindow.OffScreenMargin}">
     <DockPanel DockPanel.Dock="Top">
-      <Menu DockPanel.Dock="Left" VerticalAlignment="Top" HorizontalAlignment="Left" Items="{Binding MainWindowMenus}">
+      <Menu FontSize="18" DockPanel.Dock="Left" VerticalAlignment="Top" HorizontalAlignment="Left" Items="{Binding MainWindowMenus}">
         <Menu.Styles>
           <Style Selector="MenuItem">
             <Setter Property="Header" Value="{Binding Header}"/>
@@ -30,6 +30,7 @@
             <Setter Property="IsEnabled" Value="{Binding IsEnabled}"></Setter>
             <Setter Property="Command" Value="{Binding Command}"/>
             <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+            <Setter Property="FontSize" Value="18"></Setter>
           </Style>
         </Menu.Styles>
       </Menu>

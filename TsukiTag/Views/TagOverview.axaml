@@ -28,26 +28,26 @@
       <Setter Property="Background" Value="White"></Setter>
     </Style>
   </UserControl.Styles>
-  <DockPanel>
-    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10 5 5 5">
-      <Button ToolTip.Tip="{Binding Language.SwitchToMetadata}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" IsVisible="{Binding HasSelectedPictures}" Command="{Binding SwitchToMetadataOverviewCommand}" DockPanel.Dock="Left" Classes="actionbutton" HorizontalAlignment="Left" Margin="0 0 5 0">
-        <i:Icon FontSize="14" Value="fa-angle-double-left"></i:Icon>
+  <DockPanel HorizontalAlignment="Stretch">
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Margin="10 5 5 5">
+      <Button VerticalAlignment="Center" ToolTip.Tip="{Binding Language.SwitchToMetadata}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" IsVisible="{Binding HasSelectedPictures}" Command="{Binding SwitchToMetadataOverviewCommand}" DockPanel.Dock="Left" Classes="actionbutton" HorizontalAlignment="Left" Margin="0 0 15 0">
+        <i:Icon FontSize="20" Value="fa-angle-double-left"></i:Icon>
       </Button>
-      <Label Content="All tags"></Label>
-      <Label Margin="5 0 0 0" Content="{Binding FilteredTags.TagCount}"></Label>
+      <Label FontSize="18" Content="All tags"></Label>
+      <Label FontSize="18" Margin="5 0 0 0" Content="{Binding FilteredTags.TagCount}"></Label>
     </StackPanel>
-    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10 5 5 5">
-      <TextBox Watermark="Filter" Width="280" Text="{Binding FilterString}" Name="FilterBox" PointerPressed="FilterBoxGotPress" GotFocus="FilterBoxGotFocus"></TextBox>      
-    </StackPanel>
+    <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Top" Margin="10 5 5 5">
+      <TextBox Watermark="Filter" Width="NaN" Text="{Binding FilterString}" Name="FilterBox" PointerPressed="FilterBoxGotPress" GotFocus="FilterBoxGotFocus" FontSize="16"></TextBox>      
+    </DockPanel>
     <ScrollViewer DockPanel.Dock="Top">
       <ItemsRepeater Items="{Binding FilteredTags.Tags}" Margin="10 5 5 5">
         <ItemsRepeater.ItemTemplate>
           <DataTemplate>
-            <StackPanel Orientation="Horizontal">
-              <TextBlock Margin="5 5 0 0" Text="+" Classes="primary" PointerPressed="TagPlusGotPress"></TextBlock>
-              <TextBlock Margin="5 5 0 0" Text="-" Classes="primary" PointerPressed="TagMinusGotPress"></TextBlock>
-              <TextBlock Margin="5 5 0 0" Text="{Binding Tag}" Classes="primary" PointerPressed="TagLabelGotPress"></TextBlock>
-              <TextBlock Margin="5 5 0 0" Text="{Binding Count}"></TextBlock>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+              <TextBlock Margin="5 5 0 0" Text="+" FontSize="25" Classes="primary" PointerPressed="TagPlusGotPress"></TextBlock>
+              <TextBlock Margin="15 5 0 0" Text="-" FontSize="25" Classes="primary" PointerPressed="TagMinusGotPress"></TextBlock>
+              <TextBlock Margin="15 5 0 0" VerticalAlignment="Center" FontSize="17" Text="{Binding Tag}" Classes="primary" PointerPressed="TagLabelGotPress"></TextBlock>
+              <TextBlock Margin="10 5 0 0" VerticalAlignment="Center" FontSize="17" Text="{Binding Count}"></TextBlock>
             </StackPanel>
           </DataTemplate>
         </ItemsRepeater.ItemTemplate>

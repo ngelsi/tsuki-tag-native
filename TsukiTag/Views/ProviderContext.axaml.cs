@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
 using System.Reactive.Concurrency;
+using Avalonia.Interactivity;
 using TsukiTag.Models;
 using TsukiTag.ViewModels;
 
@@ -44,6 +45,23 @@ namespace TsukiTag.Views
                     });
                 }
             }
-        }        
+        }
+
+        private void TabGotDoubleTapped(object? sender, RoutedEventArgs e)
+        {
+            if ((e as TappedEventArgs)?.Pointer?.Type != PointerType.Touch)
+            {
+                return;
+            }
+            
+            var picture = (((sender as TextBlock)?.DataContext as ProviderTabModel)?.Context as Picture);
+            if(picture != null)
+            {
+                RxApp.MainThreadScheduler.Schedule(async () =>
+                {
+                    (DataContext as ProviderContextViewModel)?.OnTabPictureClosed(picture);
+                });
+            }
+        }
     }
 }

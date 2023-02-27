@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
 using System;
+using System.Diagnostics;
 using System.Reactive.Concurrency;
 using TsukiTag.Models;
 using TsukiTag.ViewModels;
@@ -80,6 +81,11 @@ namespace TsukiTag.Views
 
         private void ImagePressReleased(object sender, PointerReleasedEventArgs e)
         {
+            if (e.Pointer.Type != PointerType.Mouse)
+            {
+                return;
+            }
+            
             if (e.InitialPressMouseButton == MouseButton.Middle)
             {
                 var picture = ((sender as Image)?.DataContext as Picture);
@@ -95,8 +101,12 @@ namespace TsukiTag.Views
 
         private void ImageGotPress(object sender, PointerPressedEventArgs e)
         {
-            if (!e.GetCurrentPoint(this).Properties.IsMiddleButtonPressed &&
-                !e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
+            if (e.Pointer.Type != PointerType.Mouse)
+            {
+                return;
+            }
+            
+            if (!e.GetCurrentPoint(this).Properties.IsMiddleButtonPressed)
             {
                 var picture = ((sender as Image)?.DataContext as Picture);
                 if (picture != null)
@@ -118,6 +128,47 @@ namespace TsukiTag.Views
 
                     e.Handled = true;
                 }
+            }
+        }
+
+        private void ImageGotTap(object? sender, RoutedEventArgs e)
+        {
+            if ((e as TappedEventArgs)?.Pointer?.Type != PointerType.Touch)
+            {
+                return;
+            }
+            
+            var picture = ((sender as Image)?.DataContext as Picture);
+            if (picture != null)
+            {
+                RxApp.MainThreadScheduler.Schedule(async () =>
+                {
+                    if (picture.Selected)
+                    {
+                        (DataContext as PictureListViewModel)?.OnPictureDeselected(this, picture);
+                    }
+                    else
+                    {
+                        (DataContext as PictureListViewModel)?.OnPictureSelected(this, picture);   
+                    }
+                });
+            }
+        }
+
+        private void ImageGotDoubleTap(object? sender, RoutedEventArgs e)
+        {
+            if ((e as TappedEventArgs)?.Pointer?.Type != PointerType.Touch)
+            {
+                return;
+            }
+            
+            var picture = ((sender as Image)?.DataContext as Picture);
+            if (picture != null)
+            {
+                RxApp.MainThreadScheduler.Schedule(async () =>
+                {
+                    (DataContext as PictureListViewModel)?.OnPictureOpened(this, picture);
+                });
             }
         }
     }

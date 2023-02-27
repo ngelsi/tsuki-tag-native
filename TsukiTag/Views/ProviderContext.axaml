@@ -15,11 +15,12 @@
     </Style>
     <Style Selector="TabItem">
       <Setter Property="Margin" Value="0 0 0 0"></Setter>
+      <Setter Property="FontSize" Value="16"></Setter>
     </Style>
   </UserControl.Styles>
   <DockPanel DockPanel.Dock="Top">
     <DockPanel DockPanel.Dock="Top" Margin="0">
-      <ExperimentalAcrylicBorder Width="300" DockPanel.Dock="Left">
+      <ExperimentalAcrylicBorder Width="400" DockPanel.Dock="Left">
         <ExperimentalAcrylicBorder.Material>
           <ExperimentalAcrylicMaterial TintColor="Black" MaterialOpacity="0.85" TintOpacity="1"></ExperimentalAcrylicMaterial>
         </ExperimentalAcrylicBorder.Material>
@@ -42,7 +43,7 @@
           <TabControl.ItemTemplate>
             <DataTemplate>
               <StackPanel Orientation="Horizontal">
-                <TextBlock Cursor="Hand" PointerReleased="TabGotPointerRelease" Text="{Binding Header}"></TextBlock>
+                <TextBlock Cursor="Hand" PointerReleased="TabGotPointerRelease" DoubleTapped="TabGotDoubleTapped" Text="{Binding Header}"></TextBlock>
                 <Border DockPanel.Dock="Right" BorderThickness="1" BorderBrush="Gray" Width="2" Margin="10 0 5 0" Padding="0 5 5 0"></Border>
               </StackPanel>
             </DataTemplate>

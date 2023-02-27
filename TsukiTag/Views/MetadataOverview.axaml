@@ -24,53 +24,66 @@
       <Setter Property="Cursor" Value="Hand"></Setter>
     </Style>
     <Style Selector="TextBlock.metadatatitle,TextBlock.metadatavalue">
-      <Setter Property="FontSize" Value="13"></Setter>
+      <Setter Property="FontSize" Value="16"></Setter>
+    </Style>
+    <Style Selector="TextBlock.metadatavalue">
+      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+      <Setter Property="Margin" Value="0,0,10,0"></Setter>
     </Style>
     <Style Selector="TextBlock.metadatatitle">
       <Setter Property="Foreground" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
     </Style>
     <Style Selector="TextBox.metadatavalue">
-      <Setter Property="FontSize" Value="13"></Setter>
+      <Setter Property="FontSize" Value="16"></Setter>
       <Setter Property="BorderThickness" Value="0"></Setter>
       <Setter Property="IsReadOnly" Value="True"></Setter>
       <Setter Property="TextWrapping" Value="Wrap"></Setter>
       <Setter Property="Background" Value="Transparent"></Setter>
       <Setter Property="Foreground" Value="White"></Setter>
       <Setter Property="Padding" Value="0"></Setter>
+      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+      <Setter Property="Margin" Value="0,0,10,0"></Setter>
     </Style>
     <Style Selector="TextBox.filter">
-      <Setter Property="FontSize" Value="13"></Setter>
+      <Setter Property="FontSize" Value="16"></Setter>
       <Setter Property="Padding" Value="7"></Setter>
+    </Style>
+    <Style Selector="Image.preview">
+      <Setter Property="RenderTransform">
+        <Setter.Value>
+          <ScaleTransform ScaleX="1.2" ScaleY="1.2"></ScaleTransform>
+        </Setter.Value>
+      </Setter>
     </Style>
   </UserControl.Styles>
   <DockPanel IsVisible="{Binding HasSelectedPicture}">
-    <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
-      <Button ToolTip.Tip="{Binding Language.SwitchToTag}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding SwitchToTabOverviewCommand}" DockPanel.Dock="Left" Classes="actionbutton" HorizontalAlignment="Left" Margin="0 0 5 0">
-        <i:Icon  FontSize="14" Value="fa-angle-double-left"></i:Icon>
+    <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5" VerticalAlignment="Center">
+      <Button VerticalAlignment="Center" ToolTip.Tip="{Binding Language.SwitchToTag}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding SwitchToTabOverviewCommand}" DockPanel.Dock="Left" Classes="actionbutton" HorizontalAlignment="Left" Margin="0 0 15 0">
+        <i:Icon  FontSize="20" Value="fa-angle-double-left"></i:Icon>
       </Button>
-      <Label DockPanel.Dock="Left" Content="{Binding Language.Metadata}"></Label>
+      <Label DockPanel.Dock="Left" FontSize="18" Content="{Binding Language.Metadata}"></Label>
       <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 2 5 0">
-        <Button ToolTip.Tip="{Binding Language.PreviousPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding PreviousPictureCommand}" Classes="actionbutton" Margin="0 0 5 0">
-          <i:Icon FontSize="14" Value="fa-chevron-circle-left"></i:Icon>
+        <Button ToolTip.Tip="{Binding Language.PreviousPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding PreviousPictureCommand}" Classes="actionbutton" Margin="0 0 10 0">
+          <i:Icon FontSize="20" Value="fa-chevron-circle-left"></i:Icon>
         </Button>
-        <TextBlock HorizontalAlignment="Right" FontSize="15" Text="{Binding CurrentPictureIndexDisplay}"></TextBlock>
-        <TextBlock HorizontalAlignment="Right" FontSize="15" Text="/"></TextBlock>
-        <TextBlock HorizontalAlignment="Right" FontSize="15" Text="{Binding SelectedPictureCount}"></TextBlock>
-        <Button ToolTip.Tip="{Binding Language.NextPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding NextPictureCommand}" Classes="actionbutton" Margin="5 0 0 0">
-          <i:Icon FontSize="14" Value="fa-chevron-circle-right"></i:Icon>
+        <TextBlock HorizontalAlignment="Right" FontSize="18" Margin="0,2.5,0,0" Text="{Binding CurrentPictureIndexDisplay}"></TextBlock>
+        <TextBlock HorizontalAlignment="Right" FontSize="18" Margin="0,2.5,0,0" Text="/"></TextBlock>
+        <TextBlock HorizontalAlignment="Right" FontSize="18"  Margin="0,2.5,0,0" Text="{Binding SelectedPictureCount}"></TextBlock>
+        <Button ToolTip.Tip="{Binding Language.NextPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding NextPictureCommand}" Classes="actionbutton" Margin="10 0 0 0">
+          <i:Icon FontSize="20" Value="fa-chevron-circle-right"></i:Icon>
         </Button>
-        <Button ToolTip.Tip="{Binding Language.OpenPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" PointerReleased="OpenPressReleased" Command="{Binding OpenPictureCommand}" Classes="actionbutton" Margin="10 0 0 0">
-          <i:Icon FontSize="14" Value="fa-clone"></i:Icon>
+        <Button ToolTip.Tip="{Binding Language.OpenPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" PointerReleased="OpenPressReleased" Command="{Binding OpenPictureCommand}" Classes="actionbutton" Margin="15 0 0 0">
+          <i:Icon FontSize="20" Value="fa-clone"></i:Icon>
         </Button>
-        <Button ToolTip.Tip="{Binding Language.DeselectAllPictures}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding DeselectAllCommand}" Classes="actionbutton" Margin="10 0 0 0">
-          <i:Icon FontSize="14" Value="fa-eraser"></i:Icon>
+        <Button ToolTip.Tip="{Binding Language.DeselectAllPictures}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding DeselectAllCommand}" Classes="actionbutton" Margin="15 0 0 0">
+          <i:Icon FontSize="20" Value="fa-eraser"></i:Icon>
         </Button>
-        <Button ToolTip.Tip="{Binding Language.DeselectPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding DeselectPictureCommand}" Classes="actionbutton" Margin="10 0 0 0">
-          <i:Icon FontSize="14" Value="fa-times"></i:Icon>
+        <Button ToolTip.Tip="{Binding Language.DeselectPicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Pointer" Command="{Binding DeselectPictureCommand}" Classes="actionbutton" Margin="15 0 0 0">
+          <i:Icon FontSize="20" Value="fa-times"></i:Icon>
         </Button>
       </StackPanel>
     </DockPanel>
-    <ExperimentalAcrylicBorder DockPanel.Dock="Top" Height="25">
+    <ExperimentalAcrylicBorder DockPanel.Dock="Top" Height="35">
       <ExperimentalAcrylicBorder.Material>
         <ExperimentalAcrylicMaterial TintColor="Black" MaterialOpacity="0.5" TintOpacity="1"></ExperimentalAcrylicMaterial>
       </ExperimentalAcrylicBorder.Material>
@@ -78,7 +91,7 @@
         <Menu Width="130" HorizontalAlignment="Left" DockPanel.Dock="Left" Margin="0 0 0 0" Items="{Binding ThisImageMenus}">
           <Menu.Styles>
             <Style Selector="MenuItem">
-              <Setter Property="FontSize" Value="12"></Setter>
+              <Setter Property="FontSize" Value="16"></Setter>
               <Setter Property="Header" Value="{Binding Header}"/>
               <Setter Property="Items" Value="{Binding Items}"/>
               <Setter Property="IsEnabled" Value="{Binding IsEnabled}"></Setter>
@@ -90,7 +103,7 @@
         <Menu HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="0 0 0 0" Items="{Binding SelectionMenus}">
           <Menu.Styles>
             <Style Selector="MenuItem">
-              <Setter Property="FontSize" Value="12"></Setter>
+              <Setter Property="FontSize" Value="16"></Setter>
               <Setter Property="Header" Value="{Binding Header}"/>
               <Setter Property="Items" Value="{Binding Items}"/>
               <Setter Property="IsEnabled" Value="{Binding IsEnabled}"></Setter>
@@ -103,10 +116,10 @@
       </DockPanel>
     </ExperimentalAcrylicBorder>
     <DockPanel DockPanel.Dock="Top">
-      <StackPanel DockPanel.Dock="Top" Margin="0 10 0 10">
-        <Image Source="{Binding CurrentPicture, Converter={StaticResource bitmapConverter}}" Width="{Binding CurrentPicture.PreviewWidth}" Height="{Binding CurrentPicture.PreviewHeight}" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
+      <StackPanel DockPanel.Dock="Top" Margin="15 25 15 25">
+        <Image Classes="preview" Source="{Binding CurrentPicture, Converter={StaticResource bitmapConverter}}" Width="{Binding CurrentPicture.PreviewWidth}" Height="{Binding CurrentPicture.PreviewHeight}" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
       </StackPanel>
-      <Grid Margin="13 5 5 5" DockPanel.Dock="Top" ColumnDefinitions="0.35*,0.65*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+      <Grid Margin="13 5 5 5" DockPanel.Dock="Top" ColumnDefinitions="0.40*,0.60*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
         <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="0" Text="{Binding Language.Provider}"></TextBlock>
         <TextBlock Classes="metadatavalue" Grid.Column="1" Grid.Row="0" Text="{Binding CurrentPicture.Provider}"></TextBlock>
 
@@ -127,18 +140,13 @@
 
         <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="6" Text="{Binding Language.Id}"></TextBlock>
         <TextBox Classes="metadatavalue" Grid.Column="1" Grid.Row="6" Text="{Binding CurrentPicture.Id, Mode=OneWay}" Height="15"/>
+        
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="7" Text="{Binding Language.Url}"></TextBlock>
+        <TextBox Grid.Column="1" Grid.Row="7" Classes="metadatavalue" Text="{Binding CurrentPicture.Url, Mode=OneWay}" Width="150" Height="15"/>
+        
+        <TextBlock Classes="metadatatitle" Grid.Column="0" Grid.Row="8" Text="{Binding Language.Source}"></TextBlock>
+        <TextBox Grid.Column="1" Grid.Row="8" Classes="metadatavalue" Text="{Binding CurrentPicture.Source, Mode=OneWay}" Width="150" Height="15"/>
       </Grid>
-
-      <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding CurrentPicture.IsOnline}">
-        <StackPanel Margin="13 0 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-          <TextBlock Classes="metadatatitle" Text="{Binding Language.Url}"></TextBlock>
-          <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Url, Mode=OneWay}" Width="280"/>
-        </StackPanel>
-        <StackPanel Margin="13 5 5 5" DockPanel.Dock="Top" Orientation="Vertical">
-          <TextBlock Classes="metadatatitle" Text="{Binding Language.Source}"></TextBlock>
-          <TextBox Classes="metadatavalue" Text="{Binding CurrentPicture.Source, Mode=OneWay}" Width="280"/>
-        </StackPanel>
-      </StackPanel>
 
       <StackPanel DockPanel.Dock="Top" Orientation="Vertical" IsVisible="{Binding CurrentPicture.IsOnlineList}">
         <StackPanel Margin="13 0 5 5" DockPanel.Dock="Top" Orientation="Vertical">
@@ -164,20 +172,20 @@
       
       <DockPanel DockPanel.Dock="Top">
         <DockPanel DockPanel.Dock="Top" Margin="10 5 5 5">
-          <Label DockPanel.Dock="Left" Content="{Binding Language.Tags}"></Label>
-          <Label DockPanel.Dock="Left" Margin="5 0 0 0" Content="{Binding TagCount}"></Label>
+          <Label DockPanel.Dock="Left" FontSize="16" Content="{Binding Language.Tags}"></Label>
+          <Label DockPanel.Dock="Left" FontSize="16" Margin="10 0 0 0" Content="{Binding TagCount}"></Label>
         </DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10 5 5 5">
-          <TextBox Classes="filter" Watermark="Filter" Width="280" Text="{Binding FilterString}" Name="FilterBox" PointerPressed="FilterBoxGotPress" GotFocus="FilterBoxGotFocus"></TextBox>
+          <TextBox Classes="filter" Watermark="Filter" Width="380" Text="{Binding FilterString}" Name="FilterBox" PointerPressed="FilterBoxGotPress" GotFocus="FilterBoxGotFocus"></TextBox>
         </StackPanel>
         <ScrollViewer DockPanel.Dock="Top">
           <ItemsRepeater Items="{Binding FilteredTags}" Margin="10 5 5 5">
             <ItemsRepeater.ItemTemplate>
               <DataTemplate>
-                <StackPanel Orientation="Horizontal">
-                  <TextBlock Margin="5 5 0 0" Text="+" Classes="primary" PointerPressed="TagPlusGotPress"></TextBlock>
-                  <TextBlock Margin="5 5 0 0" Text="-" Classes="primary" PointerPressed="TagMinusGotPress"></TextBlock>
-                  <TextBlock Margin="5 5 0 0" Text="{Binding}" Classes="primary" PointerPressed="TagLabelGotPress"></TextBlock>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                  <TextBlock Margin="5 5 0 0" FontSize="25" Text="+" Classes="primary" PointerPressed="TagPlusGotPress"></TextBlock>
+                  <TextBlock Margin="15 5 0 0" FontSize="25" Text="-" Classes="primary" PointerPressed="TagMinusGotPress"></TextBlock>
+                  <TextBlock Margin="15 5 0 0" VerticalAlignment="Center" FontSize="17" Text="{Binding}" Classes="primary" PointerPressed="TagLabelGotPress"></TextBlock>
                 </StackPanel>
               </DataTemplate>
             </ItemsRepeater.ItemTemplate>

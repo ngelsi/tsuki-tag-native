@@ -18,7 +18,8 @@
       <Setter Property="Background" Value="{DynamicResource TsukiTagPurpleBrush}"></Setter>
     </Style>
     <Style Selector="TextBlock">
-      <Setter Property="Foreground" Value="White"></Setter>      
+      <Setter Property="Foreground" Value="White"></Setter> 
+      <Setter Property="FontWeight" Value="Bold"></Setter>
     </Style>
   </UserControl.Styles>
   

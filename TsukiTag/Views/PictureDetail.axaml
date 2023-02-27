@@ -17,7 +17,7 @@
       <ExperimentalAcrylicBorder.Material>
         <ExperimentalAcrylicMaterial TintColor="Black" MaterialOpacity="0.85" TintOpacity="1"></ExperimentalAcrylicMaterial>
       </ExperimentalAcrylicBorder.Material>
-      <DockPanel Height="25">
+      <DockPanel Height="35">
         <Menu Items="{Binding Menus}">
           <Menu.Styles>
             <Style Selector="MenuItem">
@@ -26,14 +26,15 @@
               <Setter Property="IsEnabled" Value="{Binding IsEnabled}"></Setter>
               <Setter Property="Command" Value="{Binding Command}"/>
               <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+              <Setter Property="FontSize" Value="16"></Setter>
             </Style>
           </Menu.Styles>
         </Menu>
-        <Button ToolTip.Tip="{Binding Language.ClosePicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Left" Margin="0 0 5 0" Command="{Binding ClosePictureCommand}" HorizontalAlignment="Right" Classes="actionbutton" DockPanel.Dock="Right">
-          <i:Icon FontSize="14" Value="fa-times"></i:Icon>
+        <Button ToolTip.Tip="{Binding Language.ClosePicture}" ToolTip.ShowDelay="1200" ToolTip.Placement="Left" Margin="10 0 5 0" Command="{Binding ClosePictureCommand}" HorizontalAlignment="Right" Classes="actionbutton" DockPanel.Dock="Right">
+          <i:Icon FontSize="22" Value="fa-times"></i:Icon>
         </Button>
         <Button ToolTip.Tip="{Binding Language.OriginalView}" ToolTip.ShowDelay="1200" ToolTip.Placement="Left" Margin="0 0 5 0" Command="{Binding SwitchDisplayModeCommand}" HorizontalAlignment="Right" Classes="actionbutton" DockPanel.Dock="Right">
-          <i:Icon FontSize="14" Value="fa-window-maximize"></i:Icon>
+          <i:Icon FontSize="22" Value="fa-window-maximize"></i:Icon>
         </Button>
       </DockPanel>            
     </ExperimentalAcrylicBorder>
